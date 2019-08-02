@@ -1,0 +1,92 @@
+package com.uddernetworks.emojide.gui.components;
+
+import com.uddernetworks.emojide.discord.Emoji;
+import net.dv8tion.jda.api.entities.Emote;
+
+/**
+ * A superclass for every component that can be rendered on the screen, i.e. containers, text, etc.
+ */
+public abstract class EmojiComponent {
+    protected final Displayer displayer;
+    protected final int width;
+    protected final int height;
+    private boolean clearCache;
+    private EmojiComponent parent;
+    private Emoji[][] lastRender;
+
+    public EmojiComponent(Displayer displayer, int width, int height) {
+        this.displayer = displayer;
+        this.width = width;
+        this.height = height;
+    }
+
+    /**
+     * Gets a 2D array of Emojis, [0].length being `height` and [][0].length being `width` set in the constructor.
+     *
+     * @return The emojis to render
+     */
+    public abstract Emoji[][] render();
+
+    /**
+     * Gets the rendered view of the component, or the most recent cached version if applicable. This is preferred
+     * over {@link #render()} due to caching.
+     *
+     * @return The emojis to render
+     */
+    public Emoji[][] getCachedRender() {
+        if (!clearCache && this.lastRender != null) return this.lastRender;
+        this.clearCache = false;
+        return this.lastRender = render();
+    }
+
+    /**
+     * Gets the width of the component.
+     *
+     * @return The width of the component.
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Gets the height of the component.
+     *
+     * @return The height of the component.
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
+     * Gets the parent of the component.
+     *
+     * @return The parent component
+     */
+    public EmojiComponent getParent() {
+        return parent;
+    }
+
+    /**
+     * Sets the parent of the component.
+     *
+     * @param parent The parent to set
+     */
+    public void setParent(EmojiComponent parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * If the element should be updated during the next render. If the component has children that have cleared caches,
+     * it's vital that all parents have cleared caches as well.
+     */
+    public void clearCache() {
+        this.clearCache = true;
+        if (this.parent != null) this.parent.clearCache();
+    }
+
+    /**
+     * Updates the current component if {@link #clearCache()} has been invoked. All children, children's children,
+     * etc. will be updated forcibly. This could be expensive.
+     */
+    public void update() {}
+}
