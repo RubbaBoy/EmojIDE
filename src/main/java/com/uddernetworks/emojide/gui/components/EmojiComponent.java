@@ -13,6 +13,7 @@ import java.util.Arrays;
  */
 public abstract class EmojiComponent {
     protected final Displayer displayer;
+    protected final EmojiManager emojiManager;
     protected final int width;
     protected final int height;
     private boolean clearCache;
@@ -21,6 +22,7 @@ public abstract class EmojiComponent {
 
     public EmojiComponent(Displayer displayer, int width, int height) {
         this.displayer = displayer;
+        this.emojiManager = displayer.getEmojiManager();
         this.width = width;
         this.height = height;
     }
@@ -28,20 +30,21 @@ public abstract class EmojiComponent {
     /**
      * Gets a 2D array of Emojis, [0].length being `height` and [][0].length being `width` set in the constructor.
      *
+     * @param initial The initial Emoji grid to build on top of
      * @return The emojis to render
      */
-    public abstract Emoji[][] render();
+    public abstract Emoji[][] render(Emoji[][] initial);
 
     /**
      * Gets the rendered view of the component, or the most recent cached version if applicable. This is preferred
-     * over {@link #render()} due to caching.
+     * over {@link #render(Emoji[][])} due to caching.
      *
      * @return The emojis to render
      */
     public Emoji[][] getCachedRender() {
         if (!clearCache && this.lastRender != null) return this.lastRender;
         this.clearCache = false;
-        return this.lastRender = render();
+        return this.lastRender = render(getNullGrid(this.width, this.height));
     }
 
     /**
@@ -95,11 +98,18 @@ public abstract class EmojiComponent {
      */
     public void update() {}
 
+    public static Emoji[][] getNullGrid(int width, int height) {
+        var rows = new Emoji[height][];
+        for (int i = 0; i < height; i++) rows[i] = new Emoji[width];
+        return rows;
+    }
+
     public static Emoji[][] getEmptyGrid(EmojiManager emojiManager, int width, int height) {
         return getEmptyGrid(emojiManager.getEmoji("discord"), width, height);
     }
 
     public static Emoji[][] getEmptyGrid(Emoji emoji, int width, int height) {
+        if (emoji == null) return getNullGrid(width, height);
         var rows = new Emoji[height][];
         for (int y = 0; y < height; y++) {
             rows[y] = new Emoji[width];

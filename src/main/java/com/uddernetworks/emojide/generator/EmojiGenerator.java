@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 
 import static com.uddernetworks.emojide.generator.LetterGenerator.*;
 
@@ -14,9 +15,58 @@ public class EmojiGenerator {
     private static final int WIDTH = 256;
     private static final int HEIGHT = 256;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         var parent = new File("emojis");
+
+        for (File file : new File("color_emojis").listFiles()) {
+            var color = new Color(ImageIO.read(file).getRGB(0, 0));
+            System.out.println("\"" + file.getName() + "\", new Color(" + color.getRed() + ", " + color.getGreen() + ", " + color.getBlue() + "),");
+        }
+
+        // Generate text
         Arrays.stream("!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".split("")).forEach(character -> drawAndSave(parent, character));
+
+        // Generate color palette
+
+        generateColorPalette(parent,
+                "blue1", new Color(47, 128, 237),
+                "blue2", new Color(45, 156, 219),
+                "blue3", new Color(86, 204, 242),
+                "discord", new Color(54, 57, 63),
+                "gray1", new Color(51, 51, 51),
+                "gray2", new Color(79, 79, 79),
+                "gray3", new Color(130, 130, 130),
+                "gray4", new Color(189, 189, 189),
+                "gray5", new Color(224, 224, 224),
+                "gray6", new Color(242, 242, 242),
+                "green1", new Color(33, 150, 83),
+                "green2", new Color(39, 174, 96),
+                "green3", new Color(111, 207, 151),
+                "orange", new Color(242, 153, 74),
+                "purple1", new Color(155, 81, 224),
+                "purple2", new Color(187, 107, 217),
+                "red", new Color(235, 87, 87),
+                "yellow", new Color(242, 201, 76));
+    }
+
+    private static void generateColorPalette(File parent, Object... objects) {
+        if (objects.length % 2 != 0) throw new IllegalArgumentException("Argument must be a number divisible by 2");
+        for (int i = 0; i < objects.length; i += 2) {
+            var name = (String) objects[i];
+            var color = (Color) objects[i + 1];
+
+            var image = new BufferedImage(25, 25, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D graphics = image.createGraphics();
+            graphics.setPaint(color);
+            graphics.fillRect(0, 0, 25, 25);
+            graphics.dispose();
+
+            try {
+                ImageIO.write(image, "png", new File(parent, name + ".png"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static void drawAndSave(File parent, String character) {

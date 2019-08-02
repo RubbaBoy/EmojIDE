@@ -36,11 +36,9 @@ public abstract class EmojiContainer extends EmojiComponent {
     }
 
     @Override
-    public Emoji[][] render() {
-        var rows = new Emoji[height][];
-        for (int i = 0; i < height; i++) rows[i] = new Emoji[width];
-        this.positionedComponents.forEach(positioned -> drawTo(positioned, rows));
-        return rows;
+    public Emoji[][] render(Emoji[][] initial) {
+        this.positionedComponents.forEach(positioned -> drawTo(positioned, initial));
+        return initial;
     }
 
     protected void drawTo(PositionedComponent positioned, Emoji[][] rows) {
