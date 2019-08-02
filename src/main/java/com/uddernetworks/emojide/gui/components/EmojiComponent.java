@@ -1,7 +1,12 @@
 package com.uddernetworks.emojide.gui.components;
 
 import com.uddernetworks.emojide.discord.Emoji;
+import com.uddernetworks.emojide.discord.EmojiManager;
+import com.uddernetworks.emojide.discord.IconEmote;
+import com.uddernetworks.emojide.main.EmojIDE;
 import net.dv8tion.jda.api.entities.Emote;
+
+import java.util.Arrays;
 
 /**
  * A superclass for every component that can be rendered on the screen, i.e. containers, text, etc.
@@ -89,4 +94,17 @@ public abstract class EmojiComponent {
      * etc. will be updated forcibly. This could be expensive.
      */
     public void update() {}
+
+    public static Emoji[][] getEmptyGrid(EmojiManager emojiManager, int width, int height) {
+        return getEmptyGrid(emojiManager.getEmoji("discord"), width, height);
+    }
+
+    public static Emoji[][] getEmptyGrid(Emoji emoji, int width, int height) {
+        var rows = new Emoji[height][];
+        for (int y = 0; y < height; y++) {
+            rows[y] = new Emoji[width];
+            Arrays.fill(rows[y], emoji);
+        }
+        return rows;
+    }
 }

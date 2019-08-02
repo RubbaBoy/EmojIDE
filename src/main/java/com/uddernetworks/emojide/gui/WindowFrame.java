@@ -1,10 +1,8 @@
 package com.uddernetworks.emojide.gui;
 
 import com.uddernetworks.emojide.discord.Emoji;
-import com.uddernetworks.emojide.discord.IconEmote;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.gui.components.EmojiContainer;
-import net.dv8tion.jda.api.entities.Emote;
 
 import java.util.Arrays;
 

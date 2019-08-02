@@ -37,6 +37,7 @@ public class EmojiManager {
     }
 
     public Emoji getEmoji(String name) {
+        System.out.println("Getting emoji for " + name);
         var emoteOptional = IconEmote.getEmoji(name);
         if (emoteOptional.isPresent()) return emoteOptional.get().getEmoji();
         return this.emojis.getOrDefault(name, this.emojis.get("discord"));

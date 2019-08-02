@@ -46,10 +46,10 @@ public abstract class EmojiContainer extends EmojiComponent {
     protected void drawTo(PositionedComponent positioned, Emoji[][] rows) {
         var insertX = positioned.getX();
         var component = positioned.getComponent();
-        var inserting = component.getCachedRender();
+        var inserting = component.getCachedRender(); // The component
 
         for (int y = 0; y < component.height; y++) {
-            System.arraycopy(inserting[y], 0, rows[y], insertX, component.width);
+            System.arraycopy(inserting[y], 0, rows[y + positioned.getY()], insertX, component.width);
         }
     }
 
