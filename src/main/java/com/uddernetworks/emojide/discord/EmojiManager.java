@@ -29,7 +29,9 @@ public class EmojiManager {
 
         Arrays.stream(IconEmote.values()).forEach(icon -> emojis.put(icon.getEmoji().getName(), icon.getEmoji()));
 
-        Stream.of("gray1", "gray2", "gray3", "gray4", "gray5", "gray6", "red", "orange", "yellow", "green1", "green2", "green3", "blue1", "blue2", "blue3", "purple1", "purple2", "discord").forEach(name -> {
+        Stream.of("gray1", "gray2", "gray3", "gray4", "gray5", "gray6", "red", "orange", "yellow", "green1", "green2", "green3", "blue1", "blue2", "blue3", "purple1", "purple2", "discord",
+                "backspace", "ins", "home", "pg_up", "tab", "del", "end", "pg_down", "caps_lock", "enter", "shift", "up", "ctrl", "icon", "alt", "space", "space2", "space3", "space4", "space5", "space6", "fn", "context", "left", "down", "right", "padding").forEach(name -> {
+            System.out.println("Getting " + name);
             emojis.put(name, new Emoji(jda.getEmotesByName(name, false).get(0)));
         });
 
