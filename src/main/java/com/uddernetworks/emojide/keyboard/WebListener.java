@@ -34,8 +34,6 @@ public class WebListener {
         server.onConnect(client -> {
             tryAndParse(client, (request, headers) -> {
                 try {
-                    System.out.println(headers);
-
                     var url = request[1];
                     if (!url.startsWith("/e")) return false;
 

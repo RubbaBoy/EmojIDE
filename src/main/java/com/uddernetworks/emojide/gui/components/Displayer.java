@@ -47,7 +47,7 @@ public class Displayer {
             var builder = new StringBuilder();
             Arrays.stream(line)
                     .map(emote -> emote == null ? this.filler : emote)
-                    .forEach(builder::append);
+                    .forEach(emoji -> builder.append(emoji.getDisplay()));
             if (sendMessages) {
                 this.messages.add(this.channel.sendMessage(builder.toString()).complete());
             } else {

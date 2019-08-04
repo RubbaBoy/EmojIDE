@@ -1,7 +1,6 @@
 package com.uddernetworks.emojide.gui.components;
 
 import com.uddernetworks.emojide.discord.Emoji;
-import net.dv8tion.jda.api.entities.Emote;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ public abstract class EmojiContainer extends EmojiComponent {
     }
 
     public EmojiComponent addChild(EmojiComponent component, int x, int y) {
+        component.setParent(this);
         this.positionedComponents.add(new PositionedComponent(component, x, y));
         return component;
     }

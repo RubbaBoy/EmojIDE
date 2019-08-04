@@ -56,6 +56,7 @@ public enum Emoji {
     DOWN("down", "keyboard_emojis/down.png"),
     RIGHT("right", "keyboard_emojis/right.png"),
     PADDING("padding", "keyboard_emojis/padding.png"),
+    CURSOR("cursor", "keyboard_emojis/cursor.png"),
 
     A_33("33", "generated_emojis/33.png"), // ASCII !
     A_34("34", "generated_emojis/34.png"), // ASCII "

@@ -2,6 +2,7 @@ package com.uddernetworks.emojide.keyboard;
 
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.main.EmojIDE;
+import com.uddernetworks.emojide.overengineering.ObjectManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -9,8 +10,16 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,12 +36,15 @@ public class KeyboardInputManager extends ListenerAdapter {
     private boolean keyboardActive;
     private Map<String, List<Emoji>> pairs = new HashMap<>();
     private Message keyboardMessage;
+    private Map<Object, List<Method>> eventClasses = new HashMap<>();
 
     public KeyboardInputManager(EmojIDE emojIDE) {
         this.emojIDE = emojIDE;
 
         this.webListener = new WebListener(emojIDE);
         this.webListener.start(this);
+
+        LOGGER.info("Preloading Keyboard event listeners...");
     }
 
     public void createKeyboard(TextChannel textChannel) {
@@ -129,15 +141,38 @@ public class KeyboardInputManager extends ListenerAdapter {
 
             if (type == 'A') {
                 char clickedChar = (char) remaining;
-                LOGGER.info("Clicked character {}", clickedChar);
+                raiseEvent(new KeyPressEvent(clickedChar));
             } else {
-                LOGGER.info("Rem = {}", remaining);
                 Emoji clickedEmoji = Emoji.values()[remaining];
-                LOGGER.info("Clicked emoji {}", clickedEmoji.getName());
+                raiseEvent(new KeyPressEvent(clickedEmoji));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void addListener(Object object) {
+        Arrays.stream(object.getClass().getDeclaredMethods()).forEach(method -> {
+            if (method.getParameterCount() != 1) return;
+            var type = method.getParameters()[0].getType();
+            if (method.getParameterCount() == 1 && type.equals(KeyPressEvent.class)) {
+                method.setAccessible(true);
+                LOGGER.info("Found method {} in {}", method.getName(), object.getClass().getCanonicalName());
+                eventClasses.computeIfAbsent(object, i -> new ArrayList<>()).add(method);
+            }
+        });
+    }
+
+    private void raiseEvent(KeyPressEvent event) {
+        this.eventClasses.forEach((object, methods) -> {
+            methods.forEach(method -> {
+                try {
+                    method.invoke(object, event);
+                } catch (ReflectiveOperationException e) {
+                    LOGGER.error("Error while invoking event on " + object.getClass().getCanonicalName() + "#" + method.getName(), e);
+                }
+            });
+        });
     }
 
 }
