@@ -49,6 +49,7 @@ public class CommandListener extends ListenerAdapter {
                 break;
             case "!stop":
                 event.getMessage().delete().queue();
+                this.emojIDE.getKeyboardInputManager().removeKeyboard();
                 this.displayer.stop();
                 break;
         }

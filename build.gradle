@@ -21,10 +21,11 @@ dependencies {
     implementation 'net.dv8tion:JDA:4.BETA.0_32'
     implementation 'com.zaxxer:HikariCP:3.3.1'
 
-    compile 'org.slf4j:slf4j-api:1.7.25'
-    compile 'org.slf4j:slf4j-log4j12:1.7.25'
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'org.slf4j:slf4j-log4j12:1.7.25'
 
     compile group: 'org.apache.commons', name: 'commons-text', version: '1.7'
+    implementation 'com.github.jhg023:SimpleNet:1.4.14'
 }
 
 run {

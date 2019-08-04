@@ -2,7 +2,7 @@ package com.uddernetworks.emojide.main;
 
 import com.uddernetworks.emojide.discord.CommandListener;
 import com.uddernetworks.emojide.discord.EmojiManager;
-import com.uddernetworks.emojide.input.KeyboardInputManager;
+import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
