@@ -4,3 +4,4 @@ emojis/
 gradlew
 build/
 gradlew.bat
+generated_emojis/

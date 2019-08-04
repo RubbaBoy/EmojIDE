@@ -12,8 +12,11 @@ import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
+import java.util.List;
 
 public class EmojIDE extends ListenerAdapter {
+
+    private static final List<Long> EMOJI_SERVERS = List.of(606855649770602517L, 593887383431151647L, 593887422459412542L, 593887468189777922L, 593887502360772638L, 593986129376706560L, 593986159747530762L);
 
     private JDA jda;
     private EmojiManager emojiManager;
@@ -33,7 +36,7 @@ public class EmojIDE extends ListenerAdapter {
         this.jda = event.getJDA();
 
         this.jda.addEventListener(new CommandListener(this));
-        this.emojiManager = new EmojiManager(this.jda);
+        this.emojiManager = new EmojiManager(this.jda, EMOJI_SERVERS);
         this.jda.addEventListener(this.keyboardInputManager = new KeyboardInputManager(this));
     }
 
