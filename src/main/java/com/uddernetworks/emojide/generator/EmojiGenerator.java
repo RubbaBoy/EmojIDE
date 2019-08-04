@@ -19,7 +19,7 @@ public class EmojiGenerator {
         parent.mkdirs();
 
         // Generate text
-        Arrays.stream("!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".split("")).forEach(character -> drawAndSave(parent, character));
+        Arrays.stream(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".split("")).forEach(character -> drawAndSave(parent, character));
 
         // Generate color palette
         generateColorPalette(parent,

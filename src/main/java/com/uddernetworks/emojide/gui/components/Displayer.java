@@ -9,6 +9,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Displays a single EmojiComponent across as many required messages
@@ -24,6 +26,8 @@ public class Displayer {
     private List<Message> messages = new ArrayList<>();
     private Emoji filler;
     private TextChannel channel;
+
+    private List<String> cachedLines = new ArrayList<>();
 
     public Displayer(EmojIDE emojIDE, TextChannel channel) {
         this.emojIDE = emojIDE;
@@ -42,17 +46,19 @@ public class Displayer {
         var emotes = this.child.getCachedRender();
         if (emotes[0].length != this.child.width || emotes.length != this.child.height)
             throw new InvalidComponentException("Incorrect render dimensions received. Got " + emotes[0].length + "x" + emotes.length + ", expected " + this.child.width + "x" + this.child.height);
+        if (cachedLines.isEmpty()) this.cachedLines = IntStream.range(0, emotes.length).mapToObj(i -> "").collect(Collectors.toList());
         for (int i = 0; i < emotes.length; i++) {
             var line = emotes[i];
-            var builder = new StringBuilder();
-            Arrays.stream(line)
+            var message = Arrays.stream(line)
                     .map(emote -> emote == null ? this.filler : emote)
-                    .forEach(emoji -> builder.append(emoji.getDisplay()));
+                    .map(Emoji::getDisplay)
+                    .collect(Collectors.joining());
             if (sendMessages) {
-                this.messages.add(this.channel.sendMessage(builder.toString()).complete());
+                this.messages.add(this.channel.sendMessage(message).complete());
             } else {
-                this.messages.get(i).editMessage(builder.toString()).queue();
+                if (!this.cachedLines.get(i).equals(message)) this.messages.get(i).editMessage(message).queue();
             }
+            this.cachedLines.set(i, message);
         }
     }
 
