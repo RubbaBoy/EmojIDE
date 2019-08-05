@@ -33,19 +33,49 @@ public class Displayer {
     private List<Message> messages = new ArrayList<>();
     private Emoji filler;
     private TextChannel channel;
+    private boolean insertKeyboard;
 
     private List<String> cachedLines = new ArrayList<>();
 
+    /**
+     * Creates a {@link Displayer} in the given channel.
+     *
+     * @param emojIDE The {@link EmojIDE} instance
+     * @param channel The {@link TextChannel} to place everything in
+     */
     public Displayer(EmojIDE emojIDE, TextChannel channel) {
+        this(emojIDE, channel, false);
+    }
+
+    /**
+     * Creates a {@link Displayer} in the given channel. If insertKeyboard is true, a keyboard will be set after the
+     * first update invocation.
+     *
+     * @param emojIDE The {@link EmojIDE} instance
+     * @param channel The {@link TextChannel} to place everything in
+     * @param insertKeyboard If a keyboard should be set afterwards
+     */
+    public Displayer(EmojIDE emojIDE, TextChannel channel, boolean insertKeyboard) {
         this.emojIDE = emojIDE;
         this.filler = emojIDE.getEmojiManager().getEmoji("discord");
         this.channel = channel;
+        this.insertKeyboard = insertKeyboard;
 
         RenderEngine.start();
     }
 
     public void setChild(EmojiComponent component) {
+        setChild(component, false);
+    }
+
+    public void setChild(EmojiComponent component, boolean autoUpdate) {
+        if (this.child != null) throw new RuntimeException("Child has already been set for this Displayer!");
         this.child = component;
+        if (autoUpdate) update();
+    }
+
+    public EmojiComponent getChild() {
+        return child;
     }
 
     public void update() {
@@ -69,6 +99,10 @@ public class Displayer {
                 if (!this.cachedLines.get(i).equals(message)) RenderEngine.queueEdit(this.messages.get(i), message, ignored -> {});;
             }
             this.cachedLines.set(i, message);
+        }
+
+        if (sendMessages && insertKeyboard) {
+            this.emojIDE.getKeyboardInputManager().createKeyboard(channel);
         }
 
         RenderEngine.breakpoint(() -> this.waiting.set(false));

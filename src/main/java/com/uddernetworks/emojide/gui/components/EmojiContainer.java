@@ -14,21 +14,21 @@ public abstract class EmojiContainer extends EmojiComponent {
         super(displayer, width, height);
     }
 
-    public EmojiComponent addChild(EmojiComponent component, int x, int y) {
+    public EmojiContainer addChild(EmojiComponent component, int x, int y) {
         component.setParent(this);
         this.positionedComponents.add(new PositionedComponent(component, x, y));
-        return component;
+        return this;
     }
 
     public void removeChild(EmojiComponent component) {
         getPositioned(component).ifPresent(positioned -> this.positionedComponents.remove(positioned));
     }
 
-    public EmojiComponent positionChild(EmojiComponent component, int x, int y) {
+    public EmojiContainer positionChild(EmojiComponent component, int x, int y) {
         getPositioned(component).ifPresent(positioned -> positioned.setPosition(x, y));
         clearCache();
         update();
-        return component;
+        return this;
     }
 
     private Optional<PositionedComponent> getPositioned(EmojiComponent component) {

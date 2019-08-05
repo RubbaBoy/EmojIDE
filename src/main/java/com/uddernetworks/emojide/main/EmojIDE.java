@@ -2,6 +2,7 @@ package com.uddernetworks.emojide.main;
 
 import com.uddernetworks.emojide.discord.CommandListener;
 import com.uddernetworks.emojide.discord.EmojiManager;
+import com.uddernetworks.emojide.image.ImageManager;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -20,6 +21,7 @@ public class EmojIDE extends ListenerAdapter {
 
     private JDA jda;
     private EmojiManager emojiManager;
+    private ImageManager imageManager;
     private KeyboardInputManager keyboardInputManager;
 
     public static void main(String[] args) throws LoginException {
@@ -37,6 +39,7 @@ public class EmojIDE extends ListenerAdapter {
 
         this.jda.addEventListener(new CommandListener(this));
         this.emojiManager = new EmojiManager(this.jda, EMOJI_SERVERS);
+        this.imageManager = new ImageManager(this);
         this.jda.addEventListener(this.keyboardInputManager = new KeyboardInputManager(this));
     }
 

@@ -1,6 +1,7 @@
 package com.uddernetworks.emojide.gui;
 
 import com.uddernetworks.emojide.discord.Emoji;
+import com.uddernetworks.emojide.discord.StaticEmoji;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.gui.components.styled.StyledEmojiComponent;
 import com.uddernetworks.emojide.gui.text.TextBlock;
@@ -30,7 +31,7 @@ public class EditableTextFrame extends StyledEmojiComponent {
         validateCursor();
 
         var textEmoji = textBlock.toEmoji(emojiManager, initial);
-        textEmoji[cursorY][cursorX] = Emoji.CURSOR;
+        textEmoji[cursorY][cursorX] = StaticEmoji.CURSOR;
 
         return textEmoji;
     }
@@ -41,7 +42,7 @@ public class EditableTextFrame extends StyledEmojiComponent {
         if (event.isAlphanumeric()) {
             addCharacter(event.getCharacter());
         } else {
-            var emoji = event.getEmoji();
+            var emoji = event.getStaticEmoji();
             switch (emoji) {
                 case UP:
                     cursorY--;

@@ -1,14 +1,15 @@
 package com.uddernetworks.emojide.keyboard;
 
 import com.uddernetworks.emojide.discord.Emoji;
+import com.uddernetworks.emojide.discord.StaticEmoji;
 
 public class KeyPressEvent {
     private boolean alphanumeric;
     private char character;
-    private Emoji emoji;
+    private StaticEmoji staticEmoji;
 
-    public KeyPressEvent(Emoji emoji) {
-        this.emoji = emoji;
+    public KeyPressEvent(StaticEmoji staticEmoji) {
+        this.staticEmoji = staticEmoji;
     }
 
     public KeyPressEvent(char character) {
@@ -24,12 +25,12 @@ public class KeyPressEvent {
         return character;
     }
 
-    public Emoji getEmoji() {
-        return emoji;
+    public StaticEmoji getStaticEmoji() {
+        return staticEmoji;
     }
 
     @Override
     public String toString() {
-        return alphanumeric ? String.valueOf(character) : emoji.getName();
+        return alphanumeric ? String.valueOf(character) : staticEmoji.getName();
     }
 }

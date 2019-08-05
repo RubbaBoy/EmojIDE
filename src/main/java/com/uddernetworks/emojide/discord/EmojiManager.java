@@ -5,6 +5,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Icon;
+import net.dv8tion.jda.api.exceptions.ContextException;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +36,7 @@ public class EmojiManager {
 
         LOGGER.info("Initializing all emojis...");
 
-        Arrays.stream(Emoji.values()).filter(emoji -> {
+        Arrays.stream(StaticEmoji.values()).filter(emoji -> {
             if (!emoji.isCustom()) {
                 emoji.setDisplay(":" + emoji.getId() + ":");
                 return true;
@@ -50,7 +52,7 @@ public class EmojiManager {
 
             Optional.ofNullable(existingEmotes.stream().findFirst().orElseGet(() -> {
                 LOGGER.info("Uploading emoji {}", emoji.getName());
-                var uploadedOptional = uploadEmote(emoji, file);
+                var uploadedOptional = uploadEmote(emoji.getName(), file);
                 if (uploadedOptional.isEmpty()) {
                     LOGGER.error("The emoji {} couldn't be uploaded! This could be crucial to the bot's usage, and may break things.", emoji.getName());
                     return null;
@@ -71,16 +73,19 @@ public class EmojiManager {
         LOGGER.info("Done initializing emojis.");
     }
 
-    private Optional<Emote> uploadEmote(Emoji emoji, File file) {
+    public Optional<Emote> uploadEmote(String name, File file) {
         AtomicReference<Emote> uploaded = new AtomicReference<>();
         emojiServers.forEach(server -> {
             if (server.getEmotes().size() >= 50) return;
             if (uploaded.get() != null) return;
             try {
-                LOGGER.info("Uploading {} to {}", emoji.getName(), server.getName());
-                uploaded.set(server.createEmote(emoji.getName(), Icon.from(file)).complete());
+                LOGGER.info("Uploading {} to {}", name, server.getName());
+                uploaded.set(server.createEmote(name, Icon.from(file)).complete());
             } catch (IOException e) {
-                LOGGER.error("Error uploading emoji " + emoji.getName() + ", retrying on another server...", e);
+                LOGGER.error("Error uploading emoji " + name + ", retrying on another server...", e);
+            } catch (ErrorResponseException e) {
+                if (e.getErrorCode() == 30008) return; // Maximum number of emojis reached
+                LOGGER.error("Error while sending emoji request for " + name, e);
             }
         });
         return Optional.ofNullable(uploaded.get());

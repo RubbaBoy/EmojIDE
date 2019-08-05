@@ -1,6 +1,7 @@
 package com.uddernetworks.emojide.keyboard;
 
 import com.uddernetworks.emojide.discord.Emoji;
+import com.uddernetworks.emojide.discord.StaticEmoji;
 import com.uddernetworks.emojide.gui.render.RenderEngine;
 import com.uddernetworks.emojide.main.EmojIDE;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -17,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.uddernetworks.emojide.discord.Emoji.*;
+import static com.uddernetworks.emojide.discord.StaticEmoji.*;
 import static com.uddernetworks.emojide.keyboard.KeyboardInputManager.Pair.*;
 
 public class KeyboardInputManager extends ListenerAdapter {
@@ -62,10 +63,10 @@ public class KeyboardInputManager extends ListenerAdapter {
         this.lowercaseEmbed = lower.build();
 
         var upper = new EmbedBuilder();
-        addRow(upper, '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', BACKSPACE, TRANSPARENT, INS, HOME, PG_UP);
-        addRow(upper, TAB, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\', TRANSPARENT, DEL, END, PG_DOWN);
-        addRow(upper, CAPS_LOCK, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'', addPair(ENTER, ENTERL, ENTERR));
-        addRow(upper, addPair(SHIFT, SHIFTL, SHIFTR), 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', addPair(SHIFT, SHIFTL, SHIFTR), TRANSPARENT, UP);
+        addRow(upper, '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', BACKSPACE, TRANSPARENT, INS, HOME, PG_UP);
+        addRow(upper, TAB, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|', TRANSPARENT, DEL, END, PG_DOWN);
+        addRow(upper, CAPS_LOCK, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', addPair(ENTER, ENTERL, ENTERR));
+        addRow(upper, addPair(SHIFT, SHIFTL, SHIFTR), 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', addPair(SHIFT, SHIFTL, SHIFTR), TRANSPARENT, UP);
         addSpecialRow(upper, 10, CTRL, ICON, ALT, addNestedPair(SPACE, SPACEL, addQuantity(SPACEC, SPACE, 6), SPACER), ALT, FN, CONTEXT, CTRL, LEFT, DOWN, RIGHT, TRANSPARENT);
         this.uppercaseEmbed = upper.build();
 
@@ -146,8 +147,8 @@ public class KeyboardInputManager extends ListenerAdapter {
                 if (current instanceof Character) {
                     display = emojiManager.getEmoji(String.valueOf((int) (Character) current)).getDisplay();
                     id = "A" + (int) (Character) current;
-                } else if (current instanceof Emoji) {
-                    var emoji = (Emoji) current;
+                } else if (current instanceof StaticEmoji) {
+                    var emoji = (StaticEmoji) current;
                     display = emoji.getDisplay();
                     id = "E" + emoji.ordinal();
 
@@ -167,7 +168,7 @@ public class KeyboardInputManager extends ListenerAdapter {
 
     private void onKeyPress(KeyPressEvent event) {
         if (event.isAlphanumeric()) return;
-        switch (event.getEmoji()) {
+        switch (event.getStaticEmoji()) {
             case CAPS_LOCK:
                 if (this.lowercaseMode) {
                     changeToUpper();
@@ -176,7 +177,7 @@ public class KeyboardInputManager extends ListenerAdapter {
                 }
                 break;
             default:
-                getPair(event.getEmoji()).ifPresent(pair -> {
+                getPair(event.getStaticEmoji()).ifPresent(pair -> {
                     switch (pair) {
                         case SHIFT:
                             if (shiftDelay != null) shiftDelay.cancel(true);
@@ -204,7 +205,7 @@ public class KeyboardInputManager extends ListenerAdapter {
                 char clickedChar = (char) remaining;
                 raiseEvent(new KeyPressEvent(clickedChar));
             } else {
-                Emoji clickedEmoji = Emoji.values()[remaining];
+                StaticEmoji clickedEmoji = StaticEmoji.values()[remaining];
                 raiseEvent(new KeyPressEvent(clickedEmoji));
             }
         } catch (Exception e) {
