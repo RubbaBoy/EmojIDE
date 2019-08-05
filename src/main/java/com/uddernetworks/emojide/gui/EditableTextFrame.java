@@ -45,15 +45,68 @@ public class EditableTextFrame extends StyledEmojiComponent {
             switch (emoji) {
                 case UP:
                     cursorY--;
+                    if (textBlock.getCharacter(cursorX, cursorY) == ' ') setCursorVertPos();
+                    validateCursor();
+                    refresh();
                     break;
                 case DOWN:
                     cursorY++;
+                    if (textBlock.getCharacter(cursorX, cursorY) == ' ') setCursorVertPos();
+                    validateCursor();
+                    refresh();
                     break;
                 case LEFT:
                     cursorX--;
+                    validateCursor();
+                    refresh();
                     break;
                 case RIGHT:
                     cursorX++;
+                    setCursorToEnd();
+                    validateCursor();
+                    refresh();
+                    break;
+                case BACKSPACE:
+                    cursorX--;
+                    if (cursorX >= 0) {
+                        textBlock.setChar(' ', cursorX, cursorY);
+                    } else {
+                        cursorY--;
+                        if (cursorY >= 0) {
+                            setCursorToEnd();
+                        } else {
+                            cursorY = 0;
+                            cursorX = 0;
+                        }
+                    }
+                    validateCursor();
+                    refresh();
+                    break;
+                case INS:
+
+                    break;
+                case HOME:
+                    cursorX = 0;
+                    validateCursor();
+                    refresh();
+                    break;
+                case PG_UP:
+                    LOGGER.error("Unsupported action: PG_UP");
+                    break;
+                case DEL:
+                    var chars = textBlock.getChars();
+                    for (int x = chars[cursorY].length - 1; x > 0; x--) {
+                        if (chars[cursorY][x] == ' ') continue;
+                        if (cursorX < x) textBlock.removeChar(x, cursorY);
+                    }
+                    break;
+                case END:
+                    setCursorToEnd();
+                    validateCursor();
+                    refresh();
+                    break;
+                case PG_DOWN:
+                    LOGGER.error("Unsupported action: PG_DOWN");
                     break;
                 default:
                     this.keyboardInputManager.getPair(emoji).ifPresent(pair -> {
@@ -66,14 +119,33 @@ public class EditableTextFrame extends StyledEmojiComponent {
                                 this.cursorX = 0;
                                 refresh();
                                 break;
-                            case SHIFT:
-
-                                break;
                         }
                     });
                     break;
             }
         }
+    }
+
+    private void setCursorToEnd() {
+        var chars = textBlock.getChars();
+        for (int x = chars[cursorY].length - 1; x > 0; x--) {
+            if (chars[cursorY][x] == ' ') continue;
+            if (cursorX > x) cursorX = x;
+            return;
+        }
+        cursorX = 0;
+    }
+
+    private void setCursorVertPos() {
+        var chars = textBlock.getChars();
+        var lastChar = 0;
+
+        for (int x = chars[cursorY].length - 1; x > 0; x--) {
+            if (chars[cursorY][x] == ' ') continue;
+            lastChar = x;
+            break;
+        }
+        cursorX = lastChar;
     }
 
     private void addCharacter(char character) {
@@ -84,6 +156,7 @@ public class EditableTextFrame extends StyledEmojiComponent {
             this.cursorY++;
         }
 
+        validateCursor();
         refresh();
     }
 

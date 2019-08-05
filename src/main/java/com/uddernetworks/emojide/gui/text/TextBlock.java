@@ -7,6 +7,8 @@ import org.apache.commons.text.WordUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.IntStream;
 
 public class TextBlock {
 
@@ -24,6 +26,10 @@ public class TextBlock {
             chars[y] = arr;
             Arrays.fill(chars[y], ' ');
         }
+    }
+
+    public char[][] getChars() {
+        return chars;
     }
 
     public void setText(String text) {
@@ -44,6 +50,12 @@ public class TextBlock {
         if (x < 0 || x >= this.width) return;
         if (y < 0 || y >= this.height) return;
         chars[y][x] = character;
+    }
+
+    public char getCharacter(int x, int y) {
+        if (x < 0 || x >= this.width) return ' ';
+        if (y < 0 || y >= this.height) return ' ';
+        return chars[y][x];
     }
 
     public Emoji[][] toEmoji(EmojiManager emojiManager) {
@@ -70,6 +82,14 @@ public class TextBlock {
         array.add(y + 1, inserting);
         array.remove(array.remove(array.size() - 1));
         this.chars = array.toArray(char[][]::new);
+    }
+
+    public void removeChar(int x, int y) {
+        var row = this.chars[y];
+        System.out.println("Before = " + Arrays.toString(row));
+        System.arraycopy(row, x, row, x - 1, row.length - x);
+        System.out.println("After = " + Arrays.toString(row));
+        this.chars[y] = row;
     }
 
     @Override

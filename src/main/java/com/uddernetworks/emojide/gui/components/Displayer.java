@@ -78,8 +78,9 @@ public class Displayer {
         return emojIDE;
     }
 
-    public void stop() {
-        this.messages.forEach(message -> message.delete().queue());
+    public void stop(TextChannel channel) {
+        channel.purgeMessages(this.messages);
+        this.messages.clear();
     }
 
     public EmojiManager getEmojiManager() {

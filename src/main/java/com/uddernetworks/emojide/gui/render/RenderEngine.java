@@ -1,24 +1,23 @@
 package com.uddernetworks.emojide.gui.render;
 
 import com.uddernetworks.emojide.main.Thread;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class RenderEngine {
 
     private static Logger LOGGER = LoggerFactory.getLogger(RenderEngine.class);
-
+    private static final Consumer<Message> EMPTY = i -> {};
     private static final List<RenderEntry> renderQueue = Collections.synchronizedList(new ArrayList<>());
 
     public static void start() {
@@ -94,28 +93,44 @@ public class RenderEngine {
         return true;
     }
 
+    public static void queueSend(TextChannel channel, String content) {
+        queueSend(channel, content, EMPTY);
+    }
+
     public static void queueSend(TextChannel channel, String content, Consumer<Message> onComplete) {
-        LOGGER.info("Queuing send {}", content);
+        LOGGER.debug("Queuing send {}", content);
         renderQueue.add(new RenderAction(channel, content, onComplete));
     }
 
+    public static void queueSend(TextChannel channel, MessageEmbed embedContent) {
+        queueSend(channel, embedContent, EMPTY);
+    }
+
     public static void queueSend(TextChannel channel, MessageEmbed embedContent, Consumer<Message> onComplete) {
-        LOGGER.info("Queuing send {}", embedContent);
+        LOGGER.debug("Queuing send {}", embedContent);
         renderQueue.add(new RenderAction(channel, embedContent, onComplete));
     }
 
+    public static void queueEdit(Message message, String content) {
+        queueEdit(message, content, EMPTY);
+    }
+
     public static void queueEdit(Message message, String content, Consumer<Message> onComplete) {
-        LOGGER.info("Queuing edit");
+        LOGGER.debug("Queuing edit");
         renderQueue.add(new RenderAction(message, content, onComplete));
     }
 
+    public static void queueEdit(Message message, MessageEmbed embedContent) {
+        queueEdit(message, embedContent, EMPTY);
+    }
+
     public static void queueEdit(Message message, MessageEmbed embedContent, Consumer<Message> onComplete) {
-        LOGGER.info("Queuing edit");
+        LOGGER.debug("Queuing edit");
         renderQueue.add(new RenderAction(message, embedContent, onComplete));
     }
 
     public static void breakpoint(Runnable runnable) {
-        LOGGER.info("Queuing breakpoint");
+        LOGGER.debug("Queuing breakpoint");
         renderQueue.add(new RenderBreakpoint(runnable));
     }
 }

@@ -5,6 +5,7 @@ import com.uddernetworks.emojide.gui.render.RenderEngine;
 import com.uddernetworks.emojide.main.EmojIDE;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
@@ -12,10 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,8 +29,12 @@ public class KeyboardInputManager extends ListenerAdapter {
 
     private EmojIDE emojIDE;
     private boolean keyboardActive;
-    private Map<Pair, List<Emoji>> pairs = new HashMap<>();
     private Message keyboardMessage;
+    private MessageEmbed lowercaseEmbed;
+    private MessageEmbed uppercaseEmbed;
+    private boolean lowercaseMode = true;
+
+    private Map<Pair, List<Emoji>> pairs = new HashMap<>();
     private Map<Object, List<Method>> eventClasses = new HashMap<>();
 
     public enum Pair {
@@ -44,22 +46,40 @@ public class KeyboardInputManager extends ListenerAdapter {
 
         this.webListener = new WebListener(emojIDE);
         this.webListener.start(this);
+        addListener(this);
     }
 
     public void createKeyboard(TextChannel textChannel) {
         if (this.keyboardActive) return;
         this.keyboardActive = true;
 
-        var builder = new EmbedBuilder();
-        addRow(builder, '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', BACKSPACE, TRANSPARENT, INS, HOME, PG_UP);
-        addRow(builder, TAB, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', TRANSPARENT, DEL, END, PG_DOWN);
-        addRow(builder, CAPS_LOCK, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', addPair(ENTER, ENTERL, ENTERR));
-        addRow(builder, addPair(SHIFT, SHIFTL, SHIFTR), 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', addPair(SHIFT, SHIFTL, SHIFTR), TRANSPARENT, UP);
-        addSpecialRow(builder, 10, CTRL, ICON, ALT, addNestedPair(SPACE, SPACEL, addQuantity(SPACEC, SPACE, 6), SPACER), ALT, FN, CONTEXT, CTRL, LEFT, DOWN, RIGHT, TRANSPARENT);
+        var lower = new EmbedBuilder();
+        addRow(lower, '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', BACKSPACE, TRANSPARENT, INS, HOME, PG_UP);
+        addRow(lower, TAB, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', TRANSPARENT, DEL, END, PG_DOWN);
+        addRow(lower, CAPS_LOCK, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', addPair(ENTER, ENTERL, ENTERR));
+        addRow(lower, addPair(SHIFT, SHIFTL, SHIFTR), 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', addPair(SHIFT, SHIFTL, SHIFTR), TRANSPARENT, UP);
+        addSpecialRow(lower, 10, CTRL, ICON, ALT, addNestedPair(SPACE, SPACEL, addQuantity(SPACEC, SPACE, 6), SPACER), ALT, FN, CONTEXT, CTRL, LEFT, DOWN, RIGHT, TRANSPARENT);
+        this.lowercaseEmbed = lower.build();
 
-        RenderEngine.queueSend(textChannel, builder.build(), message -> {
-            this.keyboardMessage = message;
-        });
+        var upper = new EmbedBuilder();
+        addRow(upper, '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', BACKSPACE, TRANSPARENT, INS, HOME, PG_UP);
+        addRow(upper, TAB, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\', TRANSPARENT, DEL, END, PG_DOWN);
+        addRow(upper, CAPS_LOCK, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'', addPair(ENTER, ENTERL, ENTERR));
+        addRow(upper, addPair(SHIFT, SHIFTL, SHIFTR), 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', addPair(SHIFT, SHIFTL, SHIFTR), TRANSPARENT, UP);
+        addSpecialRow(upper, 10, CTRL, ICON, ALT, addNestedPair(SPACE, SPACEL, addQuantity(SPACEC, SPACE, 6), SPACER), ALT, FN, CONTEXT, CTRL, LEFT, DOWN, RIGHT, TRANSPARENT);
+        this.uppercaseEmbed = upper.build();
+
+        RenderEngine.queueSend(textChannel, this.lowercaseEmbed, message -> this.keyboardMessage = message);
+    }
+
+    public void changeToUpper() {
+        this.lowercaseMode = false;
+        RenderEngine.queueEdit(this.keyboardMessage, this.uppercaseEmbed);
+    }
+
+    public void changeToLower() {
+        this.lowercaseMode = true;
+        RenderEngine.queueEdit(this.keyboardMessage, this.lowercaseEmbed);
     }
 
     public void removeKeyboard() {
@@ -132,7 +152,8 @@ public class KeyboardInputManager extends ListenerAdapter {
                     id = "E" + emoji.ordinal();
 
                     var next = keyList.size() > i + 1 ? keyList.get(i + 1) : null;
-                    if (next instanceof Emoji) removeSpace = this.pairs.values().stream().anyMatch(pair -> pair.contains(current) && pair.contains(next));
+                    if (next instanceof Emoji)
+                        removeSpace = this.pairs.values().stream().anyMatch(pair -> pair.contains(current) && pair.contains(next));
                 }
 
                 row.append("[").append(display).append("](http://localhost:6969/s?k=").append(id).append(")").append(removeSpace ? "" : " ");
@@ -140,6 +161,37 @@ public class KeyboardInputManager extends ListenerAdapter {
         }
 
         builder.addField(String.valueOf(ZWS), row.toString(), true);
+    }
+
+    private CompletableFuture shiftDelay;
+
+    private void onKeyPress(KeyPressEvent event) {
+        if (event.isAlphanumeric()) return;
+        switch (event.getEmoji()) {
+            case CAPS_LOCK:
+                if (this.lowercaseMode) {
+                    changeToUpper();
+                } else {
+                    changeToLower();
+                }
+                break;
+            default:
+                getPair(event.getEmoji()).ifPresent(pair -> {
+                    switch (pair) {
+                        case SHIFT:
+                            if (shiftDelay != null) shiftDelay.cancel(true);
+                            changeToUpper();
+                            shiftDelay = CompletableFuture.runAsync(() -> {
+                                try {
+                                    Thread.sleep(2000);
+                                    changeToLower();
+                                } catch (InterruptedException ignored) {}
+                            });
+                            break;
+                    }
+                });
+                break;
+        }
     }
 
     public void handleKey(String key) {
@@ -175,6 +227,7 @@ public class KeyboardInputManager extends ListenerAdapter {
     private void raiseEvent(KeyPressEvent event) {
         this.eventClasses.forEach((object, methods) -> {
             methods.forEach(method -> {
+                if (method.getName().equals("raiseEvent") && object == this) return;
                 try {
                     method.invoke(object, event);
                 } catch (ReflectiveOperationException e) {
