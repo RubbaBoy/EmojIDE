@@ -34,7 +34,7 @@ public class EmojiManager {
 
         LOGGER.info("Initializing all emojis...");
 
-        Arrays.stream(Emoji.values()).parallel().filter(emoji -> {
+        Arrays.stream(Emoji.values()).filter(emoji -> {
             if (!emoji.isCustom()) {
                 emoji.setDisplay(":" + emoji.getId() + ":");
                 return true;

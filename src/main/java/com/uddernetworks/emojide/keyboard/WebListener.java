@@ -8,12 +8,13 @@ import simplenet.Client;
 import simplenet.Server;
 import simplenet.packet.Packet;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 /**
  * Custom HTTP implementation. It's not overengineering, it's a fucking waste of time.
@@ -23,6 +24,7 @@ public class WebListener {
     private static Logger LOGGER = LoggerFactory.getLogger(WebListener.class);
 
     private EmojIDE emojIDE;
+    private Map<String, List<String>> usedRandoms = new ConcurrentHashMap<>();
 
     public WebListener(EmojIDE emojIDE) {
         this.emojIDE = emojIDE;
@@ -31,32 +33,49 @@ public class WebListener {
     public void start(KeyboardInputManager keyboardInputManager) {
         var server = new Server();
 
-        server.onConnect(client -> {
-            tryAndParse(client, (request, headers) -> {
-                try {
-                    var url = request[1];
-                    if (!url.startsWith("/e")) return false;
-
+        server.onConnect(client -> tryAndParse(client, (request, headers) -> {
+            try {
+                var url = request[1];
+                if (url.startsWith("/e")) {
                     var queryParts = url.split("\\?");
                     if (queryParts.length != 2) return false;
                     var query = queryParts[1];
-                    var kvSplit = query.split("=");
-                    if (kvSplit.length != 2) return false;
+                    Map<String, String> kvSplit = Arrays.stream(query.split("&")).map(kv -> {
+                        var split = kv.split("=");
+                        return new AbstractMap.SimpleEntry<>(split[0], split[1]);
+                    }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                    if (!kvSplit.containsKey("k") || !kvSplit.containsKey("r")) return false;
 
-                    if (!kvSplit[0].equalsIgnoreCase("k")) return false;
-                    var clicked = kvSplit[1];
-                    if ((!clicked.startsWith("A") && !clicked.startsWith("E")) || clicked.length() <= 1 || !StringUtils.isNumeric(clicked.substring(1))) return false;
+                    var clicked = kvSplit.get("k");
+                    if ((!clicked.startsWith("A") && !clicked.startsWith("E")) || clicked.length() <= 1 || !StringUtils.isNumeric(clicked.substring(1)))
+                        return false;
+
+                    var random = kvSplit.get("r");
+                    usedRandoms.putIfAbsent(clicked, Collections.synchronizedList(new ArrayList<>()));
+                    var randoms = usedRandoms.get(clicked);
+                    if (randoms.contains(random)) {
+                        // TODO: Clear after X time
+                        LOGGER.error("Random already used for k {} and r {}", clicked, random);
+                        return false;
+                    }
+
+                    randoms.add(random);
 
                     keyboardInputManager.handleKey(clicked);
 
-                    Packet.builder().putBytes(generateRequest("{\"message\": \" " + request[1] + "\"}")).writeAndFlush(client);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
+                    Packet.builder().putBytes(generateRequest("")).writeAndFlush(client);
+                } else if (url.startsWith("/s")) {
+                    Packet.builder().putBytes(generateRequest("<script>var xmlHttp = new XMLHttpRequest();\n" +
+                            "xmlHttp.open(\"GET\",\"http://localhost:6969" + url.replace("/s", "/e") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
+                            "xmlHttp.send(null);" +
+                            "window.open('','_self').close();</script>")).writeAndFlush(client);
                 }
-                return true;
-            });
-        });
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }));
 
         server.bind("localhost", 6969);
         LOGGER.info("WebServer running...");
@@ -64,7 +83,7 @@ public class WebListener {
 
     private void tryAndParse(Client client, BiFunction<String[], Map<String, String>, Boolean> requestHeaderFunction) {
         parseHeaders(client, (request, headers) -> {
-            if (!requestHeaderFunction.apply(request, headers)) Packet.builder().putBytes(generateRequest("{\"message\": \"Bruh what the fuck is this?\"}")).writeAndFlush(client);
+            if (!requestHeaderFunction.apply(request, headers)) Packet.builder().putBytes(generateRequest("<p>Bruh what the fuck is this</p>")).writeAndFlush(client);
             client.close();
         });
     }
@@ -107,7 +126,7 @@ public class WebListener {
         return "HTTP/1.1 418 I'm a teapot\n" +
                 "Server: EmojIDE\n" +
                 "Content-Length: %CTL%\n" +
-                "Content-Type: application/json\n" +
+                "Content-Type: text/html\n" +
                 "Connection: Closed\n\n";
     }
 

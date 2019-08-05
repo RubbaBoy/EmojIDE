@@ -1,8 +1,8 @@
 package com.uddernetworks.emojide.keyboard;
 
 import com.uddernetworks.emojide.discord.Emoji;
+import com.uddernetworks.emojide.gui.render.RenderEngine;
 import com.uddernetworks.emojide.main.EmojIDE;
-import com.uddernetworks.emojide.overengineering.ObjectManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -10,20 +10,17 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.uddernetworks.emojide.discord.Emoji.*;
+import static com.uddernetworks.emojide.keyboard.KeyboardInputManager.Pair.*;
 
 public class KeyboardInputManager extends ListenerAdapter {
 
@@ -34,17 +31,19 @@ public class KeyboardInputManager extends ListenerAdapter {
 
     private EmojIDE emojIDE;
     private boolean keyboardActive;
-    private Map<String, List<Emoji>> pairs = new HashMap<>();
+    private Map<Pair, List<Emoji>> pairs = new HashMap<>();
     private Message keyboardMessage;
     private Map<Object, List<Method>> eventClasses = new HashMap<>();
+
+    public enum Pair {
+        SPACE, SHIFT, ENTER
+    }
 
     public KeyboardInputManager(EmojIDE emojIDE) {
         this.emojIDE = emojIDE;
 
         this.webListener = new WebListener(emojIDE);
         this.webListener.start(this);
-
-        LOGGER.info("Preloading Keyboard event listeners...");
     }
 
     public void createKeyboard(TextChannel textChannel) {
@@ -54,11 +53,13 @@ public class KeyboardInputManager extends ListenerAdapter {
         var builder = new EmbedBuilder();
         addRow(builder, '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', BACKSPACE, TRANSPARENT, INS, HOME, PG_UP);
         addRow(builder, TAB, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', TRANSPARENT, DEL, END, PG_DOWN);
-        addRow(builder, CAPS_LOCK, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', addPair("ENTER", ENTERL, ENTERR));
-        addRow(builder, addPair("SHIFT", SHIFTL, SHIFTR), 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', addPair("SHIFT", SHIFTL, SHIFTR), TRANSPARENT, UP);
-        addSpecialRow(builder, 10, CTRL, ICON, ALT, addNestedPair("SPACE", SPACEL, addQuantity(SPACEC, 6), SPACER), ALT, FN, CONTEXT, CTRL, LEFT, DOWN, RIGHT, TRANSPARENT);
+        addRow(builder, CAPS_LOCK, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', addPair(ENTER, ENTERL, ENTERR));
+        addRow(builder, addPair(SHIFT, SHIFTL, SHIFTR), 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', addPair(SHIFT, SHIFTL, SHIFTR), TRANSPARENT, UP);
+        addSpecialRow(builder, 10, CTRL, ICON, ALT, addNestedPair(SPACE, SPACEL, addQuantity(SPACEC, SPACE, 6), SPACER), ALT, FN, CONTEXT, CTRL, LEFT, DOWN, RIGHT, TRANSPARENT);
 
-        this.keyboardMessage = textChannel.sendMessage(builder.build()).complete();
+        RenderEngine.queueSend(textChannel, builder.build(), message -> {
+            this.keyboardMessage = message;
+        });
     }
 
     public void removeKeyboard() {
@@ -67,21 +68,29 @@ public class KeyboardInputManager extends ListenerAdapter {
         this.keyboardActive = false;
     }
 
-    private List<Emoji> addQuantity(Emoji emoji, int quantity) {
+    private List<Emoji> addQuantity(Emoji emoji, Pair pair, int quantity) {
         var list = new ArrayList<Emoji>();
-        addPair("genned-" + ThreadLocalRandom.current().nextInt(), emoji);
+        addPair(pair, emoji);
         for (int i = 0; i < quantity; i++) list.add(emoji);
         return list;
     }
 
-    private List<Emoji> addNestedPair(String name, Object... emojis) {
-        return addPair(name, Arrays.stream(emojis).flatMap(obj -> obj instanceof List ? ((Stream<Emoji>) ((List<Emoji>) obj).stream()) : Stream.of((Emoji) obj)).toArray(Emoji[]::new));
+    private List<Emoji> addNestedPair(Pair pair, Object... emojis) {
+        return addPair(pair, Arrays.stream(emojis).flatMap(obj -> obj instanceof List ? ((Stream<Emoji>) ((List<Emoji>) obj).stream()) : Stream.of((Emoji) obj)).toArray(Emoji[]::new));
     }
 
-    private List<Emoji> addPair(String name, Emoji... emojis) {
+    private List<Emoji> addPair(Pair pair, Emoji... emojis) {
         var list = Arrays.asList(emojis);
-        this.pairs.put(name, list);
+        this.pairs.put(pair, list);
         return list;
+    }
+
+    public Optional<Pair> getPair(Emoji emoji) {
+        return this.pairs.entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().contains(emoji))
+                .findFirst()
+                .map(Map.Entry::getKey);
     }
 
     private void addRow(EmbedBuilder builder, Object... keys) {
@@ -126,7 +135,7 @@ public class KeyboardInputManager extends ListenerAdapter {
                     if (next instanceof Emoji) removeSpace = this.pairs.values().stream().anyMatch(pair -> pair.contains(current) && pair.contains(next));
                 }
 
-                row.append("[").append(display).append("](http://localhost:6969/e?k=").append(id).append(")").append(removeSpace ? "" : " ");
+                row.append("[").append(display).append("](http://localhost:6969/s?k=").append(id).append(")").append(removeSpace ? "" : " ");
             }
         }
 

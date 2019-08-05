@@ -2,13 +2,19 @@ package com.uddernetworks.emojide.gui.components;
 
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.EmojiManager;
+import com.uddernetworks.emojide.gui.render.RenderAction;
+import com.uddernetworks.emojide.gui.render.RenderEngine;
+import com.uddernetworks.emojide.gui.render.RenderEntry;
 import com.uddernetworks.emojide.main.EmojIDE;
+import com.uddernetworks.emojide.main.Thread;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -23,6 +29,7 @@ public class Displayer {
 
     private EmojIDE emojIDE;
     private EmojiComponent child;
+    private AtomicBoolean waiting = new AtomicBoolean();
     private List<Message> messages = new ArrayList<>();
     private Emoji filler;
     private TextChannel channel;
@@ -33,6 +40,8 @@ public class Displayer {
         this.emojIDE = emojIDE;
         this.filler = emojIDE.getEmojiManager().getEmoji("discord");
         this.channel = channel;
+
+        RenderEngine.start();
     }
 
     public void setChild(EmojiComponent component) {
@@ -40,6 +49,7 @@ public class Displayer {
     }
 
     public void update() {
+        while (this.waiting.get()) {}
         boolean sendMessages = this.messages.isEmpty();
         if (sendMessages && this.child.width > MAX_EMOJIS_PER_LINE)
             throw new InvalidComponentException("Invalid width of " + this.child.width + " (Max is " + MAX_EMOJIS_PER_LINE + ")");
@@ -54,12 +64,14 @@ public class Displayer {
                     .map(Emoji::getDisplay)
                     .collect(Collectors.joining());
             if (sendMessages) {
-                this.messages.add(this.channel.sendMessage(message).complete());
+                RenderEngine.queueSend(this.channel, message, completed -> this.messages.add(completed));
             } else {
-                if (!this.cachedLines.get(i).equals(message)) this.messages.get(i).editMessage(message).queue();
+                if (!this.cachedLines.get(i).equals(message)) RenderEngine.queueEdit(this.messages.get(i), message, ignored -> {});;
             }
             this.cachedLines.set(i, message);
         }
+
+        RenderEngine.breakpoint(() -> this.waiting.set(false));
     }
 
     public EmojIDE getEmojIDE() {

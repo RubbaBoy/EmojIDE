@@ -5,6 +5,7 @@ import com.uddernetworks.emojide.discord.EmojiManager;
 import com.uddernetworks.emojide.gui.components.EmojiComponent;
 import org.apache.commons.text.WordUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class TextBlock {
@@ -59,6 +60,16 @@ public class TextBlock {
             initial[y] = emojiLine;
         }
         return initial;
+    }
+
+    public void addEmpty(int y) {
+        if (y > this.height - 2) return;
+        var inserting = new char[this.width];
+        Arrays.fill(inserting, ' ');
+        var array = new ArrayList<>(Arrays.asList(this.chars));
+        array.add(y + 1, inserting);
+        array.remove(array.remove(array.size() - 1));
+        this.chars = array.toArray(char[][]::new);
     }
 
     @Override
