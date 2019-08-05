@@ -2,11 +2,8 @@ package com.uddernetworks.emojide.gui.components;
 
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.EmojiManager;
-import com.uddernetworks.emojide.gui.render.RenderAction;
 import com.uddernetworks.emojide.gui.render.RenderEngine;
-import com.uddernetworks.emojide.gui.render.RenderEntry;
 import com.uddernetworks.emojide.main.EmojIDE;
-import com.uddernetworks.emojide.main.Thread;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -14,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 

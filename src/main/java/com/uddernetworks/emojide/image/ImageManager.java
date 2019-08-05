@@ -7,14 +7,19 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import simplenet.utility.IntPair;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+/**
+ * Discord's rate limiting kills this, it should not be used for any purpose.
+ */
+@Deprecated
 public class ImageManager {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ImageManager.class);

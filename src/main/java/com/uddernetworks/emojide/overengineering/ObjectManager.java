@@ -1,6 +1,5 @@
 package com.uddernetworks.emojide.overengineering;
 
-import com.uddernetworks.emojide.discord.EmojiManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.Unsafe;

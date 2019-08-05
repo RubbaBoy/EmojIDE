@@ -4,6 +4,10 @@ import com.uddernetworks.emojide.discord.ImagePiece;
 
 import java.io.File;
 
+/**
+ * Discord's rate limiting kills this, it should not be used for any purpose.
+ */
+@Deprecated
 public enum PreloadedImage {
 
     SHREK(new File("shrek.png"), "s", 12, 6);

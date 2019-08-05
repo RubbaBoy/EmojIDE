@@ -1,11 +1,11 @@
 package com.uddernetworks.emojide.discord;
 
 import com.uddernetworks.emojide.generator.EmojiGenerator;
+import com.uddernetworks.emojide.main.EmojIDE;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Icon;
-import net.dv8tion.jda.api.exceptions.ContextException;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +13,9 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class EmojiManager {
 
@@ -25,9 +24,11 @@ public class EmojiManager {
     private JDA jda;
     private List<Guild> emojiServers;
     private Map<String, Emoji> emojis = new HashMap<>();
+    private EmojIDE emojIDE;
 
-    public EmojiManager(JDA jda, List<Long> emojiServers) {
-        this.jda = jda;
+    public EmojiManager(EmojIDE emojIDE, List<Long> emojiServers) {
+        this.emojIDE = emojIDE;
+        this.jda = emojIDE.getJda();
         this.emojiServers = emojiServers.stream().map(jda::getGuildById).collect(Collectors.toUnmodifiableList());
 
         LOGGER.info("Generating emojis...");
@@ -74,20 +75,32 @@ public class EmojiManager {
     }
 
     public Optional<Emote> uploadEmote(String name, File file) {
+        var done = new AtomicBoolean();
         AtomicReference<Emote> uploaded = new AtomicReference<>();
+
         emojiServers.forEach(server -> {
-            if (server.getEmotes().size() >= 50) return;
-            if (uploaded.get() != null) return;
-            try {
-                LOGGER.info("Uploading {} to {}", name, server.getName());
-                uploaded.set(server.createEmote(name, Icon.from(file)).complete());
-            } catch (IOException e) {
-                LOGGER.error("Error uploading emoji " + name + ", retrying on another server...", e);
-            } catch (ErrorResponseException e) {
-                if (e.getErrorCode() == 30008) return; // Maximum number of emojis reached
-                LOGGER.error("Error while sending emoji request for " + name, e);
+            if (server.retrieveEmotes().complete().size() >= 50) {
+                LOGGER.info("Reached max!");
+                return;
             }
+
+            if (uploaded.get() != null) return;
+            done.set(false);
+
+//            uploaded.set(this.emojIDE.getBotManager().queueTask(bot -> {
+                try {
+                    LOGGER.info("Uploading {} to {}", name, server.getName());
+                    uploaded.set(server.createEmote(name, Icon.from(file)).complete());
+                } catch (IOException e) {
+                    LOGGER.error("Error uploading emoji " + name + ", retrying on another server...", e);
+                } catch (ErrorResponseException e) {
+                    if (e.getErrorCode() == 30008) return; // Maximum number of emojis reached
+                    LOGGER.error("Error while sending emoji request for " + name, e);
+                }
+                return;
+//            }));
         });
+
         return Optional.ofNullable(uploaded.get());
     }
 

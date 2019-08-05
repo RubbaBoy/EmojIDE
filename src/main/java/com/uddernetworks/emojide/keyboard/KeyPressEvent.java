@@ -1,6 +1,5 @@
 package com.uddernetworks.emojide.keyboard;
 
-import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.StaticEmoji;
 
 public class KeyPressEvent {

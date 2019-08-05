@@ -1,5 +1,6 @@
 package com.uddernetworks.emojide.main;
 
+import com.uddernetworks.emojide.bots.BotManager;
 import com.uddernetworks.emojide.discord.CommandListener;
 import com.uddernetworks.emojide.discord.EmojiManager;
 import com.uddernetworks.emojide.image.ImageManager;
@@ -13,20 +14,21 @@ import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
-import java.util.List;
 
 public class EmojIDE extends ListenerAdapter {
 
-    private static final List<Long> EMOJI_SERVERS = List.of(606855649770602517L, 593887383431151647L, 593887422459412542L, 593887468189777922L, 593887502360772638L, 593986129376706560L, 593986159747530762L);
-
+    private static ConfigManager configManager;
     private JDA jda;
+    private BotManager botManager;
     private EmojiManager emojiManager;
-    private ImageManager imageManager;
+//    private ImageManager imageManager;
     private KeyboardInputManager keyboardInputManager;
 
     public static void main(String[] args) throws LoginException {
+        (configManager = new ConfigManager("secret.conf")).init();
+
         new DefaultShardManagerBuilder()
-            .setToken(System.getProperty("discord.token"))
+            .setToken(configManager.getPrimaryToken())
             .setStatus(OnlineStatus.ONLINE)
             .setActivity(Activity.playing("Programming"))
             .addEventListeners(new EmojIDE())
@@ -37,19 +39,35 @@ public class EmojIDE extends ListenerAdapter {
     public void onReady(@Nonnull ReadyEvent event) {
         this.jda = event.getJDA();
 
+        this.botManager = new BotManager(this);
+        this.botManager.connectBots();
+        this.botManager.startTasks();
+
         this.jda.addEventListener(new CommandListener(this));
-        this.emojiManager = new EmojiManager(this.jda, EMOJI_SERVERS);
-        this.imageManager = new ImageManager(this);
+        this.emojiManager = new EmojiManager(this, configManager.getServers());
+//        this.imageManager = new ImageManager(this);
         this.jda.addEventListener(this.keyboardInputManager = new KeyboardInputManager(this));
+    }
+
+    public static ConfigManager getConfigManager() {
+        return configManager;
     }
 
     public JDA getJda() {
         return jda;
     }
 
+    public BotManager getBotManager() {
+        return botManager;
+    }
+
     public EmojiManager getEmojiManager() {
         return emojiManager;
     }
+
+//    public ImageManager getImageManager() {
+//        return imageManager;
+//    }
 
     public KeyboardInputManager getKeyboardInputManager() {
         return keyboardInputManager;

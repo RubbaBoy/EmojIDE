@@ -1,10 +1,7 @@
 package com.uddernetworks.emojide.gui;
 
 import com.uddernetworks.emojide.gui.components.Displayer;
-import com.uddernetworks.emojide.gui.components.EmojiComponent;
 import com.uddernetworks.emojide.gui.components.styled.StyledEmojiContainer;
-
-import java.util.Arrays;
 
 public class WindowFrame extends StyledEmojiContainer {
 

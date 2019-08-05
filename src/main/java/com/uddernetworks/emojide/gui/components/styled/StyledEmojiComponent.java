@@ -4,7 +4,6 @@ import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.gui.components.EmojiComponent;
 
-import static com.uddernetworks.emojide.gui.components.styled.StyleUtils.drawBorder;
 import static com.uddernetworks.emojide.gui.components.styled.StyleUtils.renderInitialStyle;
 
 public abstract class StyledEmojiComponent extends EmojiComponent {
