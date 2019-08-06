@@ -5,15 +5,21 @@ import com.uddernetworks.emojide.discord.StaticEmoji;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.gui.components.styled.StyledEmojiComponent;
 import com.uddernetworks.emojide.gui.text.DefaultTextBlock;
+import com.uddernetworks.emojide.gui.text.DynamicTextBlock;
 import com.uddernetworks.emojide.gui.text.TextBlock;
 import com.uddernetworks.emojide.keyboard.KeyPressEvent;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EditableTextFrame extends StyledEmojiComponent {
+import java.util.Arrays;
 
-    private static Logger LOGGER = LoggerFactory.getLogger(EditableTextFrame.class);
+/**
+ * A text frame that allows editing with a keyboard. Everything that goes over the width/height bounds are truncated.
+ */
+public class EditableDynamicTextFrame extends StyledEmojiComponent {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(EditableDynamicTextFrame.class);
 
     private KeyboardInputManager keyboardInputManager;
     private TextBlock textBlock;
@@ -21,9 +27,12 @@ public class EditableTextFrame extends StyledEmojiComponent {
     private int cursorX;
     private int cursorY;
 
-    public EditableTextFrame(Displayer displayer, int width, int height) {
+    private int scrollX; // The amount of non-visible columns on the left
+    private int scrollY; // The amount of non-visible rows on the top
+
+    public EditableDynamicTextFrame(Displayer displayer, int width, int height) {
         super(displayer, width, height);
-        this.textBlock = new DefaultTextBlock(width, height);
+        this.textBlock = new DynamicTextBlock();
         (this.keyboardInputManager = displayer.getEmojIDE().getKeyboardInputManager()).addListener(this);
     }
 
@@ -31,10 +40,21 @@ public class EditableTextFrame extends StyledEmojiComponent {
     public Emoji[][] render(Emoji[][] initial) {
         validateCursor();
 
-        var textEmoji = textBlock.toEmoji(emojiManager, initial);
-        textEmoji[cursorY][Math.min(width - 1, cursorX)] = StaticEmoji.CURSOR;
+        var textEmoji = expandToDimensions(textBlock.toEmoji(emojiManager));
+        textEmoji[cursorY][Math.min(textEmoji[0].length - 1, cursorX)] = StaticEmoji.CURSOR;
 
         return textEmoji;
+    }
+
+    private Emoji[][] expandToDimensions(Emoji[][] grid) {
+        var result = new Emoji[height][];
+        for (int y = 0; y < result.length; y++) {
+            var line = new Emoji[width];
+            Arrays.fill(line, StaticEmoji.DISCORD);
+            if (y < grid.length) System.arraycopy(grid[y], 0, line, 0, grid[y].length);
+            result[y] = line;
+        }
+        return result;
     }
 
     private void onKeyPress(KeyPressEvent event) {
@@ -76,7 +96,7 @@ public class EditableTextFrame extends StyledEmojiComponent {
                         cursorX--;
                         cursorY--;
                         if (cursorY >= 0) {
-                            textBlock.addAll(cursorY, textBlock.getChars()[cursorY + 1]);
+                            textBlock.addAll(cursorY, textBlock.getCharList().get(cursorY + 1));
                             setCursorToEnd();
                         } else {
                             cursorY = 0;
@@ -130,9 +150,9 @@ public class EditableTextFrame extends StyledEmojiComponent {
     }
 
     private void setCursorToEnd() {
-        var chars = textBlock.getChars();
-        for (int x = chars[cursorY].length - 1; x > 0; x--) {
-            if (chars[cursorY][x] == ' ' || chars[cursorY][x] == 0) continue;
+        var line = textBlock.getCharList().get(cursorY);
+        for (int x = line.size() - 1; x > 0; x--) {
+            if (line.get(x) == ' ' || line.get(x) == 0) continue;
             cursorX = x + 1;
             return;
         }
@@ -140,15 +160,13 @@ public class EditableTextFrame extends StyledEmojiComponent {
     }
 
     private void setCursorVertPos() {
-        var chars = textBlock.getChars();
-        var lastChar = 0;
-
-        for (int x = chars[cursorY].length - 1; x > 0; x--) {
-            if (chars[cursorY][x] == ' ' || chars[cursorY][x] == 0) continue;
-            lastChar = x;
-            break;
+        var chars = textBlock.getCharList();
+        for (int x = chars.get(cursorY).size() - 1; x > 0; x--) {
+            if (chars.get(cursorY).get(x) == ' ' || chars.get(cursorY).get(x) == 0) continue;
+            cursorX = x;
+            return;
         }
-        cursorX = lastChar;
+        cursorX = 0;
     }
 
     private void addCharacter(char character) {

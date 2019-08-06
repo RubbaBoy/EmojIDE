@@ -1,6 +1,7 @@
 package com.uddernetworks.emojide.discord;
 
-import com.uddernetworks.emojide.gui.EditableTextFrame;
+import com.uddernetworks.emojide.gui.EditableDynamicTextFrame;
+import com.uddernetworks.emojide.gui.EditableStaticTextFrame;
 import com.uddernetworks.emojide.gui.EmptyFrame;
 import com.uddernetworks.emojide.gui.WindowFrame;
 import com.uddernetworks.emojide.gui.components.CachedDisplayer;
@@ -31,7 +32,7 @@ public class CommandListener extends ListenerAdapter {
 
                 (displayer = new CachedDisplayer(emojIDE, event.getTextChannel(), true))
                         .setChild(new WindowFrame(displayer, 58, 10)
-                                .addChild(new EditableTextFrame(displayer, 34, 6), 2, 2)
+                                .addChild(new EditableDynamicTextFrame(displayer, 34, 6), 2, 2)
                                 .addChild(new EmptyFrame(displayer, 19, 6)
                                         .setBackground(StaticEmoji.GREEN2), 37, 2), true);
                 break;

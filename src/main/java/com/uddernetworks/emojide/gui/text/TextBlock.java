@@ -4,6 +4,8 @@ import com.uddernetworks.emojide.discord.DefaultEmojiManager;
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.EmojiManager;
 
+import java.util.List;
+
 /**
  * A statically-sized block of text that is meant for the dynamic content of a component containing text. This contains
  * methods to add, remove, and move characters as if they were being changed with a keyboard.
@@ -16,7 +18,19 @@ public interface TextBlock {
      *
      * @return A 2D array of characters.
      */
-    char[][] getChars();
+    default char[][] getCharArray() {
+        throw new UnsupportedOperationException("This implementation does not support #getCharArray()");
+    }
+
+    /**
+     * Gets the characters of the {@link TextBlock}. The list grid is just a list of rows, meaning the first size is
+     * the height, and the inner size is the width.
+     *
+     * @return A grid of characters
+     */
+    default AutoGrowArrayList<AutoGrowArrayList<Character>> getCharList() {
+        throw new UnsupportedOperationException("This implementation does not support #getCharList()");
+    }
 
     /**
      * Replaces the current text entirely with the given text.
@@ -91,7 +105,19 @@ public interface TextBlock {
      * @param y The Y position of the grid
      * @param line The line to add
      */
-    void addAll(int y, char[] line);
+    default void addAll(int y, char[] line) {
+        throw new UnsupportedOperationException("This implementation does not support #addAll(int, char[])");
+    }
+
+    /**
+     * Adds the given Character list to the end of the content of a line.
+     *
+     * @param y The Y position of the grid
+     * @param line The line to add
+     */
+    default void addAll(int y, List<Character> line) {
+        throw new UnsupportedOperationException("This implementation does not support #addAll(int, List<Character>)");
+    }
 
     /**
      * Removes the character at the given coordinate, shifting all proceeding characters in the line.

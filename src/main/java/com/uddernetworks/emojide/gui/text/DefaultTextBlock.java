@@ -43,7 +43,7 @@ public class DefaultTextBlock implements TextBlock {
     }
 
     @Override
-    public char[][] getChars() {
+    public char[][] getCharArray() {
         return chars;
     }
 
