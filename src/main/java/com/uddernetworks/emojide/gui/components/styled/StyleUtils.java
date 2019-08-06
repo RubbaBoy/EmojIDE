@@ -5,6 +5,11 @@ import com.uddernetworks.emojide.gui.components.EmojiContainer;
 
 import java.util.Arrays;
 
+import static com.uddernetworks.emojide.gui.components.ComponentUtils.getEmptyGrid;
+
+/**
+ * Utilities used by {@link StyledEmojiComponent} instances.
+ */
 public class StyleUtils {
     /**
      * Gets the styled base by this class, to be added onto by other instances.
@@ -12,9 +17,16 @@ public class StyleUtils {
      * @return The initial Emoji grid
      */
     public static Emoji[][] renderInitialStyle(Emoji background, Emoji border, int width, int height) {
-        return drawBorder(EmojiContainer.getEmptyGrid(background, width, height), border);
+        return drawBorder(getEmptyGrid(background, width, height), border);
     }
 
+    /**
+     * Draws a border of a given {@link Emoji} with a width of 1 in the given 2D array.
+     *
+     * @param rows The 2D array to (presumably) render
+     * @param border The {@link Emoji} to set as the border
+     * @return The mutated 2D array
+     */
     public static Emoji[][] drawBorder(Emoji[][] rows, Emoji border) {
         if (border == null) return rows;
         Arrays.fill(rows[0], border);

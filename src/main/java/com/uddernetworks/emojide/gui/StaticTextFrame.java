@@ -7,6 +7,9 @@ import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A {@link StyledEmojiComponent} containing text that can be changed via {@link #setText(String)}.
+ */
 public class StaticTextFrame extends StyledEmojiComponent {
 
     private static Logger LOGGER = LoggerFactory.getLogger(StaticTextFrame.class);

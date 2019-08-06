@@ -6,6 +6,9 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.function.Consumer;
 
+/**
+ * An action for the {@link RenderEngine} to do, either editing or creating a message with given contents.
+ */
 public class RenderAction implements RenderEntry {
 
     private String content;
@@ -46,30 +49,65 @@ public class RenderAction implements RenderEntry {
         this.onComplete = onComplete;
     }
 
+    /**
+     * Gets if the action is editing a message.
+     *
+     * @return If the action is editing a message
+     */
     public boolean isEditing() {
         return this.editing != null;
     }
 
+    /**
+     * Gets the new content of the message.
+     *
+     * @return The new content of the message
+     */
     public String getContent() {
         return content;
     }
 
+    /**
+     * Gets the new embedded content of the message.
+     *
+     * @return The new embedded content of the message
+     */
     public MessageEmbed getEmbedContent() {
         return embedContent;
     }
 
+    /**
+     * Gets the message to be edited, if editing.
+     *
+     * @return The message being edited
+     */
     public Message getEditing() {
         return editing;
     }
 
+    /**
+     * Gets the {@link TextChannel} to send the message, if sending.
+     *
+     * @return The {@link TextChannel} to send the message
+     */
     public TextChannel getChannel() {
         return channel;
     }
 
+    /**
+     * Invokes the (If existent) given completed consumer, giving the edited or created {@link Message}.
+     *
+     * @param message The edited or created {@link Message}
+     */
     public void complete(Message message) {
         onComplete.accept(message);
     }
 
+    /**
+     * Gets the message ID of the message being edited, or -1 if the action is not editing.
+     *
+     * @return The message ID
+     */
     public long getEditingId() {
         return editing == null ? -1 : editing.getIdLong();
     }

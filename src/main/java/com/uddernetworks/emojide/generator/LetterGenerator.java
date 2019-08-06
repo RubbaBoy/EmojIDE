@@ -8,7 +8,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.util.Arrays;
 
-// Stolen from MS Paint IDE
+/**
+ * Stolen from MS Paint IDE
+ * https://github.com/MSPaintIDE/MSPaintIDE/blob/master/src/main/java/com/uddernetworks/mspaint/texteditor/LetterGenerator.java
+ */
 public class LetterGenerator {
 
     private static Logger LOGGER = LoggerFactory.getLogger(LetterGenerator.class);

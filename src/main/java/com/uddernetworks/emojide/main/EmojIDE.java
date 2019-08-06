@@ -1,10 +1,10 @@
 package com.uddernetworks.emojide.main;
 
-import com.uddernetworks.emojide.bots.BotManager;
 import com.uddernetworks.emojide.discord.CommandListener;
+import com.uddernetworks.emojide.discord.DefaultEmojiManager;
 import com.uddernetworks.emojide.discord.EmojiManager;
-import com.uddernetworks.emojide.image.ImageManager;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
+import com.uddernetworks.emojide.keyboard.SimpleKeyboardInputManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -19,13 +19,11 @@ public class EmojIDE extends ListenerAdapter {
 
     private static ConfigManager configManager;
     private JDA jda;
-    private BotManager botManager;
     private EmojiManager emojiManager;
-//    private ImageManager imageManager;
     private KeyboardInputManager keyboardInputManager;
 
     public static void main(String[] args) throws LoginException {
-        (configManager = new ConfigManager("secret.conf")).init();
+        (configManager = new DefaultConfigManager("secret.conf")).init();
 
         new DefaultShardManagerBuilder()
             .setToken(configManager.getPrimaryToken())
@@ -39,14 +37,9 @@ public class EmojIDE extends ListenerAdapter {
     public void onReady(@Nonnull ReadyEvent event) {
         this.jda = event.getJDA();
 
-        this.botManager = new BotManager(this);
-        this.botManager.connectBots();
-        this.botManager.startTasks();
-
         this.jda.addEventListener(new CommandListener(this));
-        this.emojiManager = new EmojiManager(this, configManager.getServers());
-//        this.imageManager = new ImageManager(this);
-        this.jda.addEventListener(this.keyboardInputManager = new KeyboardInputManager(this));
+        this.emojiManager = new DefaultEmojiManager(this, configManager.getServers());
+        this.jda.addEventListener(this.keyboardInputManager = new SimpleKeyboardInputManager(this));
     }
 
     public static ConfigManager getConfigManager() {
@@ -57,17 +50,9 @@ public class EmojIDE extends ListenerAdapter {
         return jda;
     }
 
-    public BotManager getBotManager() {
-        return botManager;
-    }
-
     public EmojiManager getEmojiManager() {
         return emojiManager;
     }
-
-//    public ImageManager getImageManager() {
-//        return imageManager;
-//    }
 
     public KeyboardInputManager getKeyboardInputManager() {
         return keyboardInputManager;

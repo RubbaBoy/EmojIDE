@@ -1,5 +1,8 @@
 package com.uddernetworks.emojide.discord;
 
+/**
+ * A statically-created {@link Emoji} for text, colors, and other things from files or unicodes.
+ */
 public enum StaticEmoji implements Emoji {
 
     // Defaults
@@ -170,10 +173,20 @@ public enum StaticEmoji implements Emoji {
         }
     }
 
+    /**
+     * If the emoji comes from a file.
+     *
+     * @return If the emoji is custom
+     */
     public boolean isCustom() {
         return this.unicode == null;
     }
 
+    /**
+     * Gets the generated file path of the emoji
+     *
+     * @return The generated file path of the emoji
+     */
     public String getRelativePath() {
         return relativePath;
     }
@@ -193,16 +206,13 @@ public enum StaticEmoji implements Emoji {
         return isCustom() ? this.name + ":" + this.id : this.unicode;
     }
 
-    public void setRelativePath(String relativePath) {
-        this.relativePath = relativePath;
-    }
-
+    /**
+     * Gets the unicode if {@link #isCustom()} returns false.
+     *
+     * @return The unicode of the emoji
+     */
     public String getUnicode() {
         return unicode;
-    }
-
-    public void setUnicode(String unicode) {
-        this.unicode = unicode;
     }
 
     @Override
@@ -210,14 +220,29 @@ public enum StaticEmoji implements Emoji {
         return display;
     }
 
+    /**
+     * Sets the display text of the emoji, gotten via {@link #getDisplay()}.
+     *
+     * @param display The display text of the emoji
+     */
     public void setDisplay(String display) {
         this.display = display;
     }
 
+    /**
+     * Gets the Discord ID of the emoji.
+     *
+     * @return The Discord ID of the emoji
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Sets the Discord ID of the emoji.
+     *
+     * @param id The Discord ID of the emoji to set
+     */
     public void setId(long id) {
         this.id = id;
     }

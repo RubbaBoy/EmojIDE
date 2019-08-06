@@ -4,6 +4,7 @@ import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.StaticEmoji;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.gui.components.styled.StyledEmojiComponent;
+import com.uddernetworks.emojide.gui.text.DefaultTextBlock;
 import com.uddernetworks.emojide.gui.text.TextBlock;
 import com.uddernetworks.emojide.keyboard.KeyPressEvent;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
@@ -22,7 +23,7 @@ public class EditableTextFrame extends StyledEmojiComponent {
 
     public EditableTextFrame(Displayer displayer, int width, int height) {
         super(displayer, width, height);
-        this.textBlock = new TextBlock(width, height);
+        this.textBlock = new DefaultTextBlock(width, height);
         (this.keyboardInputManager = displayer.getEmojIDE().getKeyboardInputManager()).addListener(this);
     }
 
@@ -31,7 +32,7 @@ public class EditableTextFrame extends StyledEmojiComponent {
         validateCursor();
 
         var textEmoji = textBlock.toEmoji(emojiManager, initial);
-        textEmoji[cursorY][cursorX] = StaticEmoji.CURSOR;
+        textEmoji[cursorY][Math.min(width - 1, cursorX)] = StaticEmoji.CURSOR;
 
         return textEmoji;
     }
@@ -46,13 +47,15 @@ public class EditableTextFrame extends StyledEmojiComponent {
             switch (emoji) {
                 case UP:
                     cursorY--;
-                    if (textBlock.getCharacter(cursorX, cursorY) == ' ') setCursorVertPos();
+                    var curr = textBlock.getCharacter(cursorX, cursorY);
+                    if (curr == ' ' || curr == 0) setCursorVertPos();
                     validateCursor();
                     refresh();
                     break;
                 case DOWN:
                     cursorY++;
-                    if (textBlock.getCharacter(cursorX, cursorY) == ' ') setCursorVertPos();
+                    curr = textBlock.getCharacter(cursorX, cursorY);
+                    if (curr == ' ' || curr == 0) setCursorVertPos();
                     validateCursor();
                     refresh();
                     break;
@@ -63,17 +66,17 @@ public class EditableTextFrame extends StyledEmojiComponent {
                     break;
                 case RIGHT:
                     cursorX++;
-                    setCursorToEnd();
                     validateCursor();
                     refresh();
                     break;
                 case BACKSPACE:
-                    cursorX--;
-                    if (cursorX >= 0) {
-                        textBlock.setChar(' ', cursorX, cursorY);
+                    if (cursorX > 0) {
+                        textBlock.removeChar(cursorX--, cursorY);
                     } else {
+                        cursorX--;
                         cursorY--;
                         if (cursorY >= 0) {
+                            textBlock.addAll(cursorY, textBlock.getChars()[cursorY + 1]);
                             setCursorToEnd();
                         } else {
                             cursorY = 0;
@@ -84,7 +87,8 @@ public class EditableTextFrame extends StyledEmojiComponent {
                     refresh();
                     break;
                 case INS:
-
+                    // Easy to implement, not sure how I'd want to change the cursor though
+                    LOGGER.error("Unsupported action: INS");
                     break;
                 case HOME:
                     cursorX = 0;
@@ -95,11 +99,9 @@ public class EditableTextFrame extends StyledEmojiComponent {
                     LOGGER.error("Unsupported action: PG_UP");
                     break;
                 case DEL:
-                    var chars = textBlock.getChars();
-                    for (int x = chars[cursorY].length - 1; x > 0; x--) {
-                        if (chars[cursorY][x] == ' ') continue;
-                        if (cursorX < x) textBlock.removeChar(x, cursorY);
-                    }
+                    textBlock.removeChar(cursorX + 1, cursorY);
+                    validateCursor();
+                    refresh();
                     break;
                 case END:
                     setCursorToEnd();
@@ -116,7 +118,7 @@ public class EditableTextFrame extends StyledEmojiComponent {
                                 addCharacter(' ');
                                 break;
                             case ENTER:
-                                textBlock.addEmpty(this.cursorY++);
+                                textBlock.newlineAt(this.cursorX, this.cursorY++);
                                 this.cursorX = 0;
                                 refresh();
                                 break;
@@ -130,8 +132,8 @@ public class EditableTextFrame extends StyledEmojiComponent {
     private void setCursorToEnd() {
         var chars = textBlock.getChars();
         for (int x = chars[cursorY].length - 1; x > 0; x--) {
-            if (chars[cursorY][x] == ' ') continue;
-            if (cursorX > x) cursorX = x;
+            if (chars[cursorY][x] == ' ' || chars[cursorY][x] == 0) continue;
+            cursorX = x + 1;
             return;
         }
         cursorX = 0;
@@ -142,7 +144,7 @@ public class EditableTextFrame extends StyledEmojiComponent {
         var lastChar = 0;
 
         for (int x = chars[cursorY].length - 1; x > 0; x--) {
-            if (chars[cursorY][x] == ' ') continue;
+            if (chars[cursorY][x] == ' ' || chars[cursorY][x] == 0) continue;
             lastChar = x;
             break;
         }
@@ -150,7 +152,7 @@ public class EditableTextFrame extends StyledEmojiComponent {
     }
 
     private void addCharacter(char character) {
-        textBlock.setChar(character, this.cursorX, this.cursorY);
+        textBlock.addChar(character, this.cursorX, this.cursorY);
 
         if (++cursorX >= this.width) {
             this.cursorX = 0;

@@ -1,103 +1,103 @@
 package com.uddernetworks.emojide.gui.text;
 
+import com.uddernetworks.emojide.discord.DefaultEmojiManager;
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.EmojiManager;
-import com.uddernetworks.emojide.discord.StaticEmoji;
-import com.uddernetworks.emojide.gui.components.EmojiComponent;
-import org.apache.commons.text.WordUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+/**
+ * A statically-sized block of text that is meant for the dynamic content of a component containing text. This contains
+ * methods to add, remove, and move characters as if they were being changed with a keyboard.
+ */
+public interface TextBlock {
 
-public class TextBlock {
+    /**
+     * Gets the characters of the {@link TextBlock}. The 2D array is just an array of rows, meaning the first length is
+     * the height, and the inner length is the width.
+     *
+     * @return A 2D array of characters.
+     */
+    char[][] getChars();
 
-    private int width;
-    private int height;
-    private char[][] chars;
+    /**
+     * Replaces the current text entirely with the given text.
+     *
+     * @param text The text to set
+     */
+    void setText(String text);
 
-    public TextBlock(int width, int height) {
-        this.width = width;
-        this.height = height;
+    /**
+     * Sets the given coordinates to the given character. No other characters or references are modified.
+     *
+     * @param character The character to set
+     * @param x The X position of the grid
+     * @param y The Y position of the grid
+     */
+    void setChar(char character, int x, int y);
 
-        chars = new char[height][];
-        for (int y = 0; y < height; y++) {
-            var arr = new char[width];
-            chars[y] = arr;
-            Arrays.fill(chars[y], ' ');
-        }
-    }
+    /**
+     * Gets the character at the given coordinates.
+     *
+     * @param x The X position of the grid
+     * @param y The Y position of the grid
+     * @return The character
+     */
+    char getCharacter(int x, int y);
 
-    public char[][] getChars() {
-        return chars;
-    }
+    /**
+     * Inserts the given character at the given coordinates. This will offset any other characters in the line
+     * proceeding it, truncating any overflows.
+     *
+     * @param character The character to insert
+     * @param x The X position of the grid
+     * @param y The Y position of the grid
+     */
+    void addChar(char character, int x, int y);
 
-    public void setText(String text) {
-        var wrapped = WordUtils.wrap(text, this.width, "\n", true).split("\n");
+    /**
+     * Converts the current text to an {@link Emoji} grid, with the internal width and height.
+     *
+     * @param emojiManager The {@link DefaultEmojiManager}
+     * @return The 2D array of emojis
+     */
+    Emoji[][] toEmoji(EmojiManager emojiManager);
 
-        var loopTo = Math.min(height, wrapped.length);
-        for (int y = 0; y < loopTo; y++) {
-            var line = wrapped[y].toCharArray();
-            var emojiLine = chars[y];
-            for (int x = 0; x < line.length; x++) {
-                emojiLine[x] = line[x];
-            }
-            chars[y] = emojiLine;
-        }
-    }
+    /**
+     * Converts the current text to an {@link Emoji} grid, with the internal width and height, overriding the initial
+     * parameter. The parameter is used so it won't need to make the array on its own.
+     *
+     * @param emojiManager The {@link DefaultEmojiManager}
+     * @return The 2D array of emojis
+     */
+    Emoji[][] toEmoji(EmojiManager emojiManager, Emoji[][] initial);
 
-    public void setChar(char character, int x, int y) {
-        if (x < 0 || x >= this.width) return;
-        if (y < 0 || y >= this.height) return;
-        chars[y][x] = character;
-    }
+    /**
+     * Adds a newline with respecting line breaking, simulating the pressing "Enter" on a keyboard at given coordinates.
+     *
+     * @param x The X position of the grid
+     * @param y The Y position of the grid
+     */
+    void newlineAt(int x, int y);
 
-    public char getCharacter(int x, int y) {
-        if (x < 0 || x >= this.width) return ' ';
-        if (y < 0 || y >= this.height) return ' ';
-        return chars[y][x];
-    }
+    /**
+     * Adds an empty character line at the given Y position, moving all other lines downward, truncating the last line.
+     *
+     * @param y The Y position of the grid
+     */
+    void addEmpty(int y);
 
-    public Emoji[][] toEmoji(EmojiManager emojiManager) {
-        return toEmoji(emojiManager, EmojiComponent.getEmptyGrid(StaticEmoji.TRANSPARENT, this.width, this.height));
-    }
+    /**
+     * Adds the given char[] to the end of the content of a line.
+     *
+     * @param y The Y position of the grid
+     * @param line The line to add
+     */
+    void addAll(int y, char[] line);
 
-    public Emoji[][] toEmoji(EmojiManager emojiManager, Emoji[][] initial) {
-        for (int y = 0; y < this.height; y++) {
-            var line = this.chars[y];
-            var emojiLine = initial[y];
-            for (int x = 0; x < line.length; x++) {
-                emojiLine[x] = emojiManager.getEmoji(String.valueOf((int) line[x]));
-            }
-            initial[y] = emojiLine;
-        }
-        return initial;
-    }
-
-    public void addEmpty(int y) {
-        if (y > this.height - 2) return;
-        var inserting = new char[this.width];
-        Arrays.fill(inserting, ' ');
-        var array = new ArrayList<>(Arrays.asList(this.chars));
-        array.add(y + 1, inserting);
-        array.remove(array.remove(array.size() - 1));
-        this.chars = array.toArray(char[][]::new);
-    }
-
-    public void removeChar(int x, int y) {
-        var row = this.chars[y];
-        System.out.println("Before = " + Arrays.toString(row));
-        System.arraycopy(row, x, row, x - 1, row.length - x);
-        System.out.println("After = " + Arrays.toString(row));
-        this.chars[y] = row;
-    }
-
-    @Override
-    public String toString() {
-        var builder = new StringBuilder();
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) builder.append(chars[y][x]);
-            builder.append('\n');
-        }
-        return builder.toString();
-    }
+    /**
+     * Removes the character at the given coordinate, shifting all proceeding characters in the line.
+     *
+     * @param x The X position of the grid
+     * @param y The Y position of the grid
+     */
+    void removeChar(int x, int y);
 }

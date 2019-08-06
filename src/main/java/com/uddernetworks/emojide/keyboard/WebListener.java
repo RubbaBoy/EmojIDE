@@ -1,133 +1,59 @@
 package com.uddernetworks.emojide.keyboard;
 
-import com.uddernetworks.emojide.main.EmojIDE;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import simplenet.Client;
-import simplenet.Server;
-import simplenet.packet.Packet;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
-/**
- * Custom HTTP implementation. It's not overengineering, it's a fucking waste of time.
- */
-public class WebListener {
+public interface WebListener {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(WebListener.class);
+    /**
+     * Starts the web listener's server, by default on port 6969.
+     *
+     * @param keyboardInputManager The {@link SimpleKeyboardInputManager} to send input data to.
+     */
+    void start(KeyboardInputManager keyboardInputManager);
 
-    private EmojIDE emojIDE;
-    private Map<String, List<String>> usedRandoms = new ConcurrentHashMap<>();
+    /**
+     * Invokes {@link #parseHeaders(Client, BiConsumer)} and if the requestHeaderFunction returns false, an error
+     * response is sent. Either way, the {@link Client} given is closed at the end.
+     *
+     * @param client The {@link Client}
+     * @param requestHeaderFunction The function giving request data and header data, returning if the request was
+     *                              successful.
+     */
+    void tryAndParse(Client client, BiFunction<String[], Map<String, String>, Boolean> requestHeaderFunction);
 
-    public WebListener(EmojIDE emojIDE) {
-        this.emojIDE = emojIDE;
-    }
+    /**
+     * Parses the headers from the given {@link Client}, invoking the function by default when the Connection header is
+     * given.
+     *
+     * @param client The {@link Client}
+     * @param headersComplete The request data and headers
+     */
+    void parseHeaders(Client client, BiConsumer<String[], Map<String, String>> headersComplete);
 
-    public void start(KeyboardInputManager keyboardInputManager) {
-        var server = new Server();
+    /**
+     * Generated a request in bytes to be sent from the given body.
+     *
+     * @param body The body to include in the request
+     * @return The request, in bytes, to send
+     */
+    byte[] generateRequest(String body);
 
-        server.onConnect(client -> tryAndParse(client, (request, headers) -> {
-            try {
-                var url = request[1];
-                if (url.startsWith("/e")) {
-                    var queryParts = url.split("\\?");
-                    if (queryParts.length != 2) return false;
-                    var query = queryParts[1];
-                    Map<String, String> kvSplit = Arrays.stream(query.split("&")).map(kv -> {
-                        var split = kv.split("=");
-                        return new AbstractMap.SimpleEntry<>(split[0], split[1]);
-                    }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-                    if (!kvSplit.containsKey("k") || !kvSplit.containsKey("r")) return false;
-
-                    var clicked = kvSplit.get("k");
-                    if ((!clicked.startsWith("A") && !clicked.startsWith("E")) || clicked.length() <= 1 || !StringUtils.isNumeric(clicked.substring(1)))
-                        return false;
-
-                    var random = kvSplit.get("r");
-                    usedRandoms.putIfAbsent(clicked, Collections.synchronizedList(new ArrayList<>()));
-                    var randoms = usedRandoms.get(clicked);
-                    if (randoms.contains(random)) {
-                        // TODO: Clear after X time
-                        LOGGER.error("Random already used for k {} and r {}", clicked, random);
-                        return false;
-                    }
-
-                    randoms.add(random);
-
-                    keyboardInputManager.handleKey(clicked);
-
-                    Packet.builder().putBytes(generateRequest("")).writeAndFlush(client);
-                } else if (url.startsWith("/s")) {
-                    Packet.builder().putBytes(generateRequest("<script>var xmlHttp = new XMLHttpRequest();\n" +
-                            "xmlHttp.open(\"GET\",\"http://localhost:6969" + url.replace("/s", "/e") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
-                            "xmlHttp.send(null);" +
-                            "window.open('','_self').close();</script>")).writeAndFlush(client);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-            return true;
-        }));
-
-        server.bind("localhost", 6969);
-        LOGGER.info("WebServer running...");
-    }
-
-    private void tryAndParse(Client client, BiFunction<String[], Map<String, String>, Boolean> requestHeaderFunction) {
-        parseHeaders(client, (request, headers) -> {
-            if (!requestHeaderFunction.apply(request, headers)) Packet.builder().putBytes(generateRequest("<p>Bruh what the fuck is this</p>")).writeAndFlush(client);
-            client.close();
-        });
-    }
-
-    private void parseHeaders(Client client, BiConsumer<String[], Map<String, String>> headersComplete) {
-        var finishedRequest = new AtomicBoolean(false);
-        var request = new AtomicReference<>(new StringBuilder());
-        var finalRequest = new AtomicReference<>(new String[3]);
-
-        var headers = new AtomicReference<>(new HashMap<String, String>());
-        var buffer = new AtomicReference<>(new StringBuilder());
-        client.readByteUntil(ascii -> {
-            if (ascii == 13) {
-                if (!finishedRequest.getAndSet(true)) {
-                    finalRequest.set(request.get().toString().split("\\s+", 3));
-                    return true;
-                }
-
-                var curr = buffer.getAndSet(new StringBuilder()).toString();
-                var split = curr.split(":", 2);
-                headers.get().put(split[0], split[1]);
-
-                if (curr.contains("Connection:")) {
-                    headersComplete.accept(finalRequest.get(), headers.get());
-                    return false;
-                }
-            } else {
-                (finishedRequest.get() ? buffer : request).get().append((char) ascii);
-            }
-
-            return true;
-         });
-    }
-
-    private byte[] generateRequest(String body) {
-        return (createHeaders().replace("%CTL%", String.valueOf(body.length())) + body).getBytes();
-    }
-
-    private String createHeaders() {
-        return "HTTP/1.1 418 I'm a teapot\n" +
-                "Server: EmojIDE\n" +
-                "Content-Length: %CTL%\n" +
-                "Content-Type: text/html\n" +
-                "Connection: Closed\n\n";
-    }
-
+    /**
+     * Creates default headers for {@link #generateRequest(String)}. By default, this is:
+     * <pre>
+     *     HTTP/1.1 418 I'm a teapot
+     *     Server: EmojIDE
+     *     Content-Length: [dynamic]
+     *     Content-Type: text/html
+     *     Connection: Closed
+     *
+     * </pre>
+     *
+     * @return The headers
+     */
+    String createHeaders();
 }

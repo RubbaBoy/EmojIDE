@@ -1,12 +1,15 @@
 package com.uddernetworks.emojide.gui.components.styled;
 
 import com.uddernetworks.emojide.discord.Emoji;
+import com.uddernetworks.emojide.gui.components.DefaultEmojiComponent;
 import com.uddernetworks.emojide.gui.components.Displayer;
-import com.uddernetworks.emojide.gui.components.EmojiComponent;
 
 import static com.uddernetworks.emojide.gui.components.styled.StyleUtils.renderInitialStyle;
 
-public abstract class StyledEmojiComponent extends EmojiComponent {
+/**
+ * A {@link DefaultEmojiComponent} with the ability to have a border and background.
+ */
+public abstract class StyledEmojiComponent extends DefaultEmojiComponent {
 
     private Emoji border;
     private Emoji background;

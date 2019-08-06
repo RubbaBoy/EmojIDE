@@ -1,40 +1,50 @@
 package com.uddernetworks.emojide.gui.components;
 
-public class PositionedComponent {
+/**
+ * An object to store an {@link EmojiComponent}'s coordinates among whatever container using it.
+ */
+public interface PositionedComponent {
 
-    private final EmojiComponent component;
+    /**
+     * Gets the {@link EmojiComponent} stored.
+     *
+     * @return The {@link EmojiComponent} stored
+     */
+    EmojiComponent getComponent();
 
-    private int x;
-    private int y;
+    /**
+     * Sets the position of the component.
+     *
+     * @param x The X position
+     * @param y The Y position
+     */
+    void setPosition(int x, int y);
 
-    public PositionedComponent(EmojiComponent component, int x, int y) {
-        this.component = component;
-        this.x = x;
-        this.y = y;
-    }
+    /**
+     * Gets the X coordinate of the component.
+     *
+     * @return The X coordinate of the component
+     */
+    int getX();
 
-    public EmojiComponent getComponent() {
-        return component;
-    }
+    /**
+     * Sets the X coordinate of the component.
+     *
+     * @param x The X coordinate to set
+     */
+    void setX(int x);
 
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
+    /**
+     * Gets the Y coordinate of the component.
+     *
+     * @return The Y coordinate of the component
+     */
+    int getY();
 
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
+    /**
+     * Sets the Y coordinate of the component.
+     *
+     * @param y The Y coordinate to set
+     */
+    void setY(int y);
 }
