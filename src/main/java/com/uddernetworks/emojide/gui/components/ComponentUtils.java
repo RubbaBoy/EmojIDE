@@ -30,7 +30,7 @@ public class ComponentUtils {
      * @return The 2D array
      */
     public static Emoji[][] getEmptyGrid(int width, int height) {
-        return getEmptyGrid(StaticEmoji.DISCORD, width, height);
+        return getEmptyGrid(StaticEmoji.TRANSPARENT, width, height);
     }
 
     /**

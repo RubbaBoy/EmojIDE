@@ -2,6 +2,7 @@ package com.uddernetworks.emojide.gui.components;
 
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.EmojiManager;
+import com.uddernetworks.emojide.discord.StaticEmoji;
 import com.uddernetworks.emojide.gui.render.RenderEngine;
 import com.uddernetworks.emojide.main.EmojIDE;
 import net.dv8tion.jda.api.entities.Message;
@@ -53,7 +54,7 @@ public class CachedDisplayer implements Displayer {
      */
     public CachedDisplayer(EmojIDE emojIDE, TextChannel channel, boolean insertKeyboard) {
         this.emojIDE = emojIDE;
-        this.filler = emojIDE.getEmojiManager().getEmoji("discord");
+        this.filler = StaticEmoji.DISCORD;
         this.channel = channel;
         this.insertKeyboard = insertKeyboard;
 
@@ -96,7 +97,11 @@ public class CachedDisplayer implements Displayer {
             if (sendMessages) {
                 RenderEngine.queueSend(this.channel, message, completed -> this.messages.add(completed));
             } else {
-                if (!this.cachedLines.get(i).equals(message)) RenderEngine.queueEdit(this.messages.get(i), message, ignored -> {});;
+                if (!this.cachedLines.get(i).equals(message)) {
+                    System.out.println("From " + this.cachedLines.get(i).length() + " to " + message.length());
+                    System.out.println("From " + this.cachedLines.get(i) + " to " + message);
+                    RenderEngine.queueEdit(this.messages.get(i), message, ignored -> {});
+                }
             }
             this.cachedLines.set(i, message);
         }

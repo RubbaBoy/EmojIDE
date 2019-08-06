@@ -41,17 +41,21 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
         validateCursor();
 
         var textEmoji = expandToDimensions(textBlock.toEmoji(emojiManager));
-        textEmoji[cursorY][Math.min(textEmoji[0].length - 1, cursorX)] = StaticEmoji.CURSOR;
+        textEmoji[cursorY - scrollY][Math.min(textEmoji[0].length - 1, cursorX) - scrollX] = StaticEmoji.CURSOR;
 
         return textEmoji;
     }
 
     private Emoji[][] expandToDimensions(Emoji[][] grid) {
+        var startLine = scrollY;
+        var endLine = startLine + height;
+
         var result = new Emoji[height][];
-        for (int y = 0; y < result.length; y++) {
+        for (int y = 0; y < height; y++) {
+            var scaledLine = y + startLine;
             var line = new Emoji[width];
-            Arrays.fill(line, StaticEmoji.DISCORD);
-            if (y < grid.length) System.arraycopy(grid[y], 0, line, 0, grid[y].length);
+            Arrays.fill(line, StaticEmoji.TRANSPARENT);
+            if (scaledLine < grid.length) System.arraycopy(grid[scaledLine], 0, line, 0, Math.min(grid[scaledLine].length, width));
             result[y] = line;
         }
         return result;
@@ -67,6 +71,10 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
             switch (emoji) {
                 case UP:
                     cursorY--;
+                    if (cursorY <= scrollY) {
+                        cursorY++;
+                        break;
+                    }
                     var curr = textBlock.getCharacter(cursorX, cursorY);
                     if (curr == ' ' || curr == 0) setCursorVertPos();
                     validateCursor();
@@ -74,6 +82,10 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
                     break;
                 case DOWN:
                     cursorY++;
+                    if (cursorY >= scrollY + height) {
+                        cursorY--;
+                        break;
+                    }
                     curr = textBlock.getCharacter(cursorX, cursorY);
                     if (curr == ' ' || curr == 0) setCursorVertPos();
                     validateCursor();
@@ -108,7 +120,7 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
                     break;
                 case INS:
                     // Easy to implement, not sure how I'd want to change the cursor though
-                    LOGGER.error("Unsupported action: INS");
+                    LOGGER.error("Unsupported action for EditableDynamicTextFrame: INS");
                     break;
                 case HOME:
                     cursorX = 0;
@@ -116,7 +128,13 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
                     refresh();
                     break;
                 case PG_UP:
-                    LOGGER.error("Unsupported action: PG_UP");
+                    if (scrollY <= 0) break;
+                    var scrollAmount = Math.max(scrollY - 3, 0);
+                    scrollY -= scrollAmount;
+                    cursorY -= scrollAmount;
+                    cursorX = 0;
+                    validateCursor();
+                    refresh();
                     break;
                 case DEL:
                     textBlock.removeChar(cursorX + 1, cursorY);
@@ -129,7 +147,11 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
                     refresh();
                     break;
                 case PG_DOWN:
-                    LOGGER.error("Unsupported action: PG_DOWN");
+                    scrollY += 3;
+                    cursorY++;
+                    cursorX = 0;
+                    validateCursor();
+                    refresh();
                     break;
                 default:
                     this.keyboardInputManager.getPair(emoji).ifPresent(pair -> {
@@ -138,6 +160,7 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
                                 addCharacter(' ');
                                 break;
                             case ENTER:
+                                if (cursorY >= scrollY + height) break;
                                 textBlock.newlineAt(this.cursorX, this.cursorY++);
                                 this.cursorX = 0;
                                 refresh();
@@ -147,6 +170,10 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
                     break;
             }
         }
+    }
+
+    private boolean isDownAvailable() {
+        return cursorY < scrollY + height;
     }
 
     private void setCursorToEnd() {
@@ -190,7 +217,7 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
         this.cursorX = Math.max(this.cursorX, 0);
         this.cursorY = Math.max(this.cursorY, 0);
 
-        this.cursorX = Math.min(this.cursorX, this.width);
-        this.cursorY = Math.min(this.cursorY, this.height);
+//        this.cursorX = Math.min(this.cursorX, this.scrollX);
+//        this.cursorY = Math.min(this.cursorY, this.scrollY);
     }
 }

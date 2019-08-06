@@ -91,7 +91,7 @@ public class EditableStaticTextFrame extends StyledEmojiComponent {
                     break;
                 case INS:
                     // Easy to implement, not sure how I'd want to change the cursor though
-                    LOGGER.error("Unsupported action: INS");
+                    LOGGER.error("Unsupported action for EditableStaticTextFrame: INS");
                     break;
                 case HOME:
                     cursorX = 0;
@@ -99,7 +99,7 @@ public class EditableStaticTextFrame extends StyledEmojiComponent {
                     refresh();
                     break;
                 case PG_UP:
-                    LOGGER.error("Unsupported action: PG_UP");
+                    LOGGER.error("Unsupported action for EditableStaticTextFrame: PG_UP");
                     break;
                 case DEL:
                     textBlock.removeChar(cursorX + 1, cursorY);
@@ -112,7 +112,7 @@ public class EditableStaticTextFrame extends StyledEmojiComponent {
                     refresh();
                     break;
                 case PG_DOWN:
-                    LOGGER.error("Unsupported action: PG_DOWN");
+                    LOGGER.error("Unsupported action for EditableStaticTextFrame: PG_DOWN");
                     break;
                 default:
                     this.keyboardInputManager.getPair(emoji).ifPresent(pair -> {

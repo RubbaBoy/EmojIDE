@@ -100,7 +100,7 @@ public class DefaultEmojiManager implements EmojiManager {
 
     @Override
     public Emoji getEmoji(String name) {
-        return this.emojis.getOrDefault(name.toLowerCase(), this.emojis.get("discord"));
+        return this.emojis.getOrDefault(name.toLowerCase(), StaticEmoji.DISCORD);
     }
 
 }
