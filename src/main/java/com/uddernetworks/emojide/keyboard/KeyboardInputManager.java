@@ -47,6 +47,13 @@ public interface KeyboardInputManager extends EventListener {
     Optional<Pair> getPair(Emoji emoji);
 
     /**
+     * Gets the state of the keyboard, i.e. generally what key is pressed down to modify future keypresses.
+     *
+     * @return The {@link ActiveState} of the keyboard.
+     */
+    ActiveState getState();
+
+    /**
      * Invoked by the {@link WebListener}, and is in charge of raising events.
      *
      * @param key The key clicked, in the format by the {@link WebListener}
@@ -61,7 +68,18 @@ public interface KeyboardInputManager extends EventListener {
      */
     void addListener(Object object);
 
-    public enum Pair {
+    /**
+     * Removed a previously added listener via {@link #addListener(Object)}.
+     *
+     * @param object The class instance to remove
+     */
+    void removeListener(Object object);
+
+    enum Pair {
         SPACE, SHIFT, ENTER
+    }
+
+    enum ActiveState {
+        NONE, SHIFT, CTRL, ALT
     }
 }

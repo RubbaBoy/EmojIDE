@@ -97,11 +97,7 @@ public class CachedDisplayer implements Displayer {
             if (sendMessages) {
                 RenderEngine.queueSend(this.channel, message, completed -> this.messages.add(completed));
             } else {
-                if (!this.cachedLines.get(i).equals(message)) {
-                    System.out.println("From " + this.cachedLines.get(i).length() + " to " + message.length());
-                    System.out.println("From " + this.cachedLines.get(i) + " to " + message);
-                    RenderEngine.queueEdit(this.messages.get(i), message, ignored -> {});
-                }
+                if (!this.cachedLines.get(i).equals(message)) RenderEngine.queueEdit(this.messages.get(i), message, ignored -> {});
             }
             this.cachedLines.set(i, message);
         }

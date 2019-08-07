@@ -29,6 +29,7 @@ public enum StaticEmoji implements Emoji {
     PURPLE1("purple1", "generated_emojis/purple1.png"),
     PURPLE2("purple2", "generated_emojis/purple2.png"),
 
+    // Keyboard emojis
     BACKSPACE("backspace", "keyboard_emojis/backspace.png"),
     INS("ins", "keyboard_emojis/ins.png"),
     HOME("home", "keyboard_emojis/home.png"),
@@ -56,6 +57,14 @@ public enum StaticEmoji implements Emoji {
     RIGHT("right", "keyboard_emojis/right.png"),
     PADDING("padding", "keyboard_emojis/padding.png"),
     CURSOR("cursor", "keyboard_emojis/cursor.png"),
+
+    // IDE emojis
+    LTAB_SEPARATOR("lts", "ide_emojis/ltab_separator.png"),
+    RTAB_SEPARATOR("rts", "ide_emojis/rtab_separator.png"),
+    TTABBED_FRAME("ttf", "ide_emojis/ttabbed_frame.png"),
+    BTABBED_FRAME("btf", "ide_emojis/btabbed_frame.png"),
+    LTABBED_FRAME("ltf", "ide_emojis/ltabbed_frame.png"),
+    RTABBED_FRAME("rtf", "ide_emojis/rtabbed_frame.png"),
 
     A_32("32", "generated_emojis/32.png"), // ASCII
     A_33("33", "generated_emojis/33.png"), // ASCII !

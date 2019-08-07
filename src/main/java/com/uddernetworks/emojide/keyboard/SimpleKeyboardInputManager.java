@@ -4,6 +4,7 @@ import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.StaticEmoji;
 import com.uddernetworks.emojide.gui.render.RenderEngine;
 import com.uddernetworks.emojide.main.EmojIDE;
+import com.uddernetworks.emojide.main.Thread;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,6 +36,7 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
     private MessageEmbed lowercaseEmbed;
     private MessageEmbed uppercaseEmbed;
     private boolean lowercaseMode = true;
+    private ActiveState state = ActiveState.NONE;
 
     private Map<Pair, List<Emoji>> pairs = new HashMap<>();
     private Map<Object, List<Method>> eventClasses = new HashMap<>();
@@ -120,6 +123,11 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
                 .map(Map.Entry::getKey);
     }
 
+    @Override
+    public ActiveState getState() {
+        return this.state;
+    }
+
     private void addRow(EmbedBuilder builder, Object... keys) {
         addSpecialRow(builder, 9, keys);
     }
@@ -170,7 +178,8 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
         builder.addField(String.valueOf(ZWS), row.toString(), true);
     }
 
-    private CompletableFuture shiftDelay;
+    private CompletableFuture stateChange;
+    private Runnable undoPreviousState = () -> {};
 
     private void onKeyPress(KeyPressEvent event) {
         if (event.isAlphanumeric()) return;
@@ -182,23 +191,47 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
                     changeToLower();
                 }
                 break;
+            case CTRL:
+                unsetStateAfter(ActiveState.CTRL, 3);
+                break;
+            case ALT:
+                unsetStateAfter(ActiveState.ALT, 3);
+                break;
             default:
                 getPair(event.getStaticEmoji()).ifPresent(pair -> {
                     switch (pair) {
                         case SHIFT:
-                            if (shiftDelay != null) shiftDelay.cancel(true);
                             changeToUpper();
-                            shiftDelay = CompletableFuture.runAsync(() -> {
-                                try {
-                                    Thread.sleep(2000);
-                                    changeToLower();
-                                } catch (InterruptedException ignored) {}
-                            });
+                            unsetStateAfter(this::changeToLower, ActiveState.SHIFT, 3);
                             break;
                     }
                 });
                 break;
         }
+    }
+
+    private void unsetStateAfter(ActiveState changingState, long time) {
+        unsetStateAfter(() -> {}, changingState, time);
+    }
+
+    private void unsetStateAfter(Runnable runnable, ActiveState changingState, long time) {
+        unsetStateAfter(runnable, changingState, time, TimeUnit.SECONDS);
+    }
+
+    private void unsetStateAfter(Runnable runnable, ActiveState changingState, long time, TimeUnit unit) {
+        if (state != ActiveState.NONE) {
+            if (stateChange != null) stateChange.cancel(true);
+            undoPreviousState.run();
+        }
+        state = changingState;
+        LOGGER.info("State is now {}", state.name());
+        undoPreviousState = runnable;
+        stateChange = CompletableFuture.runAsync(() -> {
+            Thread.sleep(unit.toMillis(time));
+            undoPreviousState.run();
+            state = ActiveState.NONE;
+            LOGGER.info("State is now {}", state.name());
+        });
     }
 
     @Override
@@ -231,6 +264,11 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
                 eventClasses.computeIfAbsent(object, i -> new ArrayList<>()).add(method);
             }
         });
+    }
+
+    @Override
+    public void removeListener(Object object) {
+        eventClasses.remove(object);
     }
 
     private void raiseEvent(KeyPressEvent event) {

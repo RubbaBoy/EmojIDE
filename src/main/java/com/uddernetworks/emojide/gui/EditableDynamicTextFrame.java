@@ -62,7 +62,7 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
     }
 
     private void onKeyPress(KeyPressEvent event) {
-        LOGGER.info("Key pressed: {}", event);
+        LOGGER.info("[EDTF] Key pressed: {}", event);
 
         if (event.isAlphanumeric()) {
             addCharacter(event.getCharacter());
@@ -160,7 +160,7 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
                                 addCharacter(' ');
                                 break;
                             case ENTER:
-                                if (cursorY >= scrollY + height) break;
+                                if (cursorY >= scrollY + height + 1) break;
                                 textBlock.newlineAt(this.cursorX, this.cursorY++);
                                 this.cursorX = 0;
                                 refresh();

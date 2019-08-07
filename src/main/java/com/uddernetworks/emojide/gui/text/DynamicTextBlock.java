@@ -114,7 +114,6 @@ public class DynamicTextBlock implements TextBlock {
 
     @Override
     public void addEmpty(int y) {
-//        if (y > this.height - 2) return;
         this.chars.add(y + 1, new AutoGrowArrayList<>(SPACE_SUPPLIER));
     }
 

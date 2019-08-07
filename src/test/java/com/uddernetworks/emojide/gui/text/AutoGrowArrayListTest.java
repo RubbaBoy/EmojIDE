@@ -1,6 +1,5 @@
 package com.uddernetworks.emojide.gui.text;
 
-import org.apache.commons.collections4.list.GrowthList;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
