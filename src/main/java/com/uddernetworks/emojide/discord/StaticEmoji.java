@@ -73,6 +73,24 @@ public enum StaticEmoji implements Emoji {
     LTAB_SEPARATOR_SELECTED("ltss", "ide_emojis/ltab_separator_selected.png"),
     RTAB_SEPARATOR_SELECTED("rtss", "ide_emojis/rtab_separator_selected.png"),
 
+    // Welcome Tab
+    W_0w0("0w0", "welcome_emojis/name/0w0.png"),
+    W_1w0("1w0", "welcome_emojis/name/1w0.png"),
+    W_2w0("2w0", "welcome_emojis/name/2w0.png"),
+    W_3w0("3w0", "welcome_emojis/name/3w0.png"),
+    W_4w0("4w0", "welcome_emojis/name/4w0.png"),
+    W_5w0("5w0", "welcome_emojis/name/5w0.png"),
+    W_6w0("6w0", "welcome_emojis/name/6w0.png"),
+    W_7w0("7w0", "welcome_emojis/name/7w0.png"),
+    W_0w1("0w1", "welcome_emojis/name/0w1.png"),
+    W_1w1("1w1", "welcome_emojis/name/1w1.png"),
+    W_2w1("2w1", "welcome_emojis/name/2w1.png"),
+    W_3w1("3w1", "welcome_emojis/name/3w1.png"),
+    W_4w1("4w1", "welcome_emojis/name/4w1.png"),
+    W_5w1("5w1", "welcome_emojis/name/5w1.png"),
+    W_6w1("6w1", "welcome_emojis/name/6w1.png"),
+    W_7w1("7w1", "welcome_emojis/name/7w1.png"),
+
     A_32("32", "generated_emojis/32.png"), // ASCII
     A_33("33", "generated_emojis/33.png"), // ASCII !
     A_34("34", "generated_emojis/34.png"), // ASCII "

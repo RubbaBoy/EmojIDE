@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.management.openmbean.ArrayType;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -76,8 +77,12 @@ public class DefaultEmojiManager implements EmojiManager {
     private Optional<Emote> uploadEmote(String name, File file) {
         var uploaded = new AtomicReference<Emote>();
 
+        var max = new HashSet<Guild>();
+
         emojiServers.forEach(server -> {
+            if (max.contains(server)) return;
             if (server.retrieveEmotes().complete().size() >= 50) {
+                max.add(server);
                 DefaultEmojiManager.LOGGER.info("Reached max!");
                 return;
             }

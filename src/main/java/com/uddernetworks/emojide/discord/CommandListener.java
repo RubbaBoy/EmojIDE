@@ -52,13 +52,9 @@ public class CommandListener extends ListenerAdapter {
     private void commandStart(TextChannel channel) {
         System.out.println("Creating displayer...");
 
-//                                .addChild(new EditableDynamicTextFrame(displayer, 34, 6), 2, 2)
-
         (displayer = new CachedDisplayer(emojIDE, channel, true))
-                .setChild(new TabbedFrame(displayer, 58, 4 /* 10 */)
-                        .addTab("Red", new EmptyFrame(displayer, 56, 2).setBackground(StaticEmoji.RED))
-                        .addTab("Green", new EmptyFrame(displayer, 56, 2).setBackground(StaticEmoji.GREEN1))
-                        .addTab("Blue", new EmptyFrame(displayer, 56, 2).setBackground(StaticEmoji.BLUE1)), true);
+                .setChild(new TabbedFrame(displayer, 58, 23 /* 10 */)
+                        .addTab("Welcome", new WelcomeFrame(displayer)), true);
     }
 
     private void commandStop(TextChannel channel) {
