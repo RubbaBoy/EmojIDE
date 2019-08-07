@@ -5,6 +5,8 @@ import com.uddernetworks.emojide.gui.components.CachedDisplayer;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.main.EmojIDE;
 import com.uddernetworks.emojide.main.Thread;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -19,45 +21,51 @@ public class CommandListener extends ListenerAdapter {
 
     public CommandListener(EmojIDE emojIDE) {
         this.emojIDE = emojIDE;
+
+        var channel = emojIDE.getJda().getTextChannelById(606856180773421061L);
+        commandStop(channel);
+        Thread.sleep(1000);
+        commandStart(channel);
     }
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+        var channel = event.getTextChannel();
         switch (event.getMessage().getContentRaw().toLowerCase()) {
             case "!start":
                 event.getMessage().delete().queue();
-                commandStart(event);
+                commandStart(channel);
                 break;
             case "!stop":
                 event.getMessage().delete().queue();
-                commandStop(event);
+                commandStop(channel);
                 break;
             case "!r":
                 event.getMessage().delete().queue();
-                commandStop(event);
+                commandStop(channel);
                 Thread.sleep(1000);
-                commandStart(event);
+                commandStart(channel);
                 break;
         }
     }
 
-    private void commandStart(MessageReceivedEvent event) {
+    private void commandStart(TextChannel channel) {
         System.out.println("Creating displayer...");
 
 //                                .addChild(new EditableDynamicTextFrame(displayer, 34, 6), 2, 2)
 
-        (displayer = new CachedDisplayer(emojIDE, event.getTextChannel(), true))
+        (displayer = new CachedDisplayer(emojIDE, channel, true))
                 .setChild(new TabbedFrame(displayer, 58, 4 /* 10 */)
                         .addTab("Red", new EmptyFrame(displayer, 56, 2).setBackground(StaticEmoji.RED))
                         .addTab("Green", new EmptyFrame(displayer, 56, 2).setBackground(StaticEmoji.GREEN1))
                         .addTab("Blue", new EmptyFrame(displayer, 56, 2).setBackground(StaticEmoji.BLUE1)), true);
     }
 
-    private void commandStop(MessageReceivedEvent event) {
+    private void commandStop(TextChannel channel) {
         this.emojIDE.getKeyboardInputManager().removeKeyboard();
-        if (this.displayer != null) this.displayer.stop(event.getTextChannel());
+        if (this.displayer != null) this.displayer.stop(channel);
         var selfId = emojIDE.getJda().getSelfUser().getIdLong();
-        event.getTextChannel().purgeMessages(event.getTextChannel().getIterableHistory()
+        channel.purgeMessages(channel.getIterableHistory()
                 .stream()
                 .filter(messageHistory -> messageHistory.getAuthor().getIdLong() == selfId)
                 .collect(Collectors.toList()));

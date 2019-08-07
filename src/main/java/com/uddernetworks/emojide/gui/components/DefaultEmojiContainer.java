@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public abstract class DefaultEmojiContainer extends DefaultEmojiComponent implements EmojiContainer {
 
+    protected int xOffset = 0;
+    protected int yOffset = 0;
     protected List<PositionedComponent> positionedComponents = new ArrayList<>();
 
     public DefaultEmojiContainer(Displayer displayer, int width, int height) {
@@ -34,6 +36,22 @@ public abstract class DefaultEmojiContainer extends DefaultEmojiComponent implem
         return this;
     }
 
+    @Override
+    public void setOffset(int x, int y) {
+        this.xOffset = x;
+        this.yOffset = y;
+    }
+
+    @Override
+    public int getXOffset() {
+        return this.xOffset;
+    }
+
+    @Override
+    public int getYOffset() {
+        return this.yOffset;
+    }
+
     private Optional<PositionedComponent> getPositioned(EmojiComponent component) {
         return this.positionedComponents.stream().filter(positionedComponent -> positionedComponent.getComponent().equals(component)).findFirst();
     }
@@ -45,12 +63,13 @@ public abstract class DefaultEmojiContainer extends DefaultEmojiComponent implem
     }
 
     private void drawTo(PositionedComponent positioned, Emoji[][] rows) {
-        var insertX = positioned.getX();
+        var insertX = positioned.getX() + this.xOffset;
+        var insertY = positioned.getY() + this.yOffset;
         var component = positioned.getComponent();
         var inserting = component.getCachedRender(); // The component
 
         for (int y = 0; y < component.getHeight(); y++) {
-            System.arraycopy(inserting[y], 0, rows[y + positioned.getY()], insertX, component.getWidth());
+            System.arraycopy(inserting[y], 0, rows[y + insertY], insertX, component.getWidth());
         }
     }
 

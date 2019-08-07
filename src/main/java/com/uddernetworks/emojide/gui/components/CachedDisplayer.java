@@ -94,6 +94,7 @@ public class CachedDisplayer implements Displayer {
                     .map(emote -> emote == null ? this.filler : emote)
                     .map(Emoji::getDisplay)
                     .collect(Collectors.joining());
+            if (i == 0) message = "\u200b\n\u200b\n\u200b\n" + message;
             if (sendMessages) {
                 RenderEngine.queueSend(this.channel, message, completed -> this.messages.add(completed));
             } else {

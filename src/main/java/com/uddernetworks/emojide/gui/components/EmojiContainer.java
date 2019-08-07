@@ -36,4 +36,26 @@ public interface EmojiContainer extends EmojiComponent {
      * @return The current {@link EmojiContainer} for builder-style invocations
      */
     EmojiContainer positionChild(EmojiComponent component, int x, int y);
+
+    /**
+     * Sets the offset elements will be placed at internally.
+     *
+     * @param x The X offset
+     * @param y The Y offset
+     */
+    void setOffset(int x, int y);
+
+    /**
+     * Gets the X offset set by {@link #setOffset(int, int)};
+     *
+     * @return The X offset
+     */
+    int getXOffset();
+
+    /**
+     * Gets the Y offset set by {@link #setOffset(int, int)};
+     *
+     * @return The Y offset
+     */
+    int getYOffset();
 }

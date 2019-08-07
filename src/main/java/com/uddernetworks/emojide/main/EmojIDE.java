@@ -37,9 +37,9 @@ public class EmojIDE extends ListenerAdapter {
     public void onReady(@Nonnull ReadyEvent event) {
         this.jda = event.getJDA();
 
-        this.jda.addEventListener(new CommandListener(this));
-        this.emojiManager = new DefaultEmojiManager(this, configManager.getServers());
         this.jda.addEventListener(this.keyboardInputManager = new SimpleKeyboardInputManager(this));
+        this.emojiManager = new DefaultEmojiManager(this, configManager.getServers());
+        this.jda.addEventListener(new CommandListener(this));
     }
 
     public static ConfigManager getConfigManager() {

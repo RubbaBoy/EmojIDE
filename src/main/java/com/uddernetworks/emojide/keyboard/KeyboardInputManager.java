@@ -76,10 +76,10 @@ public interface KeyboardInputManager extends EventListener {
     void removeListener(Object object);
 
     enum Pair {
-        SPACE, SHIFT, ENTER
+        SPACE, SHIFT, ENTER, CAPS, CTRL, ALT, FN
     }
 
     enum ActiveState {
-        NONE, SHIFT, CTRL, ALT
+        NONE, SHIFT, CTRL, ALT, FN
     }
 }

@@ -17,11 +17,11 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.uddernetworks.emojide.discord.StaticEmoji.*;
-import static com.uddernetworks.emojide.keyboard.KeyboardInputManager.Pair.*;
 
 public class SimpleKeyboardInputManager extends ListenerAdapter implements KeyboardInputManager {
 
@@ -33,10 +33,11 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
     private EmojIDE emojIDE;
     private boolean keyboardActive;
     private Message keyboardMessage;
-    private MessageEmbed lowercaseEmbed;
-    private MessageEmbed uppercaseEmbed;
     private boolean lowercaseMode = true;
     private ActiveState state = ActiveState.NONE;
+
+    private Supplier<MessageEmbed> lowercaseSupplier;
+    private Supplier<MessageEmbed> uppercaseSupplier;
 
     private Map<Pair, List<Emoji>> pairs = new HashMap<>();
     private Map<Object, List<Method>> eventClasses = new HashMap<>();
@@ -59,35 +60,52 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
         if (this.keyboardActive) return;
         this.keyboardActive = true;
 
-        var lower = new EmbedBuilder();
-        addRow(lower, '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', BACKSPACE, TRANSPARENT, INS, HOME, PG_UP);
-        addRow(lower, TAB, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', TRANSPARENT, DEL, END, PG_DOWN);
-        addRow(lower, CAPS_LOCK, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', addPair(ENTER, ENTERL, ENTERR));
-        addRow(lower, addPair(SHIFT, SHIFTL, SHIFTR), 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', addPair(SHIFT, SHIFTL, SHIFTR), TRANSPARENT, UP);
-        addSpecialRow(lower, 10, CTRL, ICON, ALT, addNestedPair(SPACE, SPACEL, addQuantity(SPACEC, SPACE, 6), SPACER), ALT, FN, CONTEXT, CTRL, LEFT, DOWN, RIGHT, TRANSPARENT);
-        this.lowercaseEmbed = lower.build();
+        addPair(Pair.CAPS, CAPS_LOCK, CAPS_LOCK_ACTIVE);
+        addPair(Pair.ALT, ALT, ALT_ACTIVE);
+        addPair(Pair.CTRL, CTRL, CTRL_ACTIVE);
+        addPair(Pair.FN, FN, FN_ACTIVE);
 
-        var upper = new EmbedBuilder();
-        addRow(upper, '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', BACKSPACE, TRANSPARENT, INS, HOME, PG_UP);
-        addRow(upper, TAB, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|', TRANSPARENT, DEL, END, PG_DOWN);
-        addRow(upper, CAPS_LOCK, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', addPair(ENTER, ENTERL, ENTERR));
-        addRow(upper, addPair(SHIFT, SHIFTL, SHIFTR), 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', addPair(SHIFT, SHIFTL, SHIFTR), TRANSPARENT, UP);
-        addSpecialRow(upper, 10, CTRL, ICON, ALT, addNestedPair(SPACE, SPACEL, addQuantity(SPACEC, SPACE, 6), SPACER), ALT, FN, CONTEXT, CTRL, LEFT, DOWN, RIGHT, TRANSPARENT);
-        this.uppercaseEmbed = upper.build();
+        this.lowercaseSupplier = () -> {
+            var alt = this.state == ActiveState.ALT ? ALT_ACTIVE : ALT;
+            var ctrl = this.state == ActiveState.CTRL ? CTRL_ACTIVE : CTRL;
+            var fn = this.state == ActiveState.FN ? FN_ACTIVE : FN;
 
-        RenderEngine.queueSend(textChannel, this.lowercaseEmbed, message -> this.keyboardMessage = message);
+            var lower = new EmbedBuilder();
+            addRow(lower, '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', BACKSPACE, TRANSPARENT, INS, HOME, PG_UP);
+            addRow(lower, TAB, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', TRANSPARENT, DEL, END, PG_DOWN);
+            addRow(lower, this.lowercaseMode ? CAPS_LOCK : CAPS_LOCK_ACTIVE, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', addPair(Pair.ENTER, ENTERL, ENTERR));
+            addRow(lower, addPair(Pair.SHIFT, SHIFTL, SHIFTR), 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', addPair(Pair.SHIFT, SHIFTL, SHIFTR), TRANSPARENT, UP);
+            addSpecialRow(lower, 10, ctrl, ICON, alt, addNestedPair(Pair.SPACE, SPACEL, addQuantity(SPACEC, Pair.SPACE, 6), SPACER), alt, fn, CONTEXT, ctrl, LEFT, DOWN, RIGHT, TRANSPARENT);
+            return lower.build();
+        };
+
+        this.uppercaseSupplier = () -> {
+            var alt = this.state == ActiveState.ALT ? ALT_ACTIVE : ALT;
+            var ctrl = this.state == ActiveState.CTRL ? CTRL_ACTIVE : CTRL;
+            var fn = this.state == ActiveState.FN ? FN_ACTIVE : FN;
+
+            var upper = new EmbedBuilder();
+            addRow(upper, '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', BACKSPACE, TRANSPARENT, INS, HOME, PG_UP);
+            addRow(upper, TAB, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|', TRANSPARENT, DEL, END, PG_DOWN);
+            addRow(upper, this.lowercaseMode ? CAPS_LOCK : CAPS_LOCK_ACTIVE, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', addPair(Pair.ENTER, ENTERL, ENTERR));
+            addRow(upper, addPair(Pair.SHIFT, SHIFTL, SHIFTR), 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', addPair(Pair.SHIFT, SHIFTL, SHIFTR), TRANSPARENT, UP);
+            addSpecialRow(upper, 10, ctrl, ICON, alt, addNestedPair(Pair.SPACE, SPACEL, addQuantity(SPACEC, Pair.SPACE, 6), SPACER), alt, fn, CONTEXT, ctrl, LEFT, DOWN, RIGHT, TRANSPARENT);
+            return upper.build();
+        };
+
+        RenderEngine.queueSend(textChannel, this.lowercaseSupplier.get(), message -> this.keyboardMessage = message);
     }
 
     @Override
     public void changeToUpper() {
         this.lowercaseMode = false;
-        RenderEngine.queueEdit(this.keyboardMessage, this.uppercaseEmbed);
+        RenderEngine.queueEdit(this.keyboardMessage, this.uppercaseSupplier.get());
     }
 
     @Override
     public void changeToLower() {
         this.lowercaseMode = true;
-        RenderEngine.queueEdit(this.keyboardMessage, this.lowercaseEmbed);
+        RenderEngine.queueEdit(this.keyboardMessage, this.lowercaseSupplier.get());
     }
 
     @Override
@@ -183,30 +201,39 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
 
     private void onKeyPress(KeyPressEvent event) {
         if (event.isAlphanumeric()) return;
-        switch (event.getStaticEmoji()) {
-            case CAPS_LOCK:
-                if (this.lowercaseMode) {
+        getPair(event.getStaticEmoji()).ifPresent(pair -> {
+            switch (pair) {
+                case SHIFT:
                     changeToUpper();
-                } else {
-                    changeToLower();
-                }
-                break;
-            case CTRL:
-                unsetStateAfter(ActiveState.CTRL, 3);
-                break;
-            case ALT:
-                unsetStateAfter(ActiveState.ALT, 3);
-                break;
-            default:
-                getPair(event.getStaticEmoji()).ifPresent(pair -> {
-                    switch (pair) {
-                        case SHIFT:
-                            changeToUpper();
-                            unsetStateAfter(this::changeToLower, ActiveState.SHIFT, 3);
-                            break;
+                    unsetStateAfter(this::changeToLower, ActiveState.SHIFT, 3);
+                    break;
+                case CAPS:
+                    if (this.lowercaseMode) {
+                        changeToUpper();
+                    } else {
+                        changeToLower();
                     }
-                });
-                break;
+                    break;
+                case CTRL:
+                    unsetStateAfter(ActiveState.CTRL, 3);
+                    refresh();
+                    break;
+                case ALT:
+                    unsetStateAfter(ActiveState.ALT, 3);
+                    refresh();
+                    break;
+                case FN:
+                    // Lol there's no function keys to do anything with
+                    break;
+            }
+        });
+    }
+
+    private void refresh() {
+        if (this.lowercaseMode) {
+            changeToLower();
+        } else {
+            changeToUpper();
         }
     }
 
@@ -230,6 +257,7 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
             Thread.sleep(unit.toMillis(time));
             undoPreviousState.run();
             state = ActiveState.NONE;
+            refresh();
             LOGGER.info("State is now {}", state.name());
         });
     }
