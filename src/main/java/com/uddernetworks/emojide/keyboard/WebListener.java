@@ -19,7 +19,7 @@ public interface WebListener {
      * Invokes {@link #parseHeaders(Client, BiConsumer)} and if the requestHeaderFunction returns false, an error
      * response is sent. Either way, the {@link Client} given is closed at the end.
      *
-     * @param client The {@link Client}
+     * @param client                The {@link Client}
      * @param requestHeaderFunction The function giving request data and header data, returning if the request was
      *                              successful.
      */
@@ -29,7 +29,7 @@ public interface WebListener {
      * Parses the headers from the given {@link Client}, invoking the function by default when the Connection header is
      * given.
      *
-     * @param client The {@link Client}
+     * @param client          The {@link Client}
      * @param headersComplete The request data and headers
      */
     void parseHeaders(Client client, BiConsumer<String[], Map<String, String>> headersComplete);

@@ -26,11 +26,11 @@ public class EmojIDE extends ListenerAdapter {
         (configManager = new DefaultConfigManager("secret.conf")).init();
 
         new DefaultShardManagerBuilder()
-            .setToken(configManager.getPrimaryToken())
-            .setStatus(OnlineStatus.ONLINE)
-            .setActivity(Activity.playing("Programming"))
-            .addEventListeners(new EmojIDE())
-            .build();
+                .setToken(configManager.getPrimaryToken())
+                .setStatus(OnlineStatus.ONLINE)
+                .setActivity(Activity.playing("Programming"))
+                .addEventListeners(new EmojIDE())
+                .build();
     }
 
     @Override

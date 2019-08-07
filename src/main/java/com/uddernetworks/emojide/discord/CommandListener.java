@@ -1,17 +1,17 @@
 package com.uddernetworks.emojide.discord;
 
-import com.uddernetworks.emojide.gui.*;
+import com.uddernetworks.emojide.gui.TabbedFrame;
+import com.uddernetworks.emojide.gui.WelcomeFrame;
 import com.uddernetworks.emojide.gui.components.CachedDisplayer;
 import com.uddernetworks.emojide.gui.components.Displayer;
+import com.uddernetworks.emojide.ide.TabController;
 import com.uddernetworks.emojide.main.EmojIDE;
 import com.uddernetworks.emojide.main.Thread;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class CommandListener extends ListenerAdapter {
@@ -52,9 +52,13 @@ public class CommandListener extends ListenerAdapter {
     private void commandStart(TextChannel channel) {
         System.out.println("Creating displayer...");
 
+
+        TabbedFrame tabbedFrame;
         (displayer = new CachedDisplayer(emojIDE, channel, true))
-                .setChild(new TabbedFrame(displayer, 58, 23 /* 10 */)
+                .setChild(tabbedFrame = new TabbedFrame(displayer, 58, 23 /* 10 */)
                         .addTab("Welcome", new WelcomeFrame(displayer)), true);
+
+        var tabController = new TabController(emojIDE, displayer).setTabbedFrame(tabbedFrame);
     }
 
     private void commandStop(TextChannel channel) {

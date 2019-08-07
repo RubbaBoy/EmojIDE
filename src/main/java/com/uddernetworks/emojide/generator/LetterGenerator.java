@@ -152,9 +152,9 @@ public class LetterGenerator {
 
             float amt = (i % fade) / ((float) fade);
 
-            r[i] = getChannel(amt, c0.getRed(),   c1.getRed());
+            r[i] = getChannel(amt, c0.getRed(), c1.getRed());
             g[i] = getChannel(amt, c0.getGreen(), c1.getGreen());
-            b[i] = getChannel(amt, c0.getBlue(),  c1.getBlue());
+            b[i] = getChannel(amt, c0.getBlue(), c1.getBlue());
         }
 
         // (remap same pixels to new model)

@@ -55,7 +55,8 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
             var scaledLine = y + startLine;
             var line = new Emoji[width];
             Arrays.fill(line, StaticEmoji.TRANSPARENT);
-            if (scaledLine < grid.length) System.arraycopy(grid[scaledLine], 0, line, 0, Math.min(grid[scaledLine].length, width));
+            if (scaledLine < grid.length)
+                System.arraycopy(grid[scaledLine], 0, line, 0, Math.min(grid[scaledLine].length, width));
             result[y] = line;
         }
         return result;

@@ -116,8 +116,8 @@ public class RenderEngine {
      * Queues the sending of a message in the given {@link TextChannel} and content, invoking the given consumer when
      * the message has been sent.
      *
-     * @param channel The {@link TextChannel} to send the message to
-     * @param content The content of the message
+     * @param channel    The {@link TextChannel} to send the message to
+     * @param content    The content of the message
      * @param onComplete The consumer to invoke when the action has been completed, giving the sent message
      */
     public static void queueSend(TextChannel channel, String content, Consumer<Message> onComplete) {
@@ -128,7 +128,7 @@ public class RenderEngine {
     /**
      * Queues the sending of a message in the given {@link TextChannel} and content.
      *
-     * @param channel The {@link TextChannel} to send the message to
+     * @param channel      The {@link TextChannel} to send the message to
      * @param embedContent The content of the message
      */
     public static void queueSend(TextChannel channel, MessageEmbed embedContent) {
@@ -139,9 +139,9 @@ public class RenderEngine {
      * Queues the sending of a message in the given {@link TextChannel} and content, invoking the given consumer when
      * the message has been sent.
      *
-     * @param channel The {@link TextChannel} to send the message to
+     * @param channel      The {@link TextChannel} to send the message to
      * @param embedContent The content of the message
-     * @param onComplete The consumer to invoke when the action has been completed, giving the sent message
+     * @param onComplete   The consumer to invoke when the action has been completed, giving the sent message
      */
     public static void queueSend(TextChannel channel, MessageEmbed embedContent, Consumer<Message> onComplete) {
         LOGGER.debug("Queuing send {}", embedContent);
@@ -161,8 +161,8 @@ public class RenderEngine {
     /**
      * Queues the editing of a message to the given content.
      *
-     * @param message The {@link Message} to send edit
-     * @param content The new content of the message
+     * @param message    The {@link Message} to send edit
+     * @param content    The new content of the message
      * @param onComplete The consumer to invoke when the action has been completed, giving the edited message
      */
     public static void queueEdit(Message message, String content, Consumer<Message> onComplete) {
@@ -173,7 +173,7 @@ public class RenderEngine {
     /**
      * Queues the editing of a message to the given content.
      *
-     * @param message The {@link Message} to send edit
+     * @param message      The {@link Message} to send edit
      * @param embedContent The new content of the message
      */
     public static void queueEdit(Message message, MessageEmbed embedContent) {
@@ -183,9 +183,9 @@ public class RenderEngine {
     /**
      * Queues the editing of a message to the given content.
      *
-     * @param message The {@link Message} to send edit
+     * @param message      The {@link Message} to send edit
      * @param embedContent The new content of the message
-     * @param onComplete The consumer to invoke when the action has been completed, giving the edited message
+     * @param onComplete   The consumer to invoke when the action has been completed, giving the edited message
      */
     public static void queueEdit(Message message, MessageEmbed embedContent, Consumer<Message> onComplete) {
         LOGGER.debug("Queuing edit");

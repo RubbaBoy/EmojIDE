@@ -85,7 +85,8 @@ public class SimpleWebListener implements WebListener {
     @Override
     public void tryAndParse(Client client, BiFunction<String[], Map<String, String>, Boolean> requestHeaderFunction) {
         parseHeaders(client, (request, headers) -> {
-            if (!requestHeaderFunction.apply(request, headers)) Packet.builder().putBytes(generateRequest("<p>Bruh what the fuck is this</p>")).writeAndFlush(client);
+            if (!requestHeaderFunction.apply(request, headers))
+                Packet.builder().putBytes(generateRequest("<p>Bruh what the fuck is this</p>")).writeAndFlush(client);
             client.close();
         });
     }
@@ -118,7 +119,7 @@ public class SimpleWebListener implements WebListener {
             }
 
             return true;
-         });
+        });
     }
 
     @Override

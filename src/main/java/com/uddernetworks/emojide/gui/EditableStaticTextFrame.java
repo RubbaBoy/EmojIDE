@@ -35,7 +35,7 @@ public class EditableStaticTextFrame extends StyledEmojiComponent {
         validateCursor();
 
         var textEmoji = textBlock.toEmoji(emojiManager, initial);
-        textEmoji[cursorY][Math.min(width - 1, cursorX)] = StaticEmoji.CURSOR;
+        textEmoji[Math.min(height, cursorY)][Math.min(width - 1, cursorX)] = StaticEmoji.CURSOR;
 
         return textEmoji;
     }
@@ -177,5 +177,9 @@ public class EditableStaticTextFrame extends StyledEmojiComponent {
 
         this.cursorX = Math.min(this.cursorX, this.width);
         this.cursorY = Math.min(this.cursorY, this.height);
+    }
+
+    public TextBlock getTextBlock() {
+        return textBlock;
     }
 }

@@ -12,7 +12,7 @@ public class ComponentUtils {
     /**
      * Creates a 2D array of null {@link Emoji}s, with the given dimensions.
      *
-     * @param width The width of the array
+     * @param width  The width of the array
      * @param height The height of the array
      * @return The 2D array
      */
@@ -25,7 +25,7 @@ public class ComponentUtils {
     /**
      * Creates a 2D array of the {@link Emoji} {@link StaticEmoji#DISCORD}, with the given dimensions.
      *
-     * @param width The width of the array
+     * @param width  The width of the array
      * @param height The height of the array
      * @return The 2D array
      */
@@ -36,7 +36,7 @@ public class ComponentUtils {
     /**
      * Creates a 2D array of the given {@link Emoji} with the given dimensions.
      *
-     * @param width The width of the array
+     * @param width  The width of the array
      * @param height The height of the array
      * @return The 2D array
      */

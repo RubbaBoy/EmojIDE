@@ -14,7 +14,7 @@ public interface KeyboardInputManager extends EventListener {
      * criteria. This is to make each row look uniform. Each emoji is a link to the webserver hosted by this bot, which
      * is why each field is only half of the embed width, as there is a low character count for fields, and even lower
      * for the full description.
-     *
+     * <p>
      * When an emoji's link is clicked, the page opened sends another request to the webserver with a random number that
      * then counts the request. If this random link has not been registered yet, events are fired. This is to prevent
      * double presses from browsers sending things twice.
@@ -74,6 +74,17 @@ public interface KeyboardInputManager extends EventListener {
      * @param object The class instance to remove
      */
     void removeListener(Object object);
+
+    /**
+     * Saves and then disabled all listeners (Other than the {@link KeyboardInputManager}). They may be resumed via
+     * {@link #resumeListeners()}.
+     */
+    void suspendListeners();
+
+    /**
+     * Removes any listeners added after the call of {@link #suspendListeners()} and enabled all the same ones.
+     */
+    void resumeListeners();
 
     enum Pair {
         SPACE, SHIFT, ENTER, CAPS, CTRL, ALT, FN

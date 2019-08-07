@@ -31,9 +31,7 @@ public class TabbedFrame extends DefaultEmojiContainer {
 
     @Override
     public Emoji[][] render(Emoji[][] initial) {
-        // Drawing the border without any tabs
-        initial = drawBorder(initial);
-        return super.render(initial);
+        return super.render(drawBorder(initial));
     }
 
     private void onKeyPress(KeyPressEvent event) {
@@ -47,6 +45,18 @@ public class TabbedFrame extends DefaultEmojiContainer {
                 var from = getActive();
                 if (--activeTab < 0) activeTab = tabs.size() - 1;
                 switchToTab(from, getActive());
+            }
+        }
+    }
+
+    public void selectTab(EmojiComponent component) {
+        if (getActive().component.equals(component)) return;
+        for (int i = 0; i < tabs.size(); i++) {
+            var tab = tabs.get(i);
+            if (tab.component.equals(component)) {
+                activeTab = i;
+                switchToTab(getActive(), tab);
+                return;
             }
         }
     }

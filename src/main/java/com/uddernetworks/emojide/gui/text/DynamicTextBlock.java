@@ -8,10 +8,7 @@ import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -52,6 +49,11 @@ public class DynamicTextBlock implements TextBlock {
                 .forEach(line -> this.chars.add(Arrays.stream(line.split(""))
                         .map(str -> str.charAt(0))
                         .collect(Collectors.toCollection(LIST_SUPPLIER))));
+    }
+
+    @Override
+    public String getText() {
+        return chars.stream().map(list -> list.stream().map(String::valueOf).collect(Collectors.joining())).collect(Collectors.joining("\n")).strip();
     }
 
     @Override

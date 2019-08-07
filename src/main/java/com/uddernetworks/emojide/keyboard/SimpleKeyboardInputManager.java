@@ -41,6 +41,7 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
 
     private Map<Pair, List<Emoji>> pairs = new HashMap<>();
     private Map<Object, List<Method>> eventClasses = new HashMap<>();
+    private Map<Object, List<Method>> suspended = new HashMap<>();
 
     /**
      * Creates a {@link SimpleKeyboardInputManager} and starts the {@link WebListener}.
@@ -299,8 +300,24 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
         eventClasses.remove(object);
     }
 
+    @Override
+    public void suspendListeners() {
+        if (!suspended.isEmpty()) return;
+        suspended = new HashMap<>(eventClasses);
+        new HashSet<>(eventClasses.keySet()).stream().filter(obj -> !obj.equals(this)).forEach(eventClasses::remove);
+        LOGGER.info("All keyboard listeners have been suspended");
+    }
+
+    @Override
+    public void resumeListeners() {
+        new HashSet<>(eventClasses.keySet()).stream().filter(obj -> !obj.equals(this)).forEach(eventClasses::remove);
+        suspended.forEach(eventClasses::put);
+        suspended.clear();
+        LOGGER.info("All keyboard listeners have been reset back to the last suspend");
+    }
+
     private void raiseEvent(KeyPressEvent event) {
-        this.eventClasses.forEach((object, methods) -> {
+        new HashMap<>(this.eventClasses).forEach((object, methods) -> {
             methods.forEach(method -> {
                 if (method.getName().equals("raiseEvent") && object == this) return;
                 try {

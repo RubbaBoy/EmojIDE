@@ -14,8 +14,8 @@ public interface EmojiContainer extends EmojiComponent {
      * Adds a child {@link EmojiComponent} to render at the given coordinates.
      *
      * @param component The {@link EmojiComponent} to render
-     * @param x The relative X coordinate to render at
-     * @param y The relative Y coordinate to render at
+     * @param x         The relative X coordinate to render at
+     * @param y         The relative Y coordinate to render at
      * @return The current {@link EmojiContainer} for builder-style invocations
      */
     EmojiContainer addChild(EmojiComponent component, int x, int y);
@@ -31,8 +31,8 @@ public interface EmojiContainer extends EmojiComponent {
      * Positions an existing {@link EmojiComponent} to the given coordinates.
      *
      * @param component The {@link EmojiComponent} to mutate the location of
-     * @param x The relative X coordinate to render at
-     * @param y The relative Y coordinate to render at
+     * @param x         The relative X coordinate to render at
+     * @param y         The relative Y coordinate to render at
      * @return The current {@link EmojiContainer} for builder-style invocations
      */
     EmojiContainer positionChild(EmojiComponent component, int x, int y);

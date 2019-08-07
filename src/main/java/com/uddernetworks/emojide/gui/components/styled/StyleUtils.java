@@ -23,7 +23,7 @@ public class StyleUtils {
     /**
      * Draws a border of a given {@link Emoji} with a width of 1 in the given 2D array.
      *
-     * @param rows The 2D array to (presumably) render
+     * @param rows   The 2D array to (presumably) render
      * @param border The {@link Emoji} to set as the border
      * @return The mutated 2D array
      */

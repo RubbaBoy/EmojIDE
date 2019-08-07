@@ -16,7 +16,7 @@ public interface Displayer {
     /**
      * Sets the child being displayed by the {@link Displayer} with invoking {@link #update()} if autoUpdate is true.
      *
-     * @param component The child to render
+     * @param component  The child to render
      * @param autoUpdate If the {@link #update()} method should be invoked immediately after
      */
     void setChild(EmojiComponent component, boolean autoUpdate);

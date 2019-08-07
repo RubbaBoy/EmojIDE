@@ -27,7 +27,7 @@ public class DefaultTextBlock implements TextBlock {
     /**
      * Creates a {@link DefaultTextBlock} with a fixed with and height, in emojis.
      *
-     * @param width The width
+     * @param width  The width
      * @param height The height
      */
     public DefaultTextBlock(int width, int height) {
@@ -55,11 +55,22 @@ public class DefaultTextBlock implements TextBlock {
         for (int y = 0; y < loopTo; y++) {
             var line = wrapped[y].toCharArray();
             var emojiLine = chars[y];
-            for (int x = 0; x < line.length; x++) {
-                emojiLine[x] = line[x];
-            }
+            System.arraycopy(line, 0, emojiLine, 0, line.length);
             chars[y] = emojiLine;
         }
+    }
+
+    @Override
+    public String getText() {
+        var builder = new StringBuilder();
+        for (char[] x : chars) {
+            for (char y : x) {
+                if (y == 0) continue;
+                builder.append(y);
+            }
+            builder.append('\n');
+        }
+        return builder.toString().strip();
     }
 
     @Override
@@ -106,6 +117,7 @@ public class DefaultTextBlock implements TextBlock {
     @Override
     public void newlineAt(int x, int y) {
         if (x >= this.width) return;
+        if (y + 1 >= height) return;
         var row = this.chars[y];
         var upperRow = new char[width];
         var lowerRow = new char[width];

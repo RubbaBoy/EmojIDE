@@ -48,13 +48,13 @@ public class CachedDisplayer implements Displayer {
      * Creates a {@link CachedDisplayer} in the given channel. If insertKeyboard is true, a keyboard will be set after the
      * first update invocation.
      *
-     * @param emojIDE The {@link EmojIDE} instance
-     * @param channel The {@link TextChannel} to place everything in
+     * @param emojIDE        The {@link EmojIDE} instance
+     * @param channel        The {@link TextChannel} to place everything in
      * @param insertKeyboard If a keyboard should be set afterwards
      */
     public CachedDisplayer(EmojIDE emojIDE, TextChannel channel, boolean insertKeyboard) {
         this.emojIDE = emojIDE;
-        this.filler = StaticEmoji.DISCORD;
+        this.filler = StaticEmoji.TRANSPARENT;
         this.channel = channel;
         this.insertKeyboard = insertKeyboard;
 
@@ -87,7 +87,8 @@ public class CachedDisplayer implements Displayer {
         var emotes = this.child.getCachedRender();
         if (emotes[0].length != this.child.getWidth() || emotes.length != this.child.getHeight())
             throw new InvalidComponentException("Incorrect render dimensions received. Got " + emotes[0].length + "x" + emotes.length + ", expected " + this.child.getWidth() + "x" + this.child.getHeight());
-        if (cachedLines.isEmpty()) this.cachedLines = IntStream.range(0, emotes.length).mapToObj(i -> "").collect(Collectors.toList());
+        if (cachedLines.isEmpty())
+            this.cachedLines = IntStream.range(0, emotes.length).mapToObj(i -> "").collect(Collectors.toList());
         for (int i = 0; i < emotes.length; i++) {
             var line = emotes[i];
             var message = Arrays.stream(line)
@@ -98,7 +99,8 @@ public class CachedDisplayer implements Displayer {
             if (sendMessages) {
                 RenderEngine.queueSend(this.channel, message, completed -> this.messages.add(completed));
             } else {
-                if (!this.cachedLines.get(i).equals(message)) RenderEngine.queueEdit(this.messages.get(i), message, ignored -> {});
+                if (!this.cachedLines.get(i).equals(message))
+                    RenderEngine.queueEdit(this.messages.get(i), message, ignored -> {});
             }
             this.cachedLines.set(i, message);
         }

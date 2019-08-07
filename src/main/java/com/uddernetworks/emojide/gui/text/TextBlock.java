@@ -40,11 +40,18 @@ public interface TextBlock {
     void setText(String text);
 
     /**
+     * Gets the trimmed text.
+     *
+     * @return The text
+     */
+    String getText();
+
+    /**
      * Sets the given coordinates to the given character. No other characters or references are modified.
      *
      * @param character The character to set
-     * @param x The X position of the grid
-     * @param y The Y position of the grid
+     * @param x         The X position of the grid
+     * @param y         The Y position of the grid
      */
     void setChar(char character, int x, int y);
 
@@ -62,8 +69,8 @@ public interface TextBlock {
      * proceeding it, truncating any overflows.
      *
      * @param character The character to insert
-     * @param x The X position of the grid
-     * @param y The Y position of the grid
+     * @param x         The X position of the grid
+     * @param y         The Y position of the grid
      */
     void addChar(char character, int x, int y);
 
@@ -102,7 +109,7 @@ public interface TextBlock {
     /**
      * Adds the given char[] to the end of the content of a line.
      *
-     * @param y The Y position of the grid
+     * @param y    The Y position of the grid
      * @param line The line to add
      */
     default void addAll(int y, char[] line) {
@@ -112,7 +119,7 @@ public interface TextBlock {
     /**
      * Adds the given Character list to the end of the content of a line.
      *
-     * @param y The Y position of the grid
+     * @param y    The Y position of the grid
      * @param line The line to add
      */
     default void addAll(int y, List<Character> line) {
