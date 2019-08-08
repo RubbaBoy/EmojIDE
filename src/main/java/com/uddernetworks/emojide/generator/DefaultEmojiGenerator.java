@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 
 import static com.uddernetworks.emojide.generator.LetterGenerator.*;
 
@@ -20,7 +21,15 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
         parent.mkdirs();
 
         // Generate text
-        Arrays.stream(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".split("")).forEach(character -> drawAndSave(parent, character));
+
+        Map.of(
+                "", Color.WHITE, // White
+                "o", new Color(0xCC7832), // Orange
+                "g", new Color(0x6A8759), // Green
+                "b", new Color(0x6897BB), // Blue
+                "a", new Color(0x808080), // Gray
+                "l", new Color(0x666666) // Light Gray
+        ).forEach((prefix, color) -> Arrays.stream(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".split("")).forEach(character -> drawAndSave(parent, character, prefix, color)));
 
         // Generate color palette
         generateColorPalette(parent,
@@ -68,14 +77,14 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
         }
     }
 
-    private void drawAndSave(File parent, String character) {
-        var saveFile = new File(parent, ((int) character.charAt(0)) + ".png");
+    private void drawAndSave(File parent, String character, String prefix, Color color) {
+        var saveFile = new File(parent, prefix + ((int) character.charAt(0)) + ".png");
         if (saveFile.exists()) return;
         BufferedImage image = new BufferedImage(WIDTH + 50, HEIGHT + 50, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = image.createGraphics();
         graphics.setPaint(TRANSPARENT);
         graphics.fillRect(0, 0, WIDTH + 50, HEIGHT + 50);
-        graphics.setPaint(Color.white);
+        graphics.setPaint(color);
         graphics.setFont(new Font("Consolas", Font.PLAIN, 256)); // 192pts
         FontMetrics metrics = graphics.getFontMetrics();
         int x = (WIDTH - metrics.stringWidth(character)) / 2;

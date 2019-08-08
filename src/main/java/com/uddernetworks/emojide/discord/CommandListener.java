@@ -1,7 +1,6 @@
 package com.uddernetworks.emojide.discord;
 
-import com.uddernetworks.emojide.gui.TabbedFrame;
-import com.uddernetworks.emojide.gui.WelcomeFrame;
+import com.uddernetworks.emojide.gui.*;
 import com.uddernetworks.emojide.gui.components.CachedDisplayer;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.ide.TabController;
@@ -52,11 +51,17 @@ public class CommandListener extends ListenerAdapter {
     private void commandStart(TextChannel channel) {
         System.out.println("Creating displayer...");
 
+        var text = "function myMethod(arg) {\n" +
+                    "   console.log('Arg is ' + arg + '!');\n" +
+                    "}\n" +
+                    "\n" +
+                    "myMethod('Hello World');\n";
 
         TabbedFrame tabbedFrame;
         (displayer = new CachedDisplayer(emojIDE, channel, true))
                 .setChild(tabbedFrame = new TabbedFrame(displayer, 58, 23 /* 10 */)
-                        .addTab("Welcome", new WelcomeFrame(displayer)), true);
+                        .addTab("script.js", new EmptyContainerFrame(displayer, 56, 20).addChild(new HighlightedTextFrame(displayer, 54, 18, text), 1, 1)), true);
+//                        .addTab("Welcome", new WelcomeFrame(displayer)), true);
 
         var tabController = new TabController(emojIDE, displayer).setTabbedFrame(tabbedFrame);
     }

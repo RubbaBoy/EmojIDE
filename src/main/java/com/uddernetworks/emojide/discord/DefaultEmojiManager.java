@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.management.openmbean.ArrayType;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -25,6 +24,7 @@ public class DefaultEmojiManager implements EmojiManager {
     private List<Guild> emojiServers;
     private Map<String, Emoji> emojis = new HashMap<>();
     private EmojIDE emojIDE;
+    private Set<Guild> maxServers = new HashSet<>();
 
     public DefaultEmojiManager(EmojIDE emojIDE, List<Long> emojiServers) {
         this.emojIDE = emojIDE;
@@ -71,32 +71,34 @@ public class DefaultEmojiManager implements EmojiManager {
             return true;
         }).forEach(emoji -> this.emojis.put(emoji.getName().toLowerCase(), emoji));
 
-        LOGGER.info("Done initializing emojis.");
+        LOGGER.info("Done initializing {} emojis.", emojis.size());
     }
 
     private Optional<Emote> uploadEmote(String name, File file) {
         var uploaded = new AtomicReference<Emote>();
 
-        var max = new HashSet<Guild>();
-
         emojiServers.forEach(server -> {
-            if (max.contains(server)) return;
+            if (maxServers.contains(server)) return;
             if (server.retrieveEmotes().complete().size() >= 50) {
-                max.add(server);
-                DefaultEmojiManager.LOGGER.info("Reached max!");
+                maxServers.add(server);
+                LOGGER.info("Reached max!");
                 return;
             }
 
             if (uploaded.get() != null) return;
 
             try {
-                DefaultEmojiManager.LOGGER.info("Uploading {} to {}", name, server.getName());
+                LOGGER.info("Uploading {} to {}", name, server.getName());
                 uploaded.set(server.createEmote(name, Icon.from(file)).complete());
             } catch (IOException e) {
-                DefaultEmojiManager.LOGGER.error("Error uploading emoji " + name + ", retrying on another server...", e);
+                LOGGER.error("Error uploading emoji " + name + ", retrying on another server...", e);
             } catch (ErrorResponseException e) {
-                if (e.getErrorCode() == 30008) return; // Maximum number of emojis reached
-                DefaultEmojiManager.LOGGER.error("Error while sending emoji request for " + name, e);
+                if (e.getErrorCode() == 30008) {
+                    maxServers.add(server);
+                    return; // Maximum number of emojis reached
+                }
+
+                LOGGER.error("Error while sending emoji request for " + name, e);
             }
         });
 

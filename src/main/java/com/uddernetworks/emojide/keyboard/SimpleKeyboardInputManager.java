@@ -284,15 +284,23 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
 
     @Override
     public void addListener(Object object) {
-        Arrays.stream(object.getClass().getDeclaredMethods()).forEach(method -> {
-            if (method.getParameterCount() != 1) return;
-            var type = method.getParameters()[0].getType();
-            if (method.getParameterCount() == 1 && type.equals(KeyPressEvent.class)) {
-                method.setAccessible(true);
-                LOGGER.info("Found method {} in {}", method.getName(), object.getClass().getCanonicalName());
-                eventClasses.computeIfAbsent(object, i -> new ArrayList<>()).add(method);
-            }
-        });
+        LOGGER.info("Adding listener {}", object.getClass().getCanonicalName());
+
+        Class<?> current = object.getClass();
+        while(current.getSuperclass() != null){ // we don't want to process Object.class
+            // do something with current's fields
+            Class<?> finalCurrent = current = current.getSuperclass();
+            Arrays.stream(finalCurrent.getDeclaredMethods()).forEach(method -> {
+                LOGGER.info("Method = {}", method.getName());
+                if (method.getParameterCount() != 1) return;
+                var type = method.getParameters()[0].getType();
+                if (method.getParameterCount() == 1 && type.equals(KeyPressEvent.class)) {
+                    method.setAccessible(true);
+                    LOGGER.info("Found method {} in {}", method.getName(), finalCurrent.getCanonicalName());
+                    eventClasses.computeIfAbsent(object, i -> new ArrayList<>()).add(method);
+                }
+            });
+        }
     }
 
     @Override

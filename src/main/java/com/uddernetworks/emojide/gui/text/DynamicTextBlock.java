@@ -47,7 +47,7 @@ public class DynamicTextBlock implements TextBlock {
         this.chars = new AutoGrowArrayList<>(LIST_SUPPLIER);
         Arrays.stream(text.split("\n"))
                 .forEach(line -> this.chars.add(Arrays.stream(line.split(""))
-                        .map(str -> str.charAt(0))
+                        .map(str -> str.isEmpty() ? ' ' : str.charAt(0))
                         .collect(Collectors.toCollection(LIST_SUPPLIER))));
     }
 

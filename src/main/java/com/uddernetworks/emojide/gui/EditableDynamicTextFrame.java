@@ -22,13 +22,13 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
     private static Logger LOGGER = LoggerFactory.getLogger(EditableDynamicTextFrame.class);
 
     private KeyboardInputManager keyboardInputManager;
-    private TextBlock textBlock;
+    TextBlock textBlock;
 
-    private int cursorX;
-    private int cursorY;
+    int cursorX;
+    int cursorY;
 
-    private int scrollX; // The amount of non-visible columns on the left
-    private int scrollY; // The amount of non-visible rows on the top
+    int scrollX; // The amount of non-visible columns on the left
+    int scrollY; // The amount of non-visible rows on the top
 
     public EditableDynamicTextFrame(Displayer displayer, int width, int height) {
         super(displayer, width, height);
