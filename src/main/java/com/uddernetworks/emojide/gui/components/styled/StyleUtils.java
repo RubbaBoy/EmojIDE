@@ -1,6 +1,7 @@
 package com.uddernetworks.emojide.gui.components.styled;
 
 import com.uddernetworks.emojide.discord.Emoji;
+import com.uddernetworks.emojide.discord.StaticEmoji;
 import com.uddernetworks.emojide.gui.components.EmojiContainer;
 
 import java.util.Arrays;
@@ -35,6 +36,24 @@ public class StyleUtils {
             rows[y][0] = border;
             rows[y][rows[0].length - 1] = border;
         }
+        return rows;
+    }
+
+    /**
+     * Creates a thin, light gray border with {@link StaticEmoji#LTABBED_FRAME}, {@link StaticEmoji#RTABBED_FRAME},
+     * {@link StaticEmoji#TTABBED_FRAME}, and {@link StaticEmoji#BTABBED_FRAME},.
+     *
+     * @param rows The 2D array to (presumably) render
+     * @return The mutated 2D array
+     */
+    public static Emoji[][] drawThinBorder(Emoji[][] rows) {
+        for (int y = 1; y < rows.length - 1; y++) {
+            rows[y][0] = StaticEmoji.LTABBED_FRAME;
+            rows[y][rows[0].length - 1] = StaticEmoji.RTABBED_FRAME;
+        }
+
+        Arrays.fill(rows[0], 1, rows[0].length - 1, StaticEmoji.TTABBED_FRAME);
+        Arrays.fill(rows[rows.length - 1], 1, rows[rows.length - 1].length - 1, StaticEmoji.BTABBED_FRAME);
         return rows;
     }
 }

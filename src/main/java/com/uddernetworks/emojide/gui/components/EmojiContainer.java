@@ -2,6 +2,7 @@ package com.uddernetworks.emojide.gui.components;
 
 import com.uddernetworks.emojide.discord.Emoji;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,6 +27,13 @@ public interface EmojiContainer extends EmojiComponent {
      * @param component The {@link EmojiComponent} to remove
      */
     void removeChild(EmojiComponent component);
+
+    /**
+     * Gets an immutable list of all {@link PositionedComponent} children.
+     *
+     * @return An immutable list of all children
+     */
+    List<PositionedComponent> getChildren();
 
     /**
      * Positions an existing {@link EmojiComponent} to the given coordinates.

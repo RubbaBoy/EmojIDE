@@ -48,7 +48,8 @@ public class StaticTextFrame extends StyledEmojiComponent {
         return text;
     }
 
-    public void setText(String text) {
+    public StaticTextFrame setText(String text) {
         this.text = text;
+        return this;
     }
 }

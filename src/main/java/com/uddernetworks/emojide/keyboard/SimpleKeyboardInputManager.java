@@ -2,6 +2,8 @@ package com.uddernetworks.emojide.keyboard;
 
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.event.EventRaiser;
+import com.uddernetworks.emojide.event.Handler;
 import com.uddernetworks.emojide.gui.render.RenderEngine;
 import com.uddernetworks.emojide.main.EmojIDE;
 import com.uddernetworks.emojide.main.Thread;
@@ -53,7 +55,8 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
 
         this.webListener = new SimpleWebListener(emojIDE);
         this.webListener.start(this);
-        addListener(this);
+        EventRaiser.createEvent(new KeyboardRaisable());
+        KeyboardRaisable.get().addListener(this);
     }
 
     @Override
@@ -200,13 +203,14 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
     private CompletableFuture stateChange;
     private Runnable undoPreviousState = () -> {};
 
+    @Handler(event = "keyboard", overrideSuspend = true)
     private void onKeyPress(KeyPressEvent event) {
         if (event.isAlphanumeric()) return;
         getPair(event.getStaticEmoji()).ifPresent(pair -> {
             switch (pair) {
                 case SHIFT:
                     changeToUpper();
-                    unsetStateAfter(this::changeToLower, ActiveState.SHIFT, 3);
+                    unsetStateAfter(this::changeToLower, ActiveState.SHIFT, 4);
                     break;
                 case CAPS:
                     if (this.lowercaseMode) {
@@ -216,11 +220,11 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
                     }
                     break;
                 case CTRL:
-                    unsetStateAfter(ActiveState.CTRL, 3);
+                    unsetStateAfter(ActiveState.CTRL, 4);
                     refresh();
                     break;
                 case ALT:
-                    unsetStateAfter(ActiveState.ALT, 3);
+                    unsetStateAfter(ActiveState.ALT, 4);
                     refresh();
                     break;
                 case FN:
@@ -272,69 +276,14 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
 
             if (type == 'A') {
                 char clickedChar = (char) remaining;
-                raiseEvent(new KeyPressEvent(clickedChar));
+                EventRaiser.raiseEvent("keyboard", new KeyPressEvent(clickedChar));
             } else {
                 StaticEmoji clickedEmoji = StaticEmoji.values()[remaining];
-                raiseEvent(new KeyPressEvent(clickedEmoji));
+                EventRaiser.raiseEvent("keyboard", new KeyPressEvent(clickedEmoji));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void addListener(Object object) {
-        LOGGER.info("Adding listener {}", object.getClass().getCanonicalName());
-
-        Class<?> current = object.getClass();
-        while(current.getSuperclass() != null){ // we don't want to process Object.class
-            // do something with current's fields
-            Class<?> finalCurrent = current = current.getSuperclass();
-            Arrays.stream(finalCurrent.getDeclaredMethods()).forEach(method -> {
-                LOGGER.info("Method = {}", method.getName());
-                if (method.getParameterCount() != 1) return;
-                var type = method.getParameters()[0].getType();
-                if (method.getParameterCount() == 1 && type.equals(KeyPressEvent.class)) {
-                    method.setAccessible(true);
-                    LOGGER.info("Found method {} in {}", method.getName(), finalCurrent.getCanonicalName());
-                    eventClasses.computeIfAbsent(object, i -> new ArrayList<>()).add(method);
-                }
-            });
-        }
-    }
-
-    @Override
-    public void removeListener(Object object) {
-        eventClasses.remove(object);
-    }
-
-    @Override
-    public void suspendListeners() {
-        if (!suspended.isEmpty()) return;
-        suspended = new HashMap<>(eventClasses);
-        new HashSet<>(eventClasses.keySet()).stream().filter(obj -> !obj.equals(this)).forEach(eventClasses::remove);
-        LOGGER.info("All keyboard listeners have been suspended");
-    }
-
-    @Override
-    public void resumeListeners() {
-        new HashSet<>(eventClasses.keySet()).stream().filter(obj -> !obj.equals(this)).forEach(eventClasses::remove);
-        suspended.forEach(eventClasses::put);
-        suspended.clear();
-        LOGGER.info("All keyboard listeners have been reset back to the last suspend");
-    }
-
-    private void raiseEvent(KeyPressEvent event) {
-        new HashMap<>(this.eventClasses).forEach((object, methods) -> {
-            methods.forEach(method -> {
-                if (method.getName().equals("raiseEvent") && object == this) return;
-                try {
-                    method.invoke(object, event);
-                } catch (ReflectiveOperationException e) {
-                    LOGGER.error("Error while invoking event on " + object.getClass().getCanonicalName() + "#" + method.getName(), e);
-                }
-            });
-        });
     }
 
 }

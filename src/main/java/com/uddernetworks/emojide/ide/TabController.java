@@ -1,5 +1,6 @@
 package com.uddernetworks.emojide.ide;
 
+import com.uddernetworks.emojide.event.Handler;
 import com.uddernetworks.emojide.gui.EditableDynamicTextFrame;
 import com.uddernetworks.emojide.gui.TabbedFrame;
 import com.uddernetworks.emojide.gui.TextPromptFrame;
@@ -7,12 +8,13 @@ import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.keyboard.KeyPressEvent;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager.ActiveState;
+import com.uddernetworks.emojide.keyboard.KeyboardRaisable;
 import com.uddernetworks.emojide.main.EmojIDE;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TabController extends ListenerAdapter {
+public class TabController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(TabController.class);
 
@@ -30,7 +32,8 @@ public class TabController extends ListenerAdapter {
         this.displayer = displayer;
         this.tabbedFrame = tabbedFrame;
 
-        (this.keyboardInputManager = emojIDE.getKeyboardInputManager()).addListener(this);
+        this.keyboardInputManager = emojIDE.getKeyboardInputManager();
+        KeyboardRaisable.get().addListener(this);
     }
 
     public TabController setTabbedFrame(TabbedFrame tabbedFrame) {
@@ -38,13 +41,13 @@ public class TabController extends ListenerAdapter {
         return this;
     }
 
+    @Handler(event = "keyboard")
     private void onKeyPress(KeyPressEvent event) {
         if (event.isAlphanumeric()) {
-
             switch (Character.toLowerCase(event.getCharacter())) {
                 case 'n':
                     if (keyboardInputManager.getState() != ActiveState.CTRL) break;
-                    keyboardInputManager.suspendListeners();
+                    KeyboardRaisable.get().suspendListeners();
 
                     var innerWidth = tabbedFrame.getWidth() - tabbedFrame.getXOffset();
                     var innerHeight = tabbedFrame.getHeight() - tabbedFrame.getYOffset();

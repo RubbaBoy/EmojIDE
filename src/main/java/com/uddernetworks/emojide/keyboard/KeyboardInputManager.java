@@ -19,7 +19,7 @@ public interface KeyboardInputManager extends EventListener {
      * then counts the request. If this random link has not been registered yet, events are fired. This is to prevent
      * double presses from browsers sending things twice.
      *
-     * @param textChannel
+     * @param textChannel The {@link TextChannel} to send the keyboard in
      */
     void createKeyboard(TextChannel textChannel);
 
@@ -59,32 +59,6 @@ public interface KeyboardInputManager extends EventListener {
      * @param key The key clicked, in the format by the {@link WebListener}
      */
     void handleKey(String key);
-
-    /**
-     * Adds the given object as a listener to the {@link KeyPressEvent}, invoking any method with the parameter being
-     * just {@link KeyPressEvent} when a key is pressed.
-     *
-     * @param object The class instance to add
-     */
-    void addListener(Object object);
-
-    /**
-     * Removed a previously added listener via {@link #addListener(Object)}.
-     *
-     * @param object The class instance to remove
-     */
-    void removeListener(Object object);
-
-    /**
-     * Saves and then disabled all listeners (Other than the {@link KeyboardInputManager}). They may be resumed via
-     * {@link #resumeListeners()}.
-     */
-    void suspendListeners();
-
-    /**
-     * Removes any listeners added after the call of {@link #suspendListeners()} and enabled all the same ones.
-     */
-    void resumeListeners();
 
     enum Pair {
         SPACE, SHIFT, ENTER, CAPS, CTRL, ALT, FN

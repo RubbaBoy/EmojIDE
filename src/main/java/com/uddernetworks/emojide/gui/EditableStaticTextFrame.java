@@ -2,12 +2,15 @@ package com.uddernetworks.emojide.gui;
 
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.event.Handler;
+import com.uddernetworks.emojide.event.Priority;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.gui.components.styled.StyledEmojiComponent;
 import com.uddernetworks.emojide.gui.text.DefaultTextBlock;
 import com.uddernetworks.emojide.gui.text.TextBlock;
 import com.uddernetworks.emojide.keyboard.KeyPressEvent;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
+import com.uddernetworks.emojide.keyboard.KeyboardRaisable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +30,8 @@ public class EditableStaticTextFrame extends StyledEmojiComponent {
     public EditableStaticTextFrame(Displayer displayer, int width, int height) {
         super(displayer, width, height);
         this.textBlock = new DefaultTextBlock(width, height);
-        (this.keyboardInputManager = displayer.getEmojIDE().getKeyboardInputManager()).addListener(this);
+        this.keyboardInputManager = displayer.getEmojIDE().getKeyboardInputManager();
+        KeyboardRaisable.get().addListener(this);
     }
 
     @Override
@@ -40,6 +44,7 @@ public class EditableStaticTextFrame extends StyledEmojiComponent {
         return textEmoji;
     }
 
+    @Handler(event = "keyboard", priority = Priority.LOW)
     private void onKeyPress(KeyPressEvent event) {
         LOGGER.info("Key pressed: {}", event);
 

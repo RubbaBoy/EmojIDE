@@ -2,13 +2,15 @@ package com.uddernetworks.emojide.gui;
 
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.event.Handler;
+import com.uddernetworks.emojide.event.Priority;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.gui.components.styled.StyledEmojiComponent;
-import com.uddernetworks.emojide.gui.text.DefaultTextBlock;
 import com.uddernetworks.emojide.gui.text.DynamicTextBlock;
 import com.uddernetworks.emojide.gui.text.TextBlock;
 import com.uddernetworks.emojide.keyboard.KeyPressEvent;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
+import com.uddernetworks.emojide.keyboard.KeyboardRaisable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +35,8 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
     public EditableDynamicTextFrame(Displayer displayer, int width, int height) {
         super(displayer, width, height);
         this.textBlock = new DynamicTextBlock();
-        (this.keyboardInputManager = displayer.getEmojIDE().getKeyboardInputManager()).addListener(this);
+        this.keyboardInputManager = displayer.getEmojIDE().getKeyboardInputManager();
+        KeyboardRaisable.get().addListener(this);
     }
 
     @Override
@@ -62,6 +65,11 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
         return result;
     }
 
+    public TextBlock getTextBlock() {
+        return textBlock;
+    }
+
+    @Handler(event = "keyboard", priority = Priority.LOW)
     private void onKeyPress(KeyPressEvent event) {
         LOGGER.info("[EDTF] Key pressed: {}", event);
 
@@ -217,8 +225,5 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
     private void validateCursor() {
         this.cursorX = Math.max(this.cursorX, 0);
         this.cursorY = Math.max(this.cursorY, 0);
-
-//        this.cursorX = Math.min(this.cursorX, this.scrollX);
-//        this.cursorY = Math.min(this.cursorY, this.scrollY);
     }
 }

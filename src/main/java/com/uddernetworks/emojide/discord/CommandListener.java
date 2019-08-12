@@ -3,6 +3,7 @@ package com.uddernetworks.emojide.discord;
 import com.uddernetworks.emojide.gui.*;
 import com.uddernetworks.emojide.gui.components.CachedDisplayer;
 import com.uddernetworks.emojide.gui.components.Displayer;
+import com.uddernetworks.emojide.ide.FunctionController;
 import com.uddernetworks.emojide.ide.TabController;
 import com.uddernetworks.emojide.main.EmojIDE;
 import com.uddernetworks.emojide.main.Thread;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class CommandListener extends ListenerAdapter {
@@ -52,18 +54,27 @@ public class CommandListener extends ListenerAdapter {
         System.out.println("Creating displayer...");
 
         var text = "function myMethod(arg) {\n" +
-                    "   console.log('Arg is ' + arg + '!');\n" +
-                    "}\n" +
-                    "\n" +
-                    "myMethod('Hello World');\n";
+                "   console.log('Arg is ' + arg + '!');\n" +
+                "}\n" +
+                "\n" +
+                "myMethod('Hello World');\n";
 
         TabbedFrame tabbedFrame;
+        StaticTextFrame staticTextFrame;
         (displayer = new CachedDisplayer(emojIDE, channel, true))
-                .setChild(tabbedFrame = new TabbedFrame(displayer, 58, 23 /* 10 */)
-                        .addTab("script.js", new EmptyContainerFrame(displayer, 56, 20).addChild(new HighlightedTextFrame(displayer, 54, 18, text), 1, 1)), true);
+                .setChild(
+                        new EmptyContainerFrame(displayer, 58, 23)
+                                .addChild(tabbedFrame = new TabbedFrame(displayer, 58, 23 /* 10 */)
+                                        .addTab("script.js", new EmptyContainerFrame(displayer, 56, 20)
+                                                .addChild(new HighlightedTextFrame(displayer, 54, 18, text), 1, 1)), 0, 0)
+                                .addChild(new CustomRenderedContainerFrame(displayer, 56, 5)
+                                        .addRenderer(initial -> Arrays.fill(initial[0], StaticEmoji.TTABBED_FRAME))
+                                        .addChild(staticTextFrame = new StaticTextFrame(displayer, 54, 4).setText("Hello World from console!"), 1, 1), 1, 17)
+                        , true);
 //                        .addTab("Welcome", new WelcomeFrame(displayer)), true);
 
-        var tabController = new TabController(emojIDE, displayer).setTabbedFrame(tabbedFrame);
+        var tabController = new TabController(emojIDE, displayer, tabbedFrame);
+        var functionController = new FunctionController(emojIDE, displayer, tabbedFrame);
     }
 
     private void commandStop(TextChannel channel) {

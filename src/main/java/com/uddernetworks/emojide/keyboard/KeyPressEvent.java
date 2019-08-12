@@ -1,11 +1,12 @@
 package com.uddernetworks.emojide.keyboard;
 
 import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.event.Cancellable;
 
 /**
  * An event to store data about a key being pressed via the {@link SimpleKeyboardInputManager}.
  */
-public class KeyPressEvent {
+public class KeyPressEvent extends Cancellable {
     private boolean alphanumeric;
     private char character;
     private StaticEmoji staticEmoji;

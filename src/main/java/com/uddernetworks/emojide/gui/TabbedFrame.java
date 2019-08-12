@@ -3,11 +3,13 @@ package com.uddernetworks.emojide.gui;
 import com.uddernetworks.emojide.discord.DefaultEmojiManager;
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.event.Handler;
 import com.uddernetworks.emojide.gui.components.DefaultEmojiContainer;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.gui.components.EmojiComponent;
 import com.uddernetworks.emojide.keyboard.KeyPressEvent;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
+import com.uddernetworks.emojide.keyboard.KeyboardRaisable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +26,9 @@ public class TabbedFrame extends DefaultEmojiContainer {
     private List<Tab> tabs = new ArrayList<>();
 
     public TabbedFrame(Displayer displayer, int width, int height) {
-        super(displayer, width, height + 1); // Adds 2 due to header
-        (this.keyboardInputManager = displayer.getEmojIDE().getKeyboardInputManager()).addListener(this);
+        super(displayer, width, height); // Adds 2 due to header
+        this.keyboardInputManager = displayer.getEmojIDE().getKeyboardInputManager();
+        KeyboardRaisable.get().addListener(this);
         setOffset(1, 2);
     }
 
@@ -34,6 +37,7 @@ public class TabbedFrame extends DefaultEmojiContainer {
         return super.render(drawBorder(initial));
     }
 
+    @Handler(event = "keyboard")
     private void onKeyPress(KeyPressEvent event) {
         if (this.keyboardInputManager.getState() == KeyboardInputManager.ActiveState.ALT) {
             if (event.isAlphanumeric()) return;
@@ -71,7 +75,7 @@ public class TabbedFrame extends DefaultEmojiContainer {
         this.displayer.update();
     }
 
-    private Tab getActive() {
+    public Tab getActive() {
         return this.tabs.get(this.activeTab);
     }
 
@@ -129,7 +133,7 @@ public class TabbedFrame extends DefaultEmojiContainer {
         return Stream.of(upper, row).map(list -> list.toArray(Emoji[]::new)).collect(Collectors.toList()).toArray(Emoji[][]::new);
     }
 
-    class Tab {
+    public static class Tab {
         private String name;
         private EmojiComponent component;
 
@@ -140,12 +144,20 @@ public class TabbedFrame extends DefaultEmojiContainer {
 
         public void activate() {
             LOGGER.info("The tab {} is now active!", this.name);
-            keyboardInputManager.addListener(this.component);
+            KeyboardRaisable.get().addListener(this.component);
         }
 
         public void deactivate() {
             LOGGER.info("The tab {} is no longer active!", this.name);
-            keyboardInputManager.removeListener(this.component);
+            KeyboardRaisable.get().removeListener(this.component);
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public EmojiComponent getComponent() {
+            return component;
         }
     }
 }

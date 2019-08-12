@@ -3,6 +3,7 @@ package com.uddernetworks.emojide.gui.components;
 import com.uddernetworks.emojide.discord.Emoji;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,11 @@ public abstract class DefaultEmojiContainer extends DefaultEmojiComponent implem
     @Override
     public void removeChild(EmojiComponent component) {
         getPositioned(component).ifPresent(positioned -> this.positionedComponents.remove(positioned));
+    }
+
+    @Override
+    public List<PositionedComponent> getChildren() {
+        return List.copyOf(this.positionedComponents);
     }
 
     @Override
