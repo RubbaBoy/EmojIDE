@@ -113,6 +113,12 @@ public class TabbedFrame extends DefaultEmojiContainer {
         }
 
         Arrays.fill(rows[rows.length - 1], 1, rows[rows.length - 1].length - 1, StaticEmoji.BTABBED_FRAME);
+
+        // Corners
+        rows[1][0] = StaticEmoji.BR_FRAME;
+        rows[1][rows[0].length - 1] = StaticEmoji.BL_FRAME;
+        rows[rows.length - 1][0] = StaticEmoji.TR_FRAME;
+        rows[rows.length - 1][rows[0].length - 1] = StaticEmoji.TL_FRAME;
         return rows;
     }
 
@@ -127,7 +133,7 @@ public class TabbedFrame extends DefaultEmojiContainer {
             if (row.size() + 4 + tab.name.length() > thisWidth) break;
 
             row.add(active ? StaticEmoji.LTAB_SEPARATOR_SELECTED : StaticEmoji.LTAB_SEPARATOR);
-            upper.add(StaticEmoji.TRANSPARENT);
+            upper.add(active ? StaticEmoji.LTAB_CORNER_SELECTED : StaticEmoji.BR_FRAME);
 
             for (char cha : tab.name.toCharArray()) {
                 row.add(this.emojiManager.getEmoji(String.valueOf((int) cha)));
@@ -135,7 +141,7 @@ public class TabbedFrame extends DefaultEmojiContainer {
             }
 
             row.add(active ? StaticEmoji.RTAB_SEPARATOR_SELECTED : StaticEmoji.RTAB_SEPARATOR);
-            upper.add(StaticEmoji.TRANSPARENT);
+            upper.add(active ? StaticEmoji.RTAB_CORNER_SELECTED : StaticEmoji.BL_FRAME);
         }
 
         for (int i = 0; i < thisWidth - row.size(); i++) {

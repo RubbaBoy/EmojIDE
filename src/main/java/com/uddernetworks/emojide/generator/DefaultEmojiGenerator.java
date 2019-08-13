@@ -23,19 +23,11 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
             '"', TOP,
             '^', TOP,
             '`', TOP,
-            '*', TOP
+            '*', TOP,
+            ';', LEFT,
+            ':', LEFT,
+            '!', LEFT
     );
-
-    public static void main(String[] args) {
-        new File("shidd/46.png").delete();
-        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), ".", new FontData("", Color.WHITE));
-        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), ",", new FontData("", Color.WHITE));
-        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), "'", new FontData("", Color.WHITE));
-        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), "\"", new FontData("", Color.WHITE));
-        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), "^", new FontData("", Color.WHITE));
-        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), "`", new FontData("", Color.WHITE));
-        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), "*", new FontData("", Color.WHITE));
-    }
 
     @Override
     public void generate() {
@@ -133,6 +125,12 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
             case BOTTOM:
                 image = alignBottom(image);
                 break;
+            case LEFT:
+                image = alignLeft(image);
+                break;
+            case RIGHT:
+                image = alignRight(image);
+                break;
         }
 
         try {
@@ -151,6 +149,16 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
         return larger;
     }
 
+    private BufferedImage alignMiddle(BufferedImage image) {
+        var larger = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        var posX = (larger.getWidth() / 2D) - (image.getWidth() / 2D);
+        var posY = (larger.getHeight() / 2D) - (image.getHeight() / 2D);
+        var graphics = larger.createGraphics();
+        graphics.drawImage(image, null, (int) posX, (int) posY);
+        graphics.dispose();
+        return larger;
+    }
+
     private BufferedImage alignBottom(BufferedImage image) {
         var larger = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         var posX = (larger.getWidth() / 2D) - (image.getWidth() / 2D);
@@ -161,12 +169,21 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
         return larger;
     }
 
-    private BufferedImage alignMiddle(BufferedImage image) {
+    private BufferedImage alignLeft(BufferedImage image) {
         var larger = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        var posX = (larger.getWidth() / 2D) - (image.getWidth() / 2D);
         var posY = (larger.getHeight() / 2D) - (image.getHeight() / 2D);
         var graphics = larger.createGraphics();
-        graphics.drawImage(image, null, (int) posX, (int) posY);
+        graphics.drawImage(image, null, 0, (int) posY);
+        graphics.dispose();
+        return larger;
+    }
+
+    private BufferedImage alignRight(BufferedImage image) {
+        var larger = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        var posX = larger.getWidth() - image.getWidth();
+        var posY = (larger.getHeight() / 2D) - (image.getHeight() / 2D);
+        var graphics = larger.createGraphics();
+        graphics.drawImage(image, null, posX, (int) posY);
         graphics.dispose();
         return larger;
     }
@@ -185,7 +202,7 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
     }
 
     enum CharAlign {
-        TOP, MIDDLE, BOTTOM
+        TOP, MIDDLE, BOTTOM, LEFT, RIGHT
     }
 
     static class FontData {

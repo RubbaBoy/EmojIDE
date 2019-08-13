@@ -67,9 +67,16 @@ public enum StaticEmoji implements Emoji {
     BTABBED_FRAME("btf", "ide_emojis/btabbed_frame.png"),
     LTABBED_FRAME("ltf", "ide_emojis/ltabbed_frame.png"),
     RTABBED_FRAME("rtfs", "ide_emojis/rtabbed_frame.png"),
+    CTABBED_FRAME("ctf", "ide_emojis/ctabbed_frame.png"), // Center tabbed frame
+    RTAB_CORNER_SELECTED("rtcs", "ide_emojis/rtab_corner_selected.png"),
+    LTAB_CORNER_SELECTED("ltcs", "ide_emojis/ltab_corner_selected.png"),
     TTABBED_FRAME_SELECTED("ttfs", "ide_emojis/ttabbed_frame_selected.png"),
     LTAB_SEPARATOR_SELECTED("ltss", "ide_emojis/ltab_separator_selected.png"),
     RTAB_SEPARATOR_SELECTED("rtss", "ide_emojis/rtab_separator_selected.png"),
+    BL_FRAME("blf", "ide_emojis/blframe.png"), // Bottom Left Square
+    TL_FRAME("tlf", "ide_emojis/tlframe.png"), // Top Left Square
+    BR_FRAME("brf", "ide_emojis/brframe.png"), // Bottom Right Square
+    TR_FRAME("trf", "ide_emojis/trframe.png"), // Top Right Square
 
     // Welcome Tab
     W_0w0("0w0", "welcome_emojis/name/0w0.png"),

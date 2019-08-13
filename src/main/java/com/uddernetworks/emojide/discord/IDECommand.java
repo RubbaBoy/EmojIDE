@@ -107,7 +107,7 @@ public class IDECommand {
                                                 new EmptyContainerFrame(displayer, 56, 20)
                                                         .addChild(new HighlightedTextFrame(displayer, 54, 18, text), 1, 1)
                                                         .addChild(new CustomRenderedContainerFrame(displayer, 56, 5)
-                                                                .addRenderer(initial -> Arrays.fill(initial[0], StaticEmoji.TTABBED_FRAME))
+                                                                .addRenderer(initial -> Arrays.fill(initial[0], StaticEmoji.CTABBED_FRAME))
                                                                 .addChild(outputFrame = new StaticTextFrame(displayer, 54, 4).setText("<Console Output>"), 1, 1), 0, 15), true), 0, 0)
                         , true);
 
