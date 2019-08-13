@@ -1,6 +1,5 @@
 package com.uddernetworks.emojide.ide;
 
-import com.uddernetworks.emojide.discord.DefaultEmojiManager;
 import com.uddernetworks.emojide.gui.StaticTextFrame;
 import com.uddernetworks.emojide.utils.Commandline;
 import org.slf4j.Logger;
@@ -9,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;

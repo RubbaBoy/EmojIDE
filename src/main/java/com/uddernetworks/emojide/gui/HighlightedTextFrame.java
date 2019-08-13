@@ -3,7 +3,6 @@ package com.uddernetworks.emojide.gui;
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.StaticEmoji;
 import com.uddernetworks.emojide.gui.components.Displayer;
-import com.uddernetworks.emojide.gui.components.PositionedComponent;
 import com.uddernetworks.emojide.ide.LanguageHighlighter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

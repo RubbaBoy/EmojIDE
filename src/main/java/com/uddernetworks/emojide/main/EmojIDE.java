@@ -1,8 +1,9 @@
 package com.uddernetworks.emojide.main;
 
-import com.uddernetworks.emojide.discord.CommandListener;
 import com.uddernetworks.emojide.discord.DefaultEmojiManager;
 import com.uddernetworks.emojide.discord.EmojiManager;
+import com.uddernetworks.emojide.discord.IDECommand;
+import com.uddernetworks.emojide.discord.command.CommandManager;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import com.uddernetworks.emojide.keyboard.SimpleKeyboardInputManager;
 import net.dv8tion.jda.api.JDA;
@@ -35,11 +36,11 @@ public class EmojIDE extends ListenerAdapter {
 
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
-        this.jda = event.getJDA();
+        jda = event.getJDA();
 
-        this.jda.addEventListener(this.keyboardInputManager = new SimpleKeyboardInputManager(this));
-        this.emojiManager = new DefaultEmojiManager(this, configManager.getServers());
-        this.jda.addEventListener(new CommandListener(this));
+        jda.addEventListener(this.keyboardInputManager = new SimpleKeyboardInputManager(this));
+        emojiManager = new DefaultEmojiManager(this, configManager.getServers());
+        jda.addEventListener(new CommandManager().registerCommand(new IDECommand()));
     }
 
     public static ConfigManager getConfigManager() {

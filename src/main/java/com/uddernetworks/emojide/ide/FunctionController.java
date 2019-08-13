@@ -1,14 +1,14 @@
 package com.uddernetworks.emojide.ide;
 
 import com.uddernetworks.emojide.event.Handler;
-import com.uddernetworks.emojide.gui.*;
+import com.uddernetworks.emojide.gui.EmptyContainerFrame;
+import com.uddernetworks.emojide.gui.HighlightedTextFrame;
+import com.uddernetworks.emojide.gui.TabbedFrame;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.keyboard.KeyPressEvent;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
-import com.uddernetworks.emojide.keyboard.KeyboardInputManager.ActiveState;
 import com.uddernetworks.emojide.keyboard.KeyboardRaisable;
 import com.uddernetworks.emojide.main.EmojIDE;
-import com.uddernetworks.emojide.utils.Commandline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

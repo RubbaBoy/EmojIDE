@@ -1,9 +1,6 @@
 package com.uddernetworks.emojide.gui.components;
 
 import com.uddernetworks.emojide.discord.Emoji;
-import com.uddernetworks.emojide.discord.StaticEmoji;
-
-import java.util.Arrays;
 
 /**
  * A component that is rendered by a {@link Displayer} upon invoking {@link #getCachedRender()}.

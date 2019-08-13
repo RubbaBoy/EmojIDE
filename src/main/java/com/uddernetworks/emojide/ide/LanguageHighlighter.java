@@ -2,7 +2,6 @@ package com.uddernetworks.emojide.ide;
 
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.EmojiManager;
-import com.uddernetworks.emojide.generator.LetterGenerator;
 import com.uddernetworks.emojide.gui.text.TextBlock;
 import com.uddernetworks.emojide.ide.lexer.javascript.JavaScriptLexer;
 import com.uddernetworks.emojide.ide.lexer.javascript.JavaScriptParser;

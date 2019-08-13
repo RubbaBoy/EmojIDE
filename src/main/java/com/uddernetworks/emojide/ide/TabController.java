@@ -10,7 +10,6 @@ import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager.ActiveState;
 import com.uddernetworks.emojide.keyboard.KeyboardRaisable;
 import com.uddernetworks.emojide.main.EmojIDE;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -3,12 +3,11 @@ package com.uddernetworks.emojide.gui.text;
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.EmojiManager;
 import com.uddernetworks.emojide.discord.StaticEmoji;
-import org.apache.commons.collections.list.GrowthList;
-import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 

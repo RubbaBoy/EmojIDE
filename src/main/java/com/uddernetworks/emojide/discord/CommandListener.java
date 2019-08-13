@@ -33,16 +33,19 @@ public class CommandListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         var channel = event.getTextChannel();
-        switch (event.getMessage().getContentRaw().toLowerCase()) {
-            case "!start":
+        var raw = event.getMessage().getContentRaw().toLowerCase();
+        if (!raw.startsWith("!")) return;
+        var args = raw.split("\\s+");
+        switch (args[0]) {
+            case "start":
                 event.getMessage().delete().queue();
                 commandStart(channel);
                 break;
-            case "!stop":
+            case "stop":
                 event.getMessage().delete().queue();
                 commandStop(channel);
                 break;
-            case "!r":
+            case "r":
                 event.getMessage().delete().queue();
                 commandStop(channel);
                 Thread.sleep(1000);

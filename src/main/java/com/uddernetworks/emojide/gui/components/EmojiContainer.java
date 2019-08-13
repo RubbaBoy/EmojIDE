@@ -1,9 +1,6 @@
 package com.uddernetworks.emojide.gui.components;
 
-import com.uddernetworks.emojide.discord.Emoji;
-
 import java.util.List;
-import java.util.Optional;
 
 /**
  * A component that is rendered by a {@link Displayer} upon invoking {@link #getCachedRender()}. A container can also

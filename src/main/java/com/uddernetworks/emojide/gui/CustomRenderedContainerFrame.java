@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.uddernetworks.emojide.gui.components.styled.StyleUtils.drawThinBorder;
-
 public class CustomRenderedContainerFrame extends DefaultEmojiContainer {
 
     private List<Consumer<Emoji[][]>> renderers = new ArrayList<>();

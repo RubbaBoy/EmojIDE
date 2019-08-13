@@ -3,7 +3,6 @@ package com.uddernetworks.emojide.gui.components;
 import com.uddernetworks.emojide.discord.Emoji;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

@@ -1,6 +1,5 @@
 package com.uddernetworks.emojide.gui;
 
-import com.uddernetworks.emojide.discord.DefaultEmojiManager;
 import com.uddernetworks.emojide.discord.Emoji;
 import com.uddernetworks.emojide.discord.StaticEmoji;
 import com.uddernetworks.emojide.event.Handler;
@@ -13,7 +12,9 @@ import com.uddernetworks.emojide.keyboard.KeyboardRaisable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
