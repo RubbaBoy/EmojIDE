@@ -19,8 +19,10 @@ public class CommandHelp {
                         .addField("!emoji",
                                 commandRow("info", "Shows general information on the emojis and their servers") +
                                 commandRow("inspect [emoji name]", "Inspects an emoji by its name") +
+                                commandRow("cinspect [character]", "Shows all emojis for the given character") +
                                 commandRow("rem [emoji name]", "Removes a single emoji that has been added by EmojIDE") +
-                                commandRow("grem [group name]", "Removes all emojis in a group seen by `!emoji info`"), false));
+                                commandRow("grem [group name]", "Removes all emojis in a group seen by `!emoji info`") +
+                                commandRow("crem [character]", "Removes all colors (And fonts) of a given character"), false));
     }
 
     private static String commandRow(String name, String description) {

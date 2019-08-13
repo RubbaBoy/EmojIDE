@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
+import static com.uddernetworks.emojide.generator.DefaultEmojiGenerator.CharAlign.*;
 import static com.uddernetworks.emojide.generator.LetterGenerator.*;
 
 public class DefaultEmojiGenerator implements EmojiGenerator {
@@ -15,8 +16,25 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
     private static final int WIDTH = 256;
     private static final int HEIGHT = 256;
 
+    private final Map<Character, CharAlign> CHAR_ALIGNMENTS = Map.of(
+            '.', BOTTOM,
+            ',', BOTTOM,
+            '\'', TOP,
+            '"', TOP,
+            '^', TOP,
+            '`', TOP,
+            '*', TOP
+    );
+
     public static void main(String[] args) {
-        new DefaultEmojiGenerator().generate();
+        new File("shidd/46.png").delete();
+        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), ".", new FontData("", Color.WHITE));
+        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), ",", new FontData("", Color.WHITE));
+        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), "'", new FontData("", Color.WHITE));
+        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), "\"", new FontData("", Color.WHITE));
+        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), "^", new FontData("", Color.WHITE));
+        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), "`", new FontData("", Color.WHITE));
+        new DefaultEmojiGenerator().drawAndSave(new File("shidd"), "*", new FontData("", Color.WHITE));
     }
 
     @Override
@@ -105,7 +123,17 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
 
         image = makeImage(trimmed);
 
-        image = fitTo(image, WIDTH, HEIGHT);
+        switch (CHAR_ALIGNMENTS.getOrDefault(character.charAt(0), MIDDLE)) {
+            case TOP:
+                image = alignTop(image);
+                break;
+            case MIDDLE:
+                image = alignMiddle(image);
+                break;
+            case BOTTOM:
+                image = alignBottom(image);
+                break;
+        }
 
         try {
             ImageIO.write(image, "png", saveFile);
@@ -114,8 +142,27 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
         }
     }
 
-    private BufferedImage fitTo(BufferedImage image, int width, int height) {
-        var larger = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    private BufferedImage alignTop(BufferedImage image) {
+        var larger = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        var posX = (larger.getWidth() / 2D) - (image.getWidth() / 2D);
+        var graphics = larger.createGraphics();
+        graphics.drawImage(image, null, (int) posX, 0);
+        graphics.dispose();
+        return larger;
+    }
+
+    private BufferedImage alignBottom(BufferedImage image) {
+        var larger = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        var posX = (larger.getWidth() / 2D) - (image.getWidth() / 2D);
+        var posY = larger.getHeight() - image.getHeight();
+        var graphics = larger.createGraphics();
+        graphics.drawImage(image, null, (int) posX, posY);
+        graphics.dispose();
+        return larger;
+    }
+
+    private BufferedImage alignMiddle(BufferedImage image) {
+        var larger = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         var posX = (larger.getWidth() / 2D) - (image.getWidth() / 2D);
         var posY = (larger.getHeight() / 2D) - (image.getHeight() / 2D);
         var graphics = larger.createGraphics();
@@ -137,7 +184,11 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
         return image;
     }
 
-    class FontData {
+    enum CharAlign {
+        TOP, MIDDLE, BOTTOM
+    }
+
+    static class FontData {
         private String prefix;
         private Color color;
         private boolean bold;

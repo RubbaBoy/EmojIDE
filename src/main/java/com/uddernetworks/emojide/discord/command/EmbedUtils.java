@@ -2,6 +2,7 @@ package com.uddernetworks.emojide.discord.command;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -22,12 +23,12 @@ public class EmbedUtils {
         channel.sendMessage(eb.build()).queue();
     }
 
-    public static void sendEmbed(TextChannel channel, Member author, String title, String description) {
-        sendEmbed(channel, author, title, embed -> embed.setDescription(description));
+    public static Message sendEmbed(TextChannel channel, Member author, String title, String description) {
+        return sendEmbed(channel, author, title, embed -> embed.setDescription(description));
     }
 
-    public static void sendEmbed(TextChannel channel, Member author, String title, Consumer<EmbedBuilder> embedBuilderConsumer) {
-        channel.sendMessage(createEmbed(author, title, embedBuilderConsumer)).queue();
+    public static Message sendEmbed(TextChannel channel, Member author, String title, Consumer<EmbedBuilder> embedBuilderConsumer) {
+        return channel.sendMessage(createEmbed(author, title, embedBuilderConsumer)).complete();
     }
 
     public static MessageEmbed createEmbed(Member author, String title, Consumer<EmbedBuilder> embedBuilderConsumer) {

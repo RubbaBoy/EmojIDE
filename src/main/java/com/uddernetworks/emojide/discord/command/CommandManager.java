@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.uddernetworks.emojide.discord.command.CommandResult.*;
 
@@ -174,9 +175,9 @@ public class CommandManager extends ListenerAdapter {
         return ret;
     }
 
-    private List<String> getQuotes(String input) {
+    private static List<String> getQuotes(String input) {
         List<String> matched = new ArrayList<>();
-        Matcher regexMatcher = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'").matcher(input);
+        Matcher regexMatcher = Pattern.compile("\"((?:\\\\.|[^\"\\\\])*)\"|([^\\s]+)").matcher(input);
         while (regexMatcher.find()) {
             if (regexMatcher.group(1) != null) {
                 matched.add(regexMatcher.group(1));
@@ -186,7 +187,7 @@ public class CommandManager extends ListenerAdapter {
                 matched.add(regexMatcher.group());
             }
         }
-        return matched;
+        return matched.stream().map(str -> str.replace("\\\"", "\"")).collect(Collectors.toList());
     }
 
     private static class ArgumentMethodEntry implements Map.Entry<Argument, Method> {

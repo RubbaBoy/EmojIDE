@@ -5,14 +5,19 @@ import com.uddernetworks.emojide.main.EmojIDE;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.uddernetworks.emojide.discord.CommandHelp.space;
 import static com.uddernetworks.emojide.discord.StaticEmoji.*;
+import static com.uddernetworks.emojide.main.EmojIDE.ZWS;
 
 @Command(name = "emoji", aliases = "e", minArgs = 0, maxArgs = 3, permission = Permission.ADMINISTRATOR)
 public class EmojiCommand {
@@ -52,9 +57,9 @@ public class EmojiCommand {
 
         EmbedUtils.sendEmbed(channel, member, "Emoji Info", embed ->
                 embed.setDescription("General information about emojis uploaded and used only by the EmojIDE.")
-                .addField("Emoji Count", emojis.size() + "/" + (totalServers.size() * 50) + " emojis (Max based off of emoji servers available)", false)
-                .addField("Emoji Guilds", "The following are the guilds used for uploading emojis:\n\n" + builder, false)
-                .addField("Groups", "The following are groups you can remove via `!emoji grem [group]`\n" + groups, false)
+                        .addField("Emoji Count", emojis.size() + "/" + (totalServers.size() * 50) + " emojis (Max based off of emoji servers available)", false)
+                        .addField("Emoji Guilds", "The following are the guilds used for uploading emojis:\n\n" + builder, false)
+                        .addField("Groups", "The following are groups you can remove via `!emoji grem [group]`\n" + groups, false)
         );
     }
 
@@ -68,15 +73,48 @@ public class EmojiCommand {
             return;
         }
 
-        var emoji = emojiOptional.get();
+        var emoji = (StaticEmoji) emojiOptional.get();
         var emote = emotes.get(0);
 
         EmbedUtils.sendEmbed(channel, member, "Emoji " + emoji.getName(), embed -> embed
                 .setTitle("**:" + emote.getName() + ":**")
                 .setThumbnail(emote.getImageUrl())
+                .setDescription(emoji.getDisplay())
+                .addField("Identifying",
+                        "**Enum name**: " + emoji.name() +
+                        "\n**Id**: " + emoji.getId() +
+                        "\n**Image path**: " + emoji.getRelativePath(), false)
                 .addField("Created on", emote.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME), false)
                 .addField("Server", emote.getGuild().getName() + " (" + emote.getGuild().getId() + ")", false)
                 .addField("Group", getGroupFor(emoji).map(Group::getName).orElse("N/A"), false));
+    }
+
+    @Argument(format = "cinspect *")
+    public void cinspect(Member member, TextChannel channel, ArgumentList args) {
+        var charString = args.nextArg().getString();
+        char cha;
+        if (charString.length() != 1 || (cha = charString.charAt(0)) < 32 || cha > 126) {
+            EmbedUtils.error(channel, member, "Unknown character `" + charString + "`");
+            return;
+        }
+
+        var emojis = Stream.of("", "o", "g", "b", "a", "l").map(pre -> (StaticEmoji) emojiManager.getEmoji(pre + ((int) cha))).collect(Collectors.toList());
+
+        var dis = String.valueOf(cha);
+        switch (cha) {
+            case '\\':
+                dis = "\\\\";
+                break;
+            case '`':
+                dis = "\\`";
+                break;
+        }
+
+        EmbedUtils.sendEmbed(channel, member, "Emojis for `" + dis + "`", embed -> {
+            emojis.forEach(emoji -> {
+                embed.addField(emoji.getDisplay() + " **:" + emoji.getName() + "**", emoji.name() + " (" + emoji.getId() + ") " + getGroupFor(emoji).map(Group::getName).orElse("") + "\n" + ZWS, false);
+            });
+        });
     }
 
     @Argument(format = "rem *")
@@ -106,16 +144,19 @@ public class EmojiCommand {
             return;
         }
 
-        AtomicInteger deleted = new AtomicInteger();
-        var group = groupOptional.get();
-        group.emojis.forEach(emoji -> {
-            var emotes = emojIDE.getJda().getEmotesByName(emoji.getName(), true);
-            if (emotes.isEmpty()) return;
-            emotes.get(0).delete().queue();
-            deleted.getAndIncrement();
-        });
+        bulkDeleteMessages(member, channel, groupOptional.get().emojis);
+    }
 
-        EmbedUtils.sendEmbed(channel, member, "Queued Deletion", "Queued the deletion of " + deleted.get() + " emojis in the group `" + group.name + "`");
+    @Argument(format = "crem *")
+    public void cremove(Member member, TextChannel channel, ArgumentList args) {
+        var charString = args.nextArg().getString();
+        char removing;
+        if (charString.length() != 1 || (removing = charString.charAt(0)) < 32 || removing > 126) {
+            EmbedUtils.error(channel, member, "Unknown character `" + charString + "`");
+            return;
+        }
+
+        bulkDeleteMessages(member, channel, Stream.of("", "o", "g", "b", "a", "l").map(pre -> emojiManager.getEmoji(pre + ((int) removing))).collect(Collectors.toList()));
     }
 
     @ArgumentError
@@ -134,6 +175,33 @@ public class EmojiCommand {
 
     private Optional<Group> getGroupFor(Emoji emoji) {
         return Arrays.stream(Group.values()).filter(group -> group.emojis.contains(emoji)).findFirst();
+    }
+
+    private void bulkDeleteMessages(Member member, TextChannel channel, List<Emoji> emojis) {
+        var editing = queuedDeletion(member, 0, emojis.size());
+        var message = channel.sendMessage(editing).complete();
+        bulkDelete(emojis, (done, total) -> {
+                    if (!done.equals(total)) message.editMessage(queuedDeletion(member, done, total)).queue();
+                },
+                () -> {
+                    message.delete().queue();
+                    EmbedUtils.sendEmbed(channel, member, "Completed deletion", "Successfully deleted " + emojis.size() + " emojis.");
+                });
+    }
+
+    private MessageEmbed queuedDeletion(Member member, int done, int total) {
+        return EmbedUtils.createEmbed(member, "Deleting Emojis", embed -> embed.setDescription("Deleting " + total + " emojis.\n\nProgress: " + done + "/" + total));
+    }
+
+    private void bulkDelete(List<Emoji> emojis, BiConsumer<Integer, Integer> deletedEmoji, Runnable onComplete) {
+        AtomicInteger completed = new AtomicInteger();
+        emojis.forEach(emoji -> {
+            var emotes = emojIDE.getJda().getEmotesByName(emoji.getName(), true);
+            if (emotes.isEmpty()) return;
+            emotes.get(0).delete().complete();
+            deletedEmoji.accept(completed.incrementAndGet(), emojis.size());
+        });
+        onComplete.run();
     }
 
     enum Group {
