@@ -1,5 +1,6 @@
-package com.uddernetworks.emojide.keyboard;
+package com.uddernetworks.emojide.web;
 
+import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import com.uddernetworks.emojide.main.EmojIDE;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ public class SimpleWebListener implements WebListener {
         server.onConnect(client -> tryAndParse(client, (request, headers) -> {
             try {
                 var url = request[1];
-                if (url.startsWith("/e")) {
+                if (url.startsWith("/e") || url.startsWith("/z/")) {
                     var queryParts = url.split("\\?");
                     if (queryParts.length != 2) return false;
                     var query = queryParts[1];
@@ -45,29 +46,47 @@ public class SimpleWebListener implements WebListener {
                         var split = kv.split("=");
                         return new AbstractMap.SimpleEntry<>(split[0], split[1]);
                     }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-                    if (!kvSplit.containsKey("k") || !kvSplit.containsKey("r")) return false;
 
-                    var clicked = kvSplit.get("k");
-                    if ((!clicked.startsWith("A") && !clicked.startsWith("E")) || clicked.length() <= 1 || !StringUtils.isNumeric(clicked.substring(1)))
-                        return false;
 
-                    var random = kvSplit.get("r");
-                    usedRandoms.putIfAbsent(clicked, Collections.synchronizedList(new ArrayList<>()));
-                    var randoms = usedRandoms.get(clicked);
-                    if (randoms.contains(random)) {
-                        // TODO: Clear after X time
-                        LOGGER.error("Random already used for k {} and r {}", clicked, random);
-                        return false;
+                    if (url.startsWith("/e")) {
+                        if (!kvSplit.containsKey("k") || !kvSplit.containsKey("r")) return false;
+
+                        var clicked = kvSplit.get("k");
+                        if ((!clicked.startsWith("A") && !clicked.startsWith("E")) || clicked.length() <= 1 || !StringUtils.isNumeric(clicked.substring(1)))
+                            return false;
+
+                        var random = kvSplit.get("r");
+                        usedRandoms.putIfAbsent(clicked, Collections.synchronizedList(new ArrayList<>()));
+                        var randoms = usedRandoms.get(clicked);
+                        if (randoms.contains(random)) {
+                            // TODO: Clear after X time
+                            LOGGER.error("Random already used for k {} and r {}", clicked, random);
+                            return false;
+                        }
+
+                        randoms.add(random);
+
+                        keyboardInputManager.handleKey(clicked);
+
+                        Packet.builder().putBytes(generateRequest("")).writeAndFlush(client);
+                    } else {
+                        var random = kvSplit.get("r");
+                        var str = String.valueOf(kvSplit.hashCode());
+                        usedRandoms.putIfAbsent(str, Collections.synchronizedList(new ArrayList<>()));
+                        var randoms = usedRandoms.get(str);
+                        if (randoms.contains(random)) return false;
+
+                        emojIDE.getWebCallbackHandler().handleCallback(url, kvSplit);
+                        Packet.builder().putBytes(generateRequest("")).writeAndFlush(client);
                     }
-
-                    randoms.add(random);
-
-                    keyboardInputManager.handleKey(clicked);
-
-                    Packet.builder().putBytes(generateRequest("")).writeAndFlush(client);
                 } else if (url.startsWith("/s")) {
                     Packet.builder().putBytes(generateRequest("<script>var xmlHttp = new XMLHttpRequest();\n" +
                             "xmlHttp.open(\"GET\",\"http://localhost:6969" + url.replace("/s", "/e") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
+                            "xmlHttp.send(null);" +
+                            "window.open('','_self').close();</script>")).writeAndFlush(client);
+                } else if (url.startsWith("/c")) {
+                    Packet.builder().putBytes(generateRequest("<script>var xmlHttp = new XMLHttpRequest();\n" +
+                            "xmlHttp.open(\"GET\",\"http://localhost:6969" + url.replace("/c", "/z") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
                             "xmlHttp.send(null);" +
                             "window.open('','_self').close();</script>")).writeAndFlush(client);
                 }
@@ -129,7 +148,7 @@ public class SimpleWebListener implements WebListener {
 
     @Override
     public String createHeaders() {
-        return "HTTP/1.1 418 I'm a teapot\n" +
+        return "HTTP/1.1 200 OK\n" +
                 "Server: EmojIDE\n" +
                 "Content-Length: %CTL%\n" +
                 "Content-Type: text/html\n" +

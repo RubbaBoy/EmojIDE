@@ -60,6 +60,11 @@ public class CommandManager extends ListenerAdapter {
         sendError(annotation, executor, member, channel, "Invalid arguments: " + String.join(" ", args));
     }
 
+    public CommandManager registerCommands(Object... instance) {
+        Arrays.stream(instance).forEach(this::registerCommand);
+        return this;
+    }
+
     public CommandManager registerCommand(Object instance) {
         if (!instance.getClass().isAnnotationPresent(Command.class)) {
             throw new RuntimeException("Error trying to register command. No Command annotation for class.");
@@ -149,7 +154,7 @@ public class CommandManager extends ListenerAdapter {
         for (int i = 0; i < templateArgs.size(); i++) {
             String currentTemplate = templateArgs.get(i);
             String currentReal = realArgs.get(i);
-            if (!currentTemplate.equalsIgnoreCase("*") && !currentTemplate.equalsIgnoreCase("@p") && !currentTemplate.equalsIgnoreCase(currentReal)) {
+            if (!currentTemplate.equalsIgnoreCase("*") && !currentTemplate.equalsIgnoreCase(currentReal)) {
                 if (currentTemplate.startsWith("[") && currentTemplate.endsWith("]")) {
                     String debracketed = currentTemplate.substring(1, currentTemplate.length() - 1);
                     List<String> parts = Arrays.asList(debracketed.split(","));
@@ -160,7 +165,7 @@ public class CommandManager extends ListenerAdapter {
                 }
 
                 return null;
-            } else if (currentTemplate.equalsIgnoreCase("*") || currentTemplate.equalsIgnoreCase("@p")) {
+            } else if (currentTemplate.equalsIgnoreCase("*")) {
                 ret.add(currentReal);
             } else if (currentTemplate.equalsIgnoreCase("*~")) {
                 ret.add(currentReal);

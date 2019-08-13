@@ -1,5 +1,7 @@
-package com.uddernetworks.emojide.keyboard;
+package com.uddernetworks.emojide.web;
 
+import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
+import com.uddernetworks.emojide.keyboard.SimpleKeyboardInputManager;
 import simplenet.Client;
 
 import java.util.Map;

@@ -29,6 +29,9 @@ public class EmojiCommand {
     public EmojiCommand(EmojIDE emojIDE) {
         this.emojIDE = emojIDE;
         emojiManager = emojIDE.getEmojiManager();
+
+        var callbackHandler = emojIDE.getWebCallbackHandler();
+        callbackHandler.registerCommandCallback("info", Collections.emptyList(), (member, channel, query) -> info(member, channel));
     }
 
     @Argument()
@@ -82,8 +85,8 @@ public class EmojiCommand {
                 .setDescription(emoji.getDisplay())
                 .addField("Identifying",
                         "**Enum name**: " + emoji.name() +
-                        "\n**Id**: " + emoji.getId() +
-                        "\n**Image path**: " + emoji.getRelativePath(), false)
+                                "\n**Id**: " + emoji.getId() +
+                                "\n**Image path**: " + emoji.getRelativePath(), false)
                 .addField("Created on", emote.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME), false)
                 .addField("Server", emote.getGuild().getName() + " (" + emote.getGuild().getId() + ")", false)
                 .addField("Group", getGroupFor(emoji).map(Group::getName).orElse("N/A"), false));

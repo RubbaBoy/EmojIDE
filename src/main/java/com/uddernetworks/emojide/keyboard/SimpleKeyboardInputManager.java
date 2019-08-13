@@ -7,6 +7,8 @@ import com.uddernetworks.emojide.event.Handler;
 import com.uddernetworks.emojide.gui.render.RenderEngine;
 import com.uddernetworks.emojide.main.EmojIDE;
 import com.uddernetworks.emojide.main.Thread;
+import com.uddernetworks.emojide.web.SimpleWebListener;
+import com.uddernetworks.emojide.web.WebListener;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;

@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Command(name = "ide", aliases = "i", minArgs = 0, maxArgs = 2, permission = Permission.ADMINISTRATOR)
@@ -28,6 +29,12 @@ public class IDECommand {
 
     public IDECommand(EmojIDE emojIDE) {
         this.emojIDE = emojIDE;
+
+        var callbackHandler = emojIDE.getWebCallbackHandler();
+        callbackHandler.registerCommandCallback("setchannel", Collections.emptyList(), (member, channel, query) -> setChannel(member, channel));
+        callbackHandler.registerCommandCallback("start", Collections.emptyList(), (member, channel, query) -> start(member, channel));
+        callbackHandler.registerCommandCallback("stop", Collections.emptyList(), (member, channel, query) -> stop(member, channel));
+        callbackHandler.registerCommandCallback("restart", Collections.emptyList(), (member, channel, query) -> restart(member, channel));
     }
 
     @Argument()
@@ -40,18 +47,23 @@ public class IDECommand {
         CommandHelp.send(member, channel);
     }
 
+    @Argument(format = "setchannel")
+    public void setChannel(Member member, TextChannel channel) {
+        LOGGER.info("Not yet implemented");
+    }
+
     @Argument(format = "start")
-    public void start(Member member, TextChannel channel, ArgumentList args) {
+    public void start(Member member, TextChannel channel) {
         commandStart(channel);
     }
 
     @Argument(format = "stop")
-    public void stop(Member member, TextChannel channel, ArgumentList args) {
+    public void stop(Member member, TextChannel channel) {
         commandStop(channel);
     }
 
     @Argument(format = "restart")
-    public void restart(Member member, TextChannel channel, ArgumentList args) {
+    public void restart(Member member, TextChannel channel) {
         commandStop(channel);
         Thread.sleep(1000);
         commandStart(channel);
