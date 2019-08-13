@@ -26,6 +26,7 @@ public class CachedDisplayer implements Displayer {
 
     private EmojIDE emojIDE;
     private EmojiComponent child;
+    private boolean displaying;
     private AtomicBoolean waiting = new AtomicBoolean();
     private List<Message> messages = new ArrayList<>();
     private Emoji filler;
@@ -79,8 +80,14 @@ public class CachedDisplayer implements Displayer {
     }
 
     @Override
+    public boolean isDisplaying() {
+        return displaying;
+    }
+
+    @Override
     public void update() {
         while (this.waiting.get()) {}
+        displaying = true;
         boolean sendMessages = this.messages.isEmpty();
         if (sendMessages && this.child.getWidth() > MAX_EMOJIS_PER_LINE)
             throw new InvalidComponentException("Invalid width of " + this.child.getWidth() + " (Max is " + MAX_EMOJIS_PER_LINE + ")");

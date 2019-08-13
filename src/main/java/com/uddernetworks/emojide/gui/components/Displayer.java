@@ -29,6 +29,13 @@ public interface Displayer {
     EmojiComponent getChild();
 
     /**
+     * If the {@link Displayer} has started rendering items.
+     *
+     * @return If items have started to render
+     */
+    boolean isDisplaying();
+
+    /**
      * Re-renders the changed lines by invoking {@link EmojiComponent#getCachedRender()} and either sending or editing
      * (only changed) lines rendered.
      */

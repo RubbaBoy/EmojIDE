@@ -58,8 +58,9 @@ public class TabbedFrame extends DefaultEmojiContainer {
         for (int i = 0; i < tabs.size(); i++) {
             var tab = tabs.get(i);
             if (tab.component.equals(component)) {
+                var preActive = getActive();
                 activeTab = i;
-                switchToTab(getActive(), tab);
+                switchToTab(preActive, tab);
                 return;
             }
         }
@@ -70,9 +71,11 @@ public class TabbedFrame extends DefaultEmojiContainer {
         removeChild(from.component);
         to.activate();
         addChild(to.component, 0, 0);
-        clearCache();
-        update();
-        this.displayer.update();
+        if (displayer.isDisplaying()) {
+            clearCache();
+            update();
+            this.displayer.update();
+        }
     }
 
     public Tab getActive() {
@@ -80,8 +83,17 @@ public class TabbedFrame extends DefaultEmojiContainer {
     }
 
     public TabbedFrame addTab(String name, EmojiComponent component) {
+        addTab(name, component, false);
+        return this;
+    }
+
+    public TabbedFrame addTab(String name, EmojiComponent component, boolean active) {
         if (this.tabs.isEmpty()) addChild(component, 0, 0);
         this.tabs.add(new Tab(name, component));
+        if (active) {
+            LOGGER.info("{} is active, tabs size: {} name of active: {}", name, tabs.size(), getActive().name);
+            selectTab(component);
+        }
         return this;
     }
 
@@ -143,13 +155,13 @@ public class TabbedFrame extends DefaultEmojiContainer {
         }
 
         public void activate() {
-            LOGGER.info("The tab {} is now active!", this.name);
-            KeyboardRaisable.get().addListener(this.component);
+            LOGGER.info("The tab {} is now active!", name);
+            KeyboardRaisable.get().addListener(component);
         }
 
         public void deactivate() {
-            LOGGER.info("The tab {} is no longer active!", this.name);
-            KeyboardRaisable.get().removeListener(this.component);
+            LOGGER.info("The tab {} is no longer active!", name);
+            KeyboardRaisable.get().removeListener(component);
         }
 
         public String getName() {

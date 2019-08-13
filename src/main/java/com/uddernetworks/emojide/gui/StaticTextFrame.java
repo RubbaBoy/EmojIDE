@@ -40,6 +40,11 @@ public class StaticTextFrame extends StyledEmojiComponent {
         return initial;
     }
 
+    public void refresh() {
+        clearCache();
+        displayer.update();
+    }
+
     private String[] getWrapped() {
         return WordUtils.wrap(this.text, this.width, "\n", true).split("\n");
     }
