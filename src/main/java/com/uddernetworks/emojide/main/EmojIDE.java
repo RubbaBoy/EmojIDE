@@ -1,6 +1,7 @@
 package com.uddernetworks.emojide.main;
 
 import com.uddernetworks.emojide.discord.DefaultEmojiManager;
+import com.uddernetworks.emojide.discord.EmojiCommand;
 import com.uddernetworks.emojide.discord.EmojiManager;
 import com.uddernetworks.emojide.discord.IDECommand;
 import com.uddernetworks.emojide.discord.command.CommandManager;
@@ -17,6 +18,8 @@ import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 
 public class EmojIDE extends ListenerAdapter {
+
+    public static final char ZWS = '\u200b';
 
     private static ConfigManager configManager;
     private JDA jda;
@@ -40,7 +43,7 @@ public class EmojIDE extends ListenerAdapter {
 
         jda.addEventListener(this.keyboardInputManager = new SimpleKeyboardInputManager(this));
         emojiManager = new DefaultEmojiManager(this, configManager.getServers());
-        jda.addEventListener(new CommandManager().registerCommand(new IDECommand()));
+        jda.addEventListener(new CommandManager().registerCommand(new IDECommand(this)).registerCommand(new EmojiCommand(this)));
     }
 
     public static ConfigManager getConfigManager() {

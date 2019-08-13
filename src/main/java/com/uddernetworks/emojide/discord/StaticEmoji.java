@@ -6,8 +6,6 @@ package com.uddernetworks.emojide.discord;
 public enum StaticEmoji implements Emoji {
 
     // Defaults
-    FILLER("black_large_square", "U+2b1b"),
-    BORDER("white_large_square", "U+2b1c"),
     DISCORD("discord", "generated_emojis/discord.png"),
     TRANSPARENT("transparent", "generated_emojis/transparent.png"),
 

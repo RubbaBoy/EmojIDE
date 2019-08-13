@@ -25,6 +25,7 @@ public class DefaultEmojiManager implements EmojiManager {
     private Map<String, Emoji> emojis = new HashMap<>();
     private EmojIDE emojIDE;
     private Set<Guild> maxServers = new HashSet<>();
+    private Map<Guild, Integer> emojiDistribution = new HashMap<>();
 
     public DefaultEmojiManager(EmojIDE emojIDE, List<Long> emojiServers) {
         this.emojIDE = emojIDE;
@@ -67,6 +68,8 @@ public class DefaultEmojiManager implements EmojiManager {
                 LOGGER.info("Registering emoji {}", emoji.getName());
                 emoji.setId(uploaded.getIdLong());
                 emoji.setDisplay(uploaded.getAsMention());
+
+                emojiDistribution.merge(uploaded.getGuild(), 1, Integer::sum);
             });
             return true;
         }).forEach(emoji -> this.emojis.put(emoji.getName().toLowerCase(), emoji));
@@ -110,4 +113,17 @@ public class DefaultEmojiManager implements EmojiManager {
         return this.emojis.getOrDefault(name.toLowerCase(), StaticEmoji.TRANSPARENT);
     }
 
+    @Override
+    public Map<String, Emoji> getEmojis() {
+        return Map.copyOf(emojis);
+    }
+
+    public Map<Guild, Integer> getEmojiDistribution() {
+        return Map.copyOf(emojiDistribution);
+    }
+
+    @Override
+    public List<Guild> getEmojiServers() {
+        return List.copyOf(emojiServers);
+    }
 }

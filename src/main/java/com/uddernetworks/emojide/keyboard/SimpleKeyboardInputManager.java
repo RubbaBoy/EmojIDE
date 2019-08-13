@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.uddernetworks.emojide.discord.StaticEmoji.*;
+import static com.uddernetworks.emojide.main.EmojIDE.ZWS;
 
 public class SimpleKeyboardInputManager extends ListenerAdapter implements KeyboardInputManager {
 
     private static Logger LOGGER = LoggerFactory.getLogger(SimpleKeyboardInputManager.class);
-    private static final char ZWS = '\u200b';
 
     private WebListener webListener;
 

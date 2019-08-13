@@ -49,8 +49,10 @@ public class CommandManager extends ListenerAdapter {
         }
 
         for (ArgumentMethodEntry entry : arguments.get(annotation)) {
-            if (invokeArgMethod(member, channel, entry.getKey(), entry.getValue(), args, executor, annotation) == SUCCESS)
+            if (invokeArgMethod(member, channel, entry.getKey(), entry.getValue(), args, executor, annotation) == SUCCESS) {
+                event.getMessage().delete().queue();
                 return;
+            }
         }
 
         sendError(annotation, executor, member, channel, "Invalid arguments: " + String.join(" ", args));
