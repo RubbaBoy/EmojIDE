@@ -2,29 +2,27 @@ package com.uddernetworks.emojide.web;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
-public class WebCallback {
+public interface WebCallback {
 
-    private String name;
-    private List<String> required;
-    private Consumer<Map<String, String>> onReceive;
+    /**
+     * When the callback is received via a web request.
+     *
+     * @param query The web query
+     */
+    void receive(Map<String, String> query);
 
-    public WebCallback(String name, List<String> required, Consumer<Map<String, String>> onReceive) {
-        this.name = name;
-        this.required = required;
-        this.onReceive = onReceive;
-    }
+    /**
+     * The unique name of the callback.
+     *
+     * @return The name
+     */
+    String getName();
 
-    public void receive(Map<String, String> query) {
-        onReceive.accept(query);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public List<String> getRequired() {
-        return required;
-    }
+    /**
+     * Gets the required query parameters. If not all parameters are found in a request, the callback is not invoked.
+     *
+     * @return The required parameters
+     */
+    List<String> getRequired();
 }

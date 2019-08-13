@@ -5,11 +5,14 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.function.Consumer;
 
-public class EmbedUtils {
+public class EmbedUtils extends ListenerAdapter {
 
     public static void error(TextChannel channel, Member author, String message) {
         EmbedBuilder eb = new EmbedBuilder();
@@ -20,7 +23,7 @@ public class EmbedUtils {
         eb.setDescription(message);
 
         eb.setFooter("In response to " + author.getEffectiveName(), author.getUser().getAvatarUrl());
-        channel.sendMessage(eb.build()).queue();
+        channel.sendMessage(eb.build()).submit().thenAccept(sent -> sent.addReaction("U+1F5D1").queue());
     }
 
     public static Message sendEmbed(TextChannel channel, Member author, String title, String description) {
@@ -28,7 +31,9 @@ public class EmbedUtils {
     }
 
     public static Message sendEmbed(TextChannel channel, Member author, String title, Consumer<EmbedBuilder> embedBuilderConsumer) {
-        return channel.sendMessage(createEmbed(author, title, embedBuilderConsumer)).complete();
+        var message = channel.sendMessage(createEmbed(author, title, embedBuilderConsumer)).complete();
+        message.addReaction("U+1F5D1").queue();
+        return message;
     }
 
     public static MessageEmbed createEmbed(Member author, String title, Consumer<EmbedBuilder> embedBuilderConsumer) {
@@ -43,4 +48,14 @@ public class EmbedUtils {
         return eb.build();
     }
 
+    @Override
+    public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
+        if (event.getUser().isBot()) return;
+        if (!event.getReactionEmote().getAsCodepoints().equalsIgnoreCase("U+1F5D1")) return;
+        event.getChannel().retrieveMessageById(event.getMessageIdLong()).submit().thenAccept(message -> {
+            if (message.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
+                message.delete().queue();
+            }
+        });
+    }
 }

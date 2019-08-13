@@ -1,5 +1,7 @@
 package com.uddernetworks.emojide.main;
 
+import com.electronwill.nightconfig.core.file.FileConfig;
+
 import java.util.List;
 
 public interface ConfigManager {
@@ -22,4 +24,11 @@ public interface ConfigManager {
      * @return A list of server IDs
      */
     List<Long> getServers();
+
+    /**
+     * Gets the {@link FileConfig}.
+     *
+     * @return The {@link FileConfig}
+     */
+    FileConfig getConfig();
 }

@@ -1,76 +1,65 @@
 package com.uddernetworks.emojide.web;
 
-import com.uddernetworks.emojide.main.EmojIDE;
-import com.uddernetworks.emojide.utils.Lists;
-import net.dv8tion.jda.api.JDA;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class WebCallbackHandler {
+public interface WebCallbackHandler {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(WebCallbackHandler.class);
+    /**
+     * Registers a callback with the given name and required parameters.
+     *
+     * @param name The unique name of the callback
+     * @param requiredParams The query parameters that must be available for the callback to invoke
+     * @param onReceive When a callback is invoked
+     */
+    void registerCallback(String name, List<String> requiredParams, Consumer<Map<String, String>> onReceive);
 
-    private EmojIDE emojIDE;
-    private JDA jda;
-    private List<WebCallback> callbacks = new ArrayList<>();
+    /**
+     * Registers a callback with the intended use being for commands, as the `channel` id and `member` id are parsed and
+     * validated for the callback to be invoked.
+     *
+     * @param name The unique name of the callback
+     * @param commandCallback The callback to be invoked
+     */
+    void registerCommandCallback(String name, CommandCallback commandCallback);
 
-    public WebCallbackHandler(EmojIDE emojIDE) {
-        this.emojIDE = emojIDE;
-        this.jda = emojIDE.getJda();
-    }
+    /**
+     * Registers a callback with the intended use being for commands, as the `channel` id and `member` id are parsed and
+     * validated for the callback to be invoked. This allows for other required parameters.
+     *
+     * @param name The unique name of the callback
+     * @param requiredParams Extra required parameters for the callback
+     * @param commandCallback The callback to be invoked
+     */
+    void registerCommandCallback(String name, List<String> requiredParams, CommandCallback commandCallback);
 
-    public void registerCallback(String name, List<String> requiredParams, Consumer<Map<String, String>> onReceive) {
-        callbacks.add(new WebCallback(name, requiredParams, onReceive));
-    }
+    /**
+     * Generates a link to be placed directly in markdown that references a callback name with query parameters.
+     *
+     * @param text The text to display in the link
+     * @param name The name of the callback
+     * @param query The query parameters of the link
+     * @return The markdown of the link
+     */
+    String generateMdLink(String text, String name, Map<String, String> query);
 
-    public void registerCommandCallback(String name, List<String> requiredParams, CommandCallback commandCallback) {
-        var commandRequired = new ArrayList<>(Arrays.asList("channel", "member"));
-        commandRequired.addAll(requiredParams);
-        registerCallback(name, commandRequired, query -> {
-            var channel = jda.getTextChannelById(query.get("channel"));
-            if (channel == null) return;
-            var member = channel.getGuild().getMemberById(query.get("member"));
-            if (member == null) return;
-            commandRequired.forEach(query::remove);
-            commandCallback.accept(member, channel, query);
-        });
-    }
+    /**
+     * Generates a raw link referencing a callback name with query parameters.
+     *
+     * @param name The name of the callback
+     * @param query The query parameters of the callback
+     * @return The raw link
+     */
+    String generateLink(String name, Map<String, String> query);
 
-    public String generateMdLink(String text, String name, Map<String, String> query) {
-        return "[" + name + "](" + generateLink(name, query) + ")";
-    }
-
-    public String generateLink(String name, Map<String, String> query) {
-        var base = new StringBuilder("http://localhost:6969/c/" + name);
-        if (query.isEmpty()) return base.toString();
-        base.append("?");
-        query.forEach((key, value) -> base.append(key).append("=").append(value).append("&"));
-        return base.substring(0, base.length() - 1);
-    }
-
-    public void handleCallback(String url, Map<String, String> query) {
-        var subTo = url.indexOf("?");
-        subTo = subTo == -1 ? url.length() : subTo;
-        url = url.substring(3,  subTo);
-
-        LOGGER.info("Handling callback for {} with {}", url, query);
-        String finalUrl = url;
-        callbacks.stream().filter(callback -> callback.getName().equalsIgnoreCase(finalUrl)).findFirst().ifPresent(callback -> {
-            var gotKeys = new ArrayList<>(query.keySet());
-            gotKeys.retainAll(callback.getRequired());
-            if (gotKeys.size() != callback.getRequired().size()) {
-                LOGGER.error("Callback did not receive the correct query parameters.");
-                return;
-            }
-
-            callback.receive(gotKeys.stream().collect(Collectors.toMap(key -> key, query::get)));
-        });
-
-    }
+    /**
+     * Invoked by the webserver when a request for a callback is made. This parses and finds appropriate listeners with
+     * the correct query parameters.
+     *
+     * @param url The ending URL without the prefix, e.g. if http://localhost:6969/z/info?one=two is requested, this
+     *            parameter will be info?one=two
+     * @param query The query parameters of the request
+     */
+    void handleCallback(String url, Map<String, String> query);
 }

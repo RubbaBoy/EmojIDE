@@ -16,12 +16,17 @@ public class CommandHelp {
 
     public static void initHelp(EmojIDE emojIDE) {
         callbackHandler = emojIDE.getWebCallbackHandler();
+        callbackHandler.registerCommandCallback("help", (member, channel, query) -> send(member, channel));
     }
 
     public static void send(Member member, TextChannel channel) {
         var emptyQuery = Map.of("member", member.getId(), "channel", channel.getId());
-        EmbedUtils.sendEmbed(channel, member, "EmojIDE Command Help", embed -> embed.setDescription("Help for the EmojIDE commands")
-                .addField("!help", "Show this help menu", false)
+        EmbedUtils.sendEmbed(channel, member, "EmojIDE Command Help", embed -> embed.setDescription("Help for the EmojIDE commands (**base** is just the base command, and no arguments)")
+                .addField("!help",
+                        commandRow(callbackHandler.generateMdLink("base", "help", emptyQuery), "Show this help menu"), false)
+                .addField("!purge",
+                        commandRow(callbackHandler.generateMdLink("base", "purge", emptyQuery), "Purges all messages by the bot in the current channel") +
+                        commandRow("user [user mention]", "Purges all messages by a user in the current channel"), false)
                 .addField("!ide",
                         commandRow(callbackHandler.generateMdLink("setchannel", "setchannel", emptyQuery), "Sets the current channel to the channel displaying the IDE") +
                                 commandRow(callbackHandler.generateMdLink("start", "start", emptyQuery), "Starts the IDE without clearing any past messages") +

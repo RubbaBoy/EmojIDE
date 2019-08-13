@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -29,7 +28,7 @@ public class CommandManager extends ListenerAdapter {
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         var member = event.getMember();
         var channel = event.getTextChannel();
-        var stripped = event.getMessage().getContentStripped();
+        var stripped = event.getMessage().getContentRaw();
         if (!stripped.startsWith("!")) return;
         var args = stripped.split("\\s+");
         var name = args[0].substring(1);

@@ -3,7 +3,6 @@ package com.uddernetworks.emojide.discord;
 import com.uddernetworks.emojide.discord.command.Argument;
 import com.uddernetworks.emojide.discord.command.ArgumentError;
 import com.uddernetworks.emojide.discord.command.Command;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 

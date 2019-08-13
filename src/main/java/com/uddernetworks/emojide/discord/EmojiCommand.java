@@ -31,7 +31,7 @@ public class EmojiCommand {
         emojiManager = emojIDE.getEmojiManager();
 
         var callbackHandler = emojIDE.getWebCallbackHandler();
-        callbackHandler.registerCommandCallback("info", Collections.emptyList(), (member, channel, query) -> info(member, channel));
+        callbackHandler.registerCommandCallback("info", (member, channel, query) -> info(member, channel));
     }
 
     @Argument()
