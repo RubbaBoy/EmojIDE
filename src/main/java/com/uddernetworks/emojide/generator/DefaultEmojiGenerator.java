@@ -15,6 +15,10 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
     private static final int WIDTH = 256;
     private static final int HEIGHT = 256;
 
+    public static void main(String[] args) {
+        new DefaultEmojiGenerator().generate();
+    }
+
     @Override
     public void generate() {
         var parent = new File("generated_emojis");
@@ -22,14 +26,14 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
 
         // Generate text
 
-        Map.of(
-                "", Color.WHITE, // White
-                "o", new Color(0xCC7832), // Orange
-                "g", new Color(0x6A8759), // Green
-                "b", new Color(0x6897BB), // Blue
-                "a", new Color(0x808080), // Gray
-                "l", new Color(0x666666) // Light Gray
-        ).forEach((prefix, color) -> Arrays.stream(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".split("")).forEach(character -> drawAndSave(parent, character, prefix, color)));
+        Arrays.asList(
+                new FontData("", Color.WHITE), // White
+                new FontData("o", new Color(0xCC7832), true), // Orange
+                new FontData("g", new Color(0x6A8759)), // Green
+                new FontData("b", new Color(0x6897BB)), // Blue
+                new FontData("a", new Color(0x808080)), // Gray
+                new FontData("l", new Color(0x666666)) // Light Gray
+        ).forEach(fontData -> Arrays.stream(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".split("")).forEach(character -> drawAndSave(parent, character, fontData)));
 
         // Generate color palette
         generateColorPalette(parent,
@@ -77,15 +81,15 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
         }
     }
 
-    private void drawAndSave(File parent, String character, String prefix, Color color) {
-        var saveFile = new File(parent, prefix + ((int) character.charAt(0)) + ".png");
+    private void drawAndSave(File parent, String character, FontData fontData) {
+        var saveFile = new File(parent, fontData.prefix + ((int) character.charAt(0)) + ".png");
         if (saveFile.exists()) return;
         BufferedImage image = new BufferedImage(WIDTH + 50, HEIGHT + 50, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = image.createGraphics();
         graphics.setPaint(TRANSPARENT);
         graphics.fillRect(0, 0, WIDTH + 50, HEIGHT + 50);
-        graphics.setPaint(color);
-        graphics.setFont(new Font("Consolas", Font.PLAIN, 256)); // 192pts
+        graphics.setPaint(fontData.color);
+        graphics.setFont(new Font("Consolas", fontData.bold ? Font.BOLD : Font.PLAIN, 256)); // 192pts
         FontMetrics metrics = graphics.getFontMetrics();
         int x = (WIDTH - metrics.stringWidth(character)) / 2;
         x += 25;
@@ -131,6 +135,34 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
         }
 
         return image;
+    }
+
+    class FontData {
+        private String prefix;
+        private Color color;
+        private boolean bold;
+
+        public FontData(String prefix, Color color) {
+            this(prefix, color, false);
+        }
+
+        public FontData(String prefix, Color color, boolean bold) {
+            this.prefix = prefix;
+            this.color = color;
+            this.bold = bold;
+        }
+
+        public String getPrefix() {
+            return prefix;
+        }
+
+        public Color getColor() {
+            return color;
+        }
+
+        public boolean isBold() {
+            return bold;
+        }
     }
 
 }

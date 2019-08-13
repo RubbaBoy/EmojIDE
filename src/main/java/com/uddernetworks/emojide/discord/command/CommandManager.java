@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -104,20 +105,21 @@ public class CommandManager extends ListenerAdapter {
         realArgs.forEach(realArg -> argumentList.add(new CommandArg(realArg)));
 
         if (!member.hasPermission(argument.permission())) {
-            sendError(command, instance, member, channel, "You don't have permission to preform this action");
+            sendError(command, instance, member, channel, "You don't have permission to perform this action");
             return INVALID_PERMISSION;
         }
 
-        if (argumentList.isEmpty()) {
-            try {
-                method.invoke(instance, member, channel);
-                return SUCCESS;
-            } catch (ReflectiveOperationException ignored) {}
-        }
 
         try {
-            method.invoke(instance, member, channel, argumentList);
-            return SUCCESS;
+            if (method.getParameterCount() == 2) {
+                if (argumentList.isEmpty()) {
+                    method.invoke(instance, member, channel);
+                    return SUCCESS;
+                }
+            } else {
+                method.invoke(instance, member, channel, argumentList);
+                return SUCCESS;
+            }
         } catch (ReflectiveOperationException e) {
             LOGGER.error("Error while invoking command", e);
         }

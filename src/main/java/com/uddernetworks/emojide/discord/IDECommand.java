@@ -28,11 +28,6 @@ public class IDECommand {
 
     public IDECommand(EmojIDE emojIDE) {
         this.emojIDE = emojIDE;
-
-//        var channel = emojIDE.getJda().getTextChannelById(606856180773421061L);
-//        commandStop(channel);
-//        Thread.sleep(1000);
-//        commandStart(channel);
     }
 
     @Argument()
@@ -88,7 +83,7 @@ public class IDECommand {
                                                         .addChild(new HighlightedTextFrame(displayer, 54, 18, text), 1, 1)
                                                         .addChild(new CustomRenderedContainerFrame(displayer, 56, 5)
                                                                 .addRenderer(initial -> Arrays.fill(initial[0], StaticEmoji.TTABBED_FRAME))
-                                                                .addChild(outputFrame = new StaticTextFrame(displayer, 54, 4).setText("Hello World from console!"), 1, 1), 0, 15), true), 0, 0)
+                                                                .addChild(outputFrame = new StaticTextFrame(displayer, 54, 4), 1, 1), 0, 15), true), 0, 0)
                         , true);
 
         new TabController(emojIDE, displayer, tabbedFrame);
