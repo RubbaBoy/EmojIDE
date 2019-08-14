@@ -9,14 +9,17 @@ import com.uddernetworks.emojide.gui.tabs.Tab;
 import com.uddernetworks.emojide.ide.ConsolePiper;
 import com.uddernetworks.emojide.ide.FunctionController;
 import com.uddernetworks.emojide.main.EmojIDE;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
-public class DefaultDocumentTabController implements DocumentTabController{
+public class DefaultDocumentTabController implements DocumentTabController {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(DefaultDocumentTabController.class);
 
     private EmojIDE emojIDE;
     private Displayer displayer;
@@ -36,7 +39,10 @@ public class DefaultDocumentTabController implements DocumentTabController{
     @Override
     public void addTab(Document document) {
         var highlightFrame = new HighlightedTextFrame(displayer, 54, 18, document.getContent());
-        highlightFrame.getTextBlock().onChange(document::setContent);
+        highlightFrame.getTextBlock().onChange(text -> {
+            LOGGER.info("Changed to: \n{}", text);
+            document.setContent(text);
+        });
 
         var component = new EmptyContainerFrame(displayer, 56, 20)
                 .addChild(highlightFrame, 1, 1)

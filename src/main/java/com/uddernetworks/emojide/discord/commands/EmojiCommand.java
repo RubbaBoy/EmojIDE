@@ -1,9 +1,9 @@
 package com.uddernetworks.emojide.discord.commands;
 
+import com.uddernetworks.emojide.discord.commands.manager.*;
 import com.uddernetworks.emojide.discord.emoji.Emoji;
 import com.uddernetworks.emojide.discord.emoji.EmojiManager;
 import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
-import com.uddernetworks.emojide.discord.commands.manager.*;
 import com.uddernetworks.emojide.main.EmojIDE;
 import com.uddernetworks.emojide.web.WebCallbackHandler;
 import net.dv8tion.jda.api.Permission;
@@ -21,8 +21,8 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.uddernetworks.emojide.discord.emoji.StaticEmoji.*;
 import static com.uddernetworks.emojide.discord.commands.CommandHelp.space;
+import static com.uddernetworks.emojide.discord.emoji.StaticEmoji.*;
 import static com.uddernetworks.emojide.main.EmojIDE.ZWS;
 import static java.util.function.Predicate.not;
 

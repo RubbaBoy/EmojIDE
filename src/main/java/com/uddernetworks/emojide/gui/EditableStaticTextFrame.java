@@ -79,7 +79,7 @@ public class EditableStaticTextFrame extends StyledEmojiComponent {
                     break;
                 case BACKSPACE:
                     if (cursorX > 0) {
-                        textBlock.removeChar(cursorX--, cursorY);
+                        textBlock.removeChar(--cursorX, cursorY);
                     } else {
                         cursorX--;
                         cursorY--;

@@ -5,8 +5,6 @@ import com.uddernetworks.emojide.gui.TabbedFrame;
 import com.uddernetworks.emojide.gui.components.EmojiComponent;
 import com.uddernetworks.emojide.gui.tabs.Tab;
 
-import java.util.Optional;
-
 public interface DocumentTabController {
 
     /**

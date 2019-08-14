@@ -2,7 +2,7 @@ package com.uddernetworks.emojide.discord.commands;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
 import com.uddernetworks.emojide.data.document.Document;
-import com.uddernetworks.emojide.discord.*;
+import com.uddernetworks.emojide.discord.DefaultDocumentTabController;
 import com.uddernetworks.emojide.discord.commands.manager.*;
 import com.uddernetworks.emojide.discord.emoji.EmojiManager;
 import com.uddernetworks.emojide.discord.emoji.StaticEmoji;

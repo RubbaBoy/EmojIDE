@@ -1,6 +1,11 @@
 package com.uddernetworks.emojide.data.document;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class BasicDocument implements Document {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(BasicDocument.class);
 
     private DocumentManager documentManager;
 

@@ -32,11 +32,11 @@ public class LanguageHighlighter {
             Arrays.asList("'null'", "BooleanLiteral", "'break'", "'do'", "'instanceof'", "'typeof'", "'case'", "'else'", "'new'", "'var'", "'catch'", "'finally'", "'return'", "'void'", "'continue'", "'for'", "'switch'", "'while'", "'debugger'", "'function'", "'this'", "'with'", "'default'", "'if'", "'throw'", "'delete'", "'in'", "'try'", "'class'", "'enum'", "'extends'", "'super'", "'const'", "'export'", "'import'", "'implements'", "'let'", "'private'", "'public'", "'interface'", "'package'", "'protected'", "'static'", "'yield'"), 0xCC7832, // Orange
             Arrays.asList("StringLiteral", "TemplateStringLiteral"), 0x6A8759, // Green
             Arrays.asList("DecimalLiteral", "HexIntegerLiteral", "OctalIntegerLiteral", "OctalIntegerLiteral2", "BinaryIntegerLiteral"), 0x6897BB, // Blue
-            Arrays.asList("0", "'['", "']'", "'('", "')'", "'{'", "'}'", "';'", "','", "'='", "'?'", "':'", "'...'", "'.'", "'++'", "'--'", "'+'", "'-'", "'~'", "'!'", "'*'", "'/'", "'%'", "'>>'", "'<<'", "'>>>'", "'<'", "'>'", "'<='", "'>='", "'=='", "'!='", "'==='", "'!=='", "'&'", "'^'", "'|'", "'&&'", "'||'", "'*='", "'/='", "'%='", "'+='", "'-='", "'<<='", "'>>='", "'>>>='", "'&='", "'^='", "'|='", "'=>'", "Identifier", "WhiteSpaces", "LineTerminator"), 0x000000, // Black
+            Arrays.asList("0", "'['", "']'", "'('", "')'", "'{'", "'}'", "';'", "','", "'='", "'?'", "':'", "'...'", "'.'", "'++'", "'--'", "'+'", "'-'", "'~'", "'!'", "'*'", "'/'", "'%'", "'>>'", "'<<'", "'>>>'", "'<'", "'>'", "'<='", "'>='", "'=='", "'!='", "'==='", "'!=='", "'&'", "'^'", "'|'", "'&&'", "'||'", "'*='", "'/='", "'%='", "'+='", "'-='", "'<<='", "'>>='", "'>>>='", "'&='", "'^='", "'|='", "'=>'", "Identifier", "WhiteSpaces", "LineTerminator", "'\"'"), 0x000000, // Black
             Arrays.asList("MultiLineComment", "SingleLineComment"), 0x808080, // Gray
             Arrays.asList("HtmlComment", "CDataComment"), 0x666666, // Light Gray
-            Arrays.asList("RegularExpressionLiteral"), 0x780078, // Dark Pink/Purple
-            Arrays.asList("UnexpectedCharacter"), 0xFF0000 // Red
+            Arrays.asList("RegularExpressionLiteral"), 0x808080, // Gray (Was Dark Pink/Purple)
+            Arrays.asList("UnexpectedCharacter"), 0x808080 // Gray (Was red)
     );
 
     public Optional<Color> getColor(String tokenName) {
@@ -75,8 +75,7 @@ public class LanguageHighlighter {
             var line = lines[token.getLine() - 1];
             for (int i = from; i < Math.min(to, line.length()); i++) {
                 var letter = line.charAt(i);
-//                LOGGER.info("Letter {} is {} ({})", letter, color, tokenName);
-                emojiGrid[token.getLine() - 1][i] = emojiManager.getTextEmoji(COLORS.get(color) + (int) letter);
+                emojiGrid[token.getLine() - 1][i] = emojiManager.getTextEmoji(COLORS.getOrDefault(color, "") + (int) letter);
             }
         }
         return emojiGrid;

@@ -10,7 +10,6 @@ import com.uddernetworks.emojide.gui.text.DynamicTextBlock;
 import com.uddernetworks.emojide.gui.text.TextBlock;
 import com.uddernetworks.emojide.keyboard.KeyPressEvent;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
-import com.uddernetworks.emojide.keyboard.KeyboardRaisable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +110,7 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
                     break;
                 case BACKSPACE:
                     if (cursorX > 0) {
-                        textBlock.removeChar(cursorX--, cursorY);
+                        textBlock.removeChar(--cursorX, cursorY);
                     } else {
                         cursorX--;
                         cursorY--;

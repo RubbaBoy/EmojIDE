@@ -138,6 +138,7 @@ public class DynamicTextBlock implements TextBlock {
 
     @Override
     public void removeChar(int x, int y) {
+        if (x >= this.chars.get(y).size()) return;
         this.chars.get(y).remove(x);
         changed();
     }

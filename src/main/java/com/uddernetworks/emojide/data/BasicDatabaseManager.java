@@ -169,7 +169,7 @@ public class BasicDatabaseManager implements DatabaseManager {
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(modifyDocument)) {
             statement.setString(1, document.getContent());
-            statement.setLong(2, document.getAuthor());
+            statement.setString(2, document.getName());
             statement.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error("Error during #updateDocument(Document)", e);
