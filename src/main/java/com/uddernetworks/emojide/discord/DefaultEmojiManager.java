@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class DefaultEmojiManager implements EmojiManager {
@@ -24,7 +23,7 @@ public class DefaultEmojiManager implements EmojiManager {
     private List<Guild> emojiServers;
     private Map<String, Emoji> emojis = new HashMap<>();
     private EmojIDE emojIDE;
-    private Set<Guild> maxServers = new HashSet<>();
+    private Set<Long> maxServers = Collections.synchronizedSet(new HashSet<>());
     private Map<Guild, Integer> emojiDistribution = new HashMap<>();
 
     public DefaultEmojiManager(EmojIDE emojIDE, List<Long> emojiServers) {
@@ -78,39 +77,51 @@ public class DefaultEmojiManager implements EmojiManager {
     }
 
     private Optional<Emote> uploadEmote(String name, File file) {
-        var uploaded = new AtomicReference<Emote>();
-
-        emojiServers.forEach(server -> {
-            if (maxServers.contains(server)) return;
+        for (Guild server : emojiServers) {
+            var serverId = server.getIdLong();
+            if (maxServers.contains(serverId)) continue;
             if (server.retrieveEmotes().complete().size() >= 50) {
-                maxServers.add(server);
-                LOGGER.info("Reached max!");
-                return;
+                maxServers.add(serverId);
+                LOGGER.info("{} Reached max!", server.getName());
+                continue;
             }
-
-            if (uploaded.get() != null) return;
 
             try {
                 LOGGER.info("Uploading {} to {}", name, server.getName());
-                uploaded.set(server.createEmote(name, Icon.from(file)).complete());
+                var uploaded = server.createEmote(name, Icon.from(file)).complete();
+                if (uploaded != null) return Optional.of(uploaded);
             } catch (IOException e) {
                 LOGGER.error("Error uploading emoji " + name + ", retrying on another server...", e);
             } catch (ErrorResponseException e) {
                 if (e.getErrorCode() == 30008) {
-                    maxServers.add(server);
-                    return; // Maximum number of emojis reached
+                    maxServers.add(serverId);
+                    continue;
                 }
 
                 LOGGER.error("Error while sending emoji request for " + name, e);
             }
-        });
+        }
 
-        return Optional.ofNullable(uploaded.get());
+        LOGGER.error("It appears as though an emoji could not be uploaded to any of the " + emojiServers.size() + " servers. The program will now be terminated, please try again.");
+        System.exit(0);
+        return Optional.empty();
     }
 
     @Override
     public Emoji getEmoji(String name) {
         return this.emojis.getOrDefault(name.toLowerCase(), StaticEmoji.TRANSPARENT);
+    }
+
+    // TODO: Make font dynamic
+
+    @Override
+    public Emoji getTextEmoji(char character) {
+        return getTextEmoji(String.valueOf((int) character));
+    }
+
+    @Override
+    public Emoji getTextEmoji(String name) {
+        return getEmoji("f" + name);
     }
 
     @Override

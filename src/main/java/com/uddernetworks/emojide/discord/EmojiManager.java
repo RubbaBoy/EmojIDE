@@ -20,6 +20,23 @@ public interface EmojiManager {
     Emoji getEmoji(String name);
 
     /**
+     * Gets the text emoji for the given character, in the currently applied typeface.
+     *
+     * @param character The character to get the emoji of
+     * @return The emoji
+     */
+    Emoji getTextEmoji(char character);
+
+    /**
+     * Gets the text emoji for the given character, in the currently applied typeface. This assumes the <code>name</code> argument
+     * is the emoji name, i.e. <code>o96</code>
+     *
+     * @param name The character to get the emoji of
+     * @return The emoji
+     */
+    Emoji getTextEmoji(String name);
+
+    /**
      * Gets an immutable map of all custom emojis uploaded and used by EmojIDE.
      *
      * @return All emojis by EmojIDE

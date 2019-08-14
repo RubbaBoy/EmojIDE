@@ -35,8 +35,9 @@ public class BasicWebCallbackHandler implements WebCallbackHandler {
     @Override
     public void registerCommandCallback(String name, List<String> requiredParams, CommandCallback commandCallback) {
         var commandRequired = new ArrayList<>(Arrays.asList("channel", "member"));
-        commandRequired.addAll(requiredParams);
-        registerCallback(name, commandRequired, query -> {
+        var allRequired = new ArrayList<>(requiredParams);
+        allRequired.addAll(commandRequired);
+        registerCallback(name, allRequired, query -> {
             var channel = jda.getTextChannelById(query.get("channel"));
             if (channel == null) return;
             var member = channel.getGuild().getMemberById(query.get("member"));

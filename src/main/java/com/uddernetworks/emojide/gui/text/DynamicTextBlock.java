@@ -94,7 +94,7 @@ public class DynamicTextBlock implements TextBlock {
             var line = this.chars.get(y);
             var emojiLine = initial[y];
             for (int x = 0; x < line.size(); x++) {
-                emojiLine[x] = emojiManager.getEmoji(String.valueOf((int) line.get(x)));
+                emojiLine[x] = emojiManager.getTextEmoji(line.get(x));
             }
             initial[y] = emojiLine;
         }

@@ -16,6 +16,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class EmojIDE extends ListenerAdapter {
 
@@ -35,6 +37,7 @@ public class EmojIDE extends ListenerAdapter {
                 .setStatus(OnlineStatus.ONLINE)
                 .setActivity(Activity.playing("Programming"))
                 .addEventListeners(new EmojIDE())
+                .setRateLimitPool(new CustomPool())
                 .build();
     }
 

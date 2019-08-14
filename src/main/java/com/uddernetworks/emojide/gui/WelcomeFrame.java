@@ -48,6 +48,6 @@ public class WelcomeFrame extends DefaultEmojiContainer {
 
     private void insertText(String text, int x, int y, Emoji[][] grid) {
         final int[] offset = {x};
-        text.chars().forEach(i -> grid[y + 3][offset[0]++] = this.emojiManager.getEmoji(String.valueOf(i)));
+        text.chars().forEach(i -> grid[y + 3][offset[0]++] = this.emojiManager.getTextEmoji(String.valueOf(i)));
     }
 }

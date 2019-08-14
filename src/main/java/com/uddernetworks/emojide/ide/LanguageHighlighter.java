@@ -76,7 +76,7 @@ public class LanguageHighlighter {
             for (int i = from; i < Math.min(to, line.length()); i++) {
                 var letter = line.charAt(i);
 //                LOGGER.info("Letter {} is {} ({})", letter, color, tokenName);
-                emojiGrid[token.getLine() - 1][i] = emojiManager.getEmoji(COLORS.get(color) + (int) letter);
+                emojiGrid[token.getLine() - 1][i] = emojiManager.getTextEmoji(COLORS.get(color) + (int) letter);
             }
         }
         return emojiGrid;

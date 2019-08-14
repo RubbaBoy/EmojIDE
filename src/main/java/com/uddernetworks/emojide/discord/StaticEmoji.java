@@ -684,6 +684,594 @@ public enum StaticEmoji implements Emoji {
     A_L126("l126", "generated_emojis/l126.png"), // ASCII Light Gray ~
 //</editor-fold>
 
+    //<editor-fold desc="Fira Code White Text">
+    A_F32("f32", "generated_emojis/f32.png"), // ASCII White
+    A_F33("f33", "generated_emojis/f33.png"), // ASCII White !
+    A_F34("f34", "generated_emojis/f34.png"), // ASCII White "
+    A_F35("f35", "generated_emojis/f35.png"), // ASCII White #
+    A_F36("f36", "generated_emojis/f36.png"), // ASCII White $
+    A_F37("f37", "generated_emojis/f37.png"), // ASCII White %
+    A_F38("f38", "generated_emojis/f38.png"), // ASCII White &
+    A_F39("f39", "generated_emojis/f39.png"), // ASCII White '
+    A_F40("f40", "generated_emojis/f40.png"), // ASCII White (
+    A_F41("f41", "generated_emojis/f41.png"), // ASCII White )
+    A_F42("f42", "generated_emojis/f42.png"), // ASCII White *
+    A_F43("f43", "generated_emojis/f43.png"), // ASCII White +
+    A_F44("f44", "generated_emojis/f44.png"), // ASCII White ,
+    A_F45("f45", "generated_emojis/f45.png"), // ASCII White -
+    A_F46("f46", "generated_emojis/f46.png"), // ASCII White .
+    A_F47("f47", "generated_emojis/f47.png"), // ASCII White /
+    A_F48("f48", "generated_emojis/f48.png"), // ASCII White 0
+    A_F49("f49", "generated_emojis/f49.png"), // ASCII White 1
+    A_F50("f50", "generated_emojis/f50.png"), // ASCII White 2
+    A_F51("f51", "generated_emojis/f51.png"), // ASCII White 3
+    A_F52("f52", "generated_emojis/f52.png"), // ASCII White 4
+    A_F53("f53", "generated_emojis/f53.png"), // ASCII White 5
+    A_F54("f54", "generated_emojis/f54.png"), // ASCII White 6
+    A_F55("f55", "generated_emojis/f55.png"), // ASCII White 7
+    A_F56("f56", "generated_emojis/f56.png"), // ASCII White 8
+    A_F57("f57", "generated_emojis/f57.png"), // ASCII White 9
+    A_F58("f58", "generated_emojis/f58.png"), // ASCII White :
+    A_F59("f59", "generated_emojis/f59.png"), // ASCII White ;
+    A_F60("f60", "generated_emojis/f60.png"), // ASCII White <
+    A_F61("f61", "generated_emojis/f61.png"), // ASCII White =
+    A_F62("f62", "generated_emojis/f62.png"), // ASCII White >
+    A_F63("f63", "generated_emojis/f63.png"), // ASCII White ?
+    A_F64("f64", "generated_emojis/f64.png"), // ASCII White @
+    A_F65("f65", "generated_emojis/f65.png"), // ASCII White A
+    A_F66("f66", "generated_emojis/f66.png"), // ASCII White B
+    A_F67("f67", "generated_emojis/f67.png"), // ASCII White C
+    A_F68("f68", "generated_emojis/f68.png"), // ASCII White D
+    A_F69("f69", "generated_emojis/f69.png"), // ASCII White E
+    A_F70("f70", "generated_emojis/f70.png"), // ASCII White F
+    A_F71("f71", "generated_emojis/f71.png"), // ASCII White G
+    A_F72("f72", "generated_emojis/f72.png"), // ASCII White H
+    A_F73("f73", "generated_emojis/f73.png"), // ASCII White I
+    A_F74("f74", "generated_emojis/f74.png"), // ASCII White J
+    A_F75("f75", "generated_emojis/f75.png"), // ASCII White K
+    A_F76("f76", "generated_emojis/f76.png"), // ASCII White L
+    A_F77("f77", "generated_emojis/f77.png"), // ASCII White M
+    A_F78("f78", "generated_emojis/f78.png"), // ASCII White N
+    A_F79("f79", "generated_emojis/f79.png"), // ASCII White O
+    A_F80("f80", "generated_emojis/f80.png"), // ASCII White P
+    A_F81("f81", "generated_emojis/f81.png"), // ASCII White Q
+    A_F82("f82", "generated_emojis/f82.png"), // ASCII White R
+    A_F83("f83", "generated_emojis/f83.png"), // ASCII White S
+    A_F84("f84", "generated_emojis/f84.png"), // ASCII White T
+    A_F85("f85", "generated_emojis/f85.png"), // ASCII White U
+    A_F86("f86", "generated_emojis/f86.png"), // ASCII White V
+    A_F87("f87", "generated_emojis/f87.png"), // ASCII White W
+    A_F88("f88", "generated_emojis/f88.png"), // ASCII White X
+    A_F89("f89", "generated_emojis/f89.png"), // ASCII White Y
+    A_F90("f90", "generated_emojis/f90.png"), // ASCII White Z
+    A_F91("f91", "generated_emojis/f91.png"), // ASCII White [
+    A_F92("f92", "generated_emojis/f92.png"), // ASCII White \
+    A_F93("f93", "generated_emojis/f93.png"), // ASCII White ]
+    A_F94("f94", "generated_emojis/f94.png"), // ASCII White ^
+    A_F95("f95", "generated_emojis/f95.png"), // ASCII White _
+    A_F96("f96", "generated_emojis/f96.png"), // ASCII White `
+    A_F97("f97", "generated_emojis/f97.png"), // ASCII White a
+    A_F98("f98", "generated_emojis/f98.png"), // ASCII White b
+    A_F99("f99", "generated_emojis/f99.png"), // ASCII White c
+    A_F100("f100", "generated_emojis/f100.png"), // ASCII White d
+    A_F101("f101", "generated_emojis/f101.png"), // ASCII White e
+    A_F102("f102", "generated_emojis/f102.png"), // ASCII White f
+    A_F103("f103", "generated_emojis/f103.png"), // ASCII White g
+    A_F104("f104", "generated_emojis/f104.png"), // ASCII White h
+    A_F105("f105", "generated_emojis/f105.png"), // ASCII White i
+    A_F106("f106", "generated_emojis/f106.png"), // ASCII White j
+    A_F107("f107", "generated_emojis/f107.png"), // ASCII White k
+    A_F108("f108", "generated_emojis/f108.png"), // ASCII White l
+    A_F109("f109", "generated_emojis/f109.png"), // ASCII White m
+    A_F110("f110", "generated_emojis/f110.png"), // ASCII White n
+    A_F111("f111", "generated_emojis/f111.png"), // ASCII White o
+    A_F112("f112", "generated_emojis/f112.png"), // ASCII White p
+    A_F113("f113", "generated_emojis/f113.png"), // ASCII White q
+    A_F114("f114", "generated_emojis/f114.png"), // ASCII White r
+    A_F115("f115", "generated_emojis/f115.png"), // ASCII White s
+    A_F116("f116", "generated_emojis/f116.png"), // ASCII White t
+    A_F117("f117", "generated_emojis/f117.png"), // ASCII White u
+    A_F118("f118", "generated_emojis/f118.png"), // ASCII White v
+    A_F119("f119", "generated_emojis/f119.png"), // ASCII White w
+    A_F120("f120", "generated_emojis/f120.png"), // ASCII White x
+    A_F121("f121", "generated_emojis/f121.png"), // ASCII White y
+    A_F122("f122", "generated_emojis/f122.png"), // ASCII White z
+    A_F123("f123", "generated_emojis/f123.png"), // ASCII White {
+    A_F124("f124", "generated_emojis/f124.png"), // ASCII White |
+    A_F125("f125", "generated_emojis/f125.png"), // ASCII White }
+    A_F126("f126", "generated_emojis/f126.png"), // ASCII White ~
+//</editor-fold>
+
+    //<editor-fold desc="Fira Code Orange Text">
+    A_FO32("fo32", "generated_emojis/fo32.png"), // ASCII Orange
+    A_FO33("fo33", "generated_emojis/fo33.png"), // ASCII Orange !
+    A_FO34("fo34", "generated_emojis/fo34.png"), // ASCII Orange "
+    A_FO35("fo35", "generated_emojis/fo35.png"), // ASCII Orange #
+    A_FO36("fo36", "generated_emojis/fo36.png"), // ASCII Orange $
+    A_FO37("fo37", "generated_emojis/fo37.png"), // ASCII Orange %
+    A_FO38("fo38", "generated_emojis/fo38.png"), // ASCII Orange &
+    A_FO39("fo39", "generated_emojis/fo39.png"), // ASCII Orange '
+    A_FO40("fo40", "generated_emojis/fo40.png"), // ASCII Orange (
+    A_FO41("fo41", "generated_emojis/fo41.png"), // ASCII Orange )
+    A_FO42("fo42", "generated_emojis/fo42.png"), // ASCII Orange *
+    A_FO43("fo43", "generated_emojis/fo43.png"), // ASCII Orange +
+    A_FO44("fo44", "generated_emojis/fo44.png"), // ASCII Orange ,
+    A_FO45("fo45", "generated_emojis/fo45.png"), // ASCII Orange -
+    A_FO46("fo46", "generated_emojis/fo46.png"), // ASCII Orange .
+    A_FO47("fo47", "generated_emojis/fo47.png"), // ASCII Orange /
+    A_FO48("fo48", "generated_emojis/fo48.png"), // ASCII Orange 0
+    A_FO49("fo49", "generated_emojis/fo49.png"), // ASCII Orange 1
+    A_FO50("fo50", "generated_emojis/fo50.png"), // ASCII Orange 2
+    A_FO51("fo51", "generated_emojis/fo51.png"), // ASCII Orange 3
+    A_FO52("fo52", "generated_emojis/fo52.png"), // ASCII Orange 4
+    A_FO53("fo53", "generated_emojis/fo53.png"), // ASCII Orange 5
+    A_FO54("fo54", "generated_emojis/fo54.png"), // ASCII Orange 6
+    A_FO55("fo55", "generated_emojis/fo55.png"), // ASCII Orange 7
+    A_FO56("fo56", "generated_emojis/fo56.png"), // ASCII Orange 8
+    A_FO57("fo57", "generated_emojis/fo57.png"), // ASCII Orange 9
+    A_FO58("fo58", "generated_emojis/fo58.png"), // ASCII Orange :
+    A_FO59("fo59", "generated_emojis/fo59.png"), // ASCII Orange ;
+    A_FO60("fo60", "generated_emojis/fo60.png"), // ASCII Orange <
+    A_FO61("fo61", "generated_emojis/fo61.png"), // ASCII Orange =
+    A_FO62("fo62", "generated_emojis/fo62.png"), // ASCII Orange >
+    A_FO63("fo63", "generated_emojis/fo63.png"), // ASCII Orange ?
+    A_FO64("fo64", "generated_emojis/fo64.png"), // ASCII Orange @
+    A_FO65("fo65", "generated_emojis/fo65.png"), // ASCII Orange A
+    A_FO66("fo66", "generated_emojis/fo66.png"), // ASCII Orange B
+    A_FO67("fo67", "generated_emojis/fo67.png"), // ASCII Orange C
+    A_FO68("fo68", "generated_emojis/fo68.png"), // ASCII Orange D
+    A_FO69("fo69", "generated_emojis/fo69.png"), // ASCII Orange E
+    A_FO70("fo70", "generated_emojis/fo70.png"), // ASCII Orange F
+    A_FO71("fo71", "generated_emojis/fo71.png"), // ASCII Orange G
+    A_FO72("fo72", "generated_emojis/fo72.png"), // ASCII Orange H
+    A_FO73("fo73", "generated_emojis/fo73.png"), // ASCII Orange I
+    A_FO74("fo74", "generated_emojis/fo74.png"), // ASCII Orange J
+    A_FO75("fo75", "generated_emojis/fo75.png"), // ASCII Orange K
+    A_FO76("fo76", "generated_emojis/fo76.png"), // ASCII Orange L
+    A_FO77("fo77", "generated_emojis/fo77.png"), // ASCII Orange M
+    A_FO78("fo78", "generated_emojis/fo78.png"), // ASCII Orange N
+    A_FO79("fo79", "generated_emojis/fo79.png"), // ASCII Orange O
+    A_FO80("fo80", "generated_emojis/fo80.png"), // ASCII Orange P
+    A_FO81("fo81", "generated_emojis/fo81.png"), // ASCII Orange Q
+    A_FO82("fo82", "generated_emojis/fo82.png"), // ASCII Orange R
+    A_FO83("fo83", "generated_emojis/fo83.png"), // ASCII Orange S
+    A_FO84("fo84", "generated_emojis/fo84.png"), // ASCII Orange T
+    A_FO85("fo85", "generated_emojis/fo85.png"), // ASCII Orange U
+    A_FO86("fo86", "generated_emojis/fo86.png"), // ASCII Orange V
+    A_FO87("fo87", "generated_emojis/fo87.png"), // ASCII Orange W
+    A_FO88("fo88", "generated_emojis/fo88.png"), // ASCII Orange X
+    A_FO89("fo89", "generated_emojis/fo89.png"), // ASCII Orange Y
+    A_FO90("fo90", "generated_emojis/fo90.png"), // ASCII Orange Z
+    A_FO91("fo91", "generated_emojis/fo91.png"), // ASCII Orange [
+    A_FO92("fo92", "generated_emojis/fo92.png"), // ASCII Orange \
+    A_FO93("fo93", "generated_emojis/fo93.png"), // ASCII Orange ]
+    A_FO94("fo94", "generated_emojis/fo94.png"), // ASCII Orange ^
+    A_FO95("fo95", "generated_emojis/fo95.png"), // ASCII Orange _
+    A_FO96("fo96", "generated_emojis/fo96.png"), // ASCII Orange `
+    A_FO97("fo97", "generated_emojis/fo97.png"), // ASCII Orange a
+    A_FO98("fo98", "generated_emojis/fo98.png"), // ASCII Orange b
+    A_FO99("fo99", "generated_emojis/fo99.png"), // ASCII Orange c
+    A_FO100("fo100", "generated_emojis/fo100.png"), // ASCII Orange d
+    A_FO101("fo101", "generated_emojis/fo101.png"), // ASCII Orange e
+    A_FO102("fo102", "generated_emojis/fo102.png"), // ASCII Orange f
+    A_FO103("fo103", "generated_emojis/fo103.png"), // ASCII Orange g
+    A_FO104("fo104", "generated_emojis/fo104.png"), // ASCII Orange h
+    A_FO105("fo105", "generated_emojis/fo105.png"), // ASCII Orange i
+    A_FO106("fo106", "generated_emojis/fo106.png"), // ASCII Orange j
+    A_FO107("fo107", "generated_emojis/fo107.png"), // ASCII Orange k
+    A_FO108("fo108", "generated_emojis/fo108.png"), // ASCII Orange l
+    A_FO109("fo109", "generated_emojis/fo109.png"), // ASCII Orange m
+    A_FO110("fo110", "generated_emojis/fo110.png"), // ASCII Orange n
+    A_FO111("fo111", "generated_emojis/fo111.png"), // ASCII Orange o
+    A_FO112("fo112", "generated_emojis/fo112.png"), // ASCII Orange p
+    A_FO113("fo113", "generated_emojis/fo113.png"), // ASCII Orange q
+    A_FO114("fo114", "generated_emojis/fo114.png"), // ASCII Orange r
+    A_FO115("fo115", "generated_emojis/fo115.png"), // ASCII Orange s
+    A_FO116("fo116", "generated_emojis/fo116.png"), // ASCII Orange t
+    A_FO117("fo117", "generated_emojis/fo117.png"), // ASCII Orange u
+    A_FO118("fo118", "generated_emojis/fo118.png"), // ASCII Orange v
+    A_FO119("fo119", "generated_emojis/fo119.png"), // ASCII Orange w
+    A_FO120("fo120", "generated_emojis/fo120.png"), // ASCII Orange x
+    A_FO121("fo121", "generated_emojis/fo121.png"), // ASCII Orange y
+    A_FO122("fo122", "generated_emojis/fo122.png"), // ASCII Orange z
+    A_FO123("fo123", "generated_emojis/fo123.png"), // ASCII Orange {
+    A_FO124("fo124", "generated_emojis/fo124.png"), // ASCII Orange |
+    A_FO125("fo125", "generated_emojis/fo125.png"), // ASCII Orange }
+    A_FO126("fo126", "generated_emojis/fo126.png"), // ASCII Orange ~
+//</editor-fold>
+
+    //<editor-fold desc="Fira Code Green Text">
+    A_FG32("fg32", "generated_emojis/fg32.png"), // ASCII Green
+    A_FG33("fg33", "generated_emojis/fg33.png"), // ASCII Green !
+    A_FG34("fg34", "generated_emojis/fg34.png"), // ASCII Green "
+    A_FG35("fg35", "generated_emojis/fg35.png"), // ASCII Green #
+    A_FG36("fg36", "generated_emojis/fg36.png"), // ASCII Green $
+    A_FG37("fg37", "generated_emojis/fg37.png"), // ASCII Green %
+    A_FG38("fg38", "generated_emojis/fg38.png"), // ASCII Green &
+    A_FG39("fg39", "generated_emojis/fg39.png"), // ASCII Green '
+    A_FG40("fg40", "generated_emojis/fg40.png"), // ASCII Green (
+    A_FG41("fg41", "generated_emojis/fg41.png"), // ASCII Green )
+    A_FG42("fg42", "generated_emojis/fg42.png"), // ASCII Green *
+    A_FG43("fg43", "generated_emojis/fg43.png"), // ASCII Green +
+    A_FG44("fg44", "generated_emojis/fg44.png"), // ASCII Green ,
+    A_FG45("fg45", "generated_emojis/fg45.png"), // ASCII Green -
+    A_FG46("fg46", "generated_emojis/fg46.png"), // ASCII Green .
+    A_FG47("fg47", "generated_emojis/fg47.png"), // ASCII Green /
+    A_FG48("fg48", "generated_emojis/fg48.png"), // ASCII Green 0
+    A_FG49("fg49", "generated_emojis/fg49.png"), // ASCII Green 1
+    A_FG50("fg50", "generated_emojis/fg50.png"), // ASCII Green 2
+    A_FG51("fg51", "generated_emojis/fg51.png"), // ASCII Green 3
+    A_FG52("fg52", "generated_emojis/fg52.png"), // ASCII Green 4
+    A_FG53("fg53", "generated_emojis/fg53.png"), // ASCII Green 5
+    A_FG54("fg54", "generated_emojis/fg54.png"), // ASCII Green 6
+    A_FG55("fg55", "generated_emojis/fg55.png"), // ASCII Green 7
+    A_FG56("fg56", "generated_emojis/fg56.png"), // ASCII Green 8
+    A_FG57("fg57", "generated_emojis/fg57.png"), // ASCII Green 9
+    A_FG58("fg58", "generated_emojis/fg58.png"), // ASCII Green :
+    A_FG59("fg59", "generated_emojis/fg59.png"), // ASCII Green ;
+    A_FG60("fg60", "generated_emojis/fg60.png"), // ASCII Green <
+    A_FG61("fg61", "generated_emojis/fg61.png"), // ASCII Green =
+    A_FG62("fg62", "generated_emojis/fg62.png"), // ASCII Green >
+    A_FG63("fg63", "generated_emojis/fg63.png"), // ASCII Green ?
+    A_FG64("fg64", "generated_emojis/fg64.png"), // ASCII Green @
+    A_FG65("fg65", "generated_emojis/fg65.png"), // ASCII Green A
+    A_FG66("fg66", "generated_emojis/fg66.png"), // ASCII Green B
+    A_FG67("fg67", "generated_emojis/fg67.png"), // ASCII Green C
+    A_FG68("fg68", "generated_emojis/fg68.png"), // ASCII Green D
+    A_FG69("fg69", "generated_emojis/fg69.png"), // ASCII Green E
+    A_FG70("fg70", "generated_emojis/fg70.png"), // ASCII Green F
+    A_FG71("fg71", "generated_emojis/fg71.png"), // ASCII Green G
+    A_FG72("fg72", "generated_emojis/fg72.png"), // ASCII Green H
+    A_FG73("fg73", "generated_emojis/fg73.png"), // ASCII Green I
+    A_FG74("fg74", "generated_emojis/fg74.png"), // ASCII Green J
+    A_FG75("fg75", "generated_emojis/fg75.png"), // ASCII Green K
+    A_FG76("fg76", "generated_emojis/fg76.png"), // ASCII Green L
+    A_FG77("fg77", "generated_emojis/fg77.png"), // ASCII Green M
+    A_FG78("fg78", "generated_emojis/fg78.png"), // ASCII Green N
+    A_FG79("fg79", "generated_emojis/fg79.png"), // ASCII Green O
+    A_FG80("fg80", "generated_emojis/fg80.png"), // ASCII Green P
+    A_FG81("fg81", "generated_emojis/fg81.png"), // ASCII Green Q
+    A_FG82("fg82", "generated_emojis/fg82.png"), // ASCII Green R
+    A_FG83("fg83", "generated_emojis/fg83.png"), // ASCII Green S
+    A_FG84("fg84", "generated_emojis/fg84.png"), // ASCII Green T
+    A_FG85("fg85", "generated_emojis/fg85.png"), // ASCII Green U
+    A_FG86("fg86", "generated_emojis/fg86.png"), // ASCII Green V
+    A_FG87("fg87", "generated_emojis/fg87.png"), // ASCII Green W
+    A_FG88("fg88", "generated_emojis/fg88.png"), // ASCII Green X
+    A_FG89("fg89", "generated_emojis/fg89.png"), // ASCII Green Y
+    A_FG90("fg90", "generated_emojis/fg90.png"), // ASCII Green Z
+    A_FG91("fg91", "generated_emojis/fg91.png"), // ASCII Green [
+    A_FG92("fg92", "generated_emojis/fg92.png"), // ASCII Green \
+    A_FG93("fg93", "generated_emojis/fg93.png"), // ASCII Green ]
+    A_FG94("fg94", "generated_emojis/fg94.png"), // ASCII Green ^
+    A_FG95("fg95", "generated_emojis/fg95.png"), // ASCII Green _
+    A_FG96("fg96", "generated_emojis/fg96.png"), // ASCII Green `
+    A_FG97("fg97", "generated_emojis/fg97.png"), // ASCII Green a
+    A_FG98("fg98", "generated_emojis/fg98.png"), // ASCII Green b
+    A_FG99("fg99", "generated_emojis/fg99.png"), // ASCII Green c
+    A_FG100("fg100", "generated_emojis/fg100.png"), // ASCII Green d
+    A_FG101("fg101", "generated_emojis/fg101.png"), // ASCII Green e
+    A_FG102("fg102", "generated_emojis/fg102.png"), // ASCII Green f
+    A_FG103("fg103", "generated_emojis/fg103.png"), // ASCII Green g
+    A_FG104("fg104", "generated_emojis/fg104.png"), // ASCII Green h
+    A_FG105("fg105", "generated_emojis/fg105.png"), // ASCII Green i
+    A_FG106("fg106", "generated_emojis/fg106.png"), // ASCII Green j
+    A_FG107("fg107", "generated_emojis/fg107.png"), // ASCII Green k
+    A_FG108("fg108", "generated_emojis/fg108.png"), // ASCII Green l
+    A_FG109("fg109", "generated_emojis/fg109.png"), // ASCII Green m
+    A_FG110("fg110", "generated_emojis/fg110.png"), // ASCII Green n
+    A_FG111("fg111", "generated_emojis/fg111.png"), // ASCII Green o
+    A_FG112("fg112", "generated_emojis/fg112.png"), // ASCII Green p
+    A_FG113("fg113", "generated_emojis/fg113.png"), // ASCII Green q
+    A_FG114("fg114", "generated_emojis/fg114.png"), // ASCII Green r
+    A_FG115("fg115", "generated_emojis/fg115.png"), // ASCII Green s
+    A_FG116("fg116", "generated_emojis/fg116.png"), // ASCII Green t
+    A_FG117("fg117", "generated_emojis/fg117.png"), // ASCII Green u
+    A_FG118("fg118", "generated_emojis/fg118.png"), // ASCII Green v
+    A_FG119("fg119", "generated_emojis/fg119.png"), // ASCII Green w
+    A_FG120("fg120", "generated_emojis/fg120.png"), // ASCII Green x
+    A_FG121("fg121", "generated_emojis/fg121.png"), // ASCII Green y
+    A_FG122("fg122", "generated_emojis/fg122.png"), // ASCII Green z
+    A_FG123("fg123", "generated_emojis/fg123.png"), // ASCII Green {
+    A_FG124("fg124", "generated_emojis/fg124.png"), // ASCII Green |
+    A_FG125("fg125", "generated_emojis/fg125.png"), // ASCII Green }
+    A_FG126("fg126", "generated_emojis/fg126.png"), // ASCII Green ~
+//</editor-fold>
+
+    //<editor-fold desc="Fira Code Blue Text">
+    A_FB32("fb32", "generated_emojis/fb32.png"), // ASCII Blue
+    A_FB33("fb33", "generated_emojis/fb33.png"), // ASCII Blue !
+    A_FB34("fb34", "generated_emojis/fb34.png"), // ASCII Blue "
+    A_FB35("fb35", "generated_emojis/fb35.png"), // ASCII Blue #
+    A_FB36("fb36", "generated_emojis/fb36.png"), // ASCII Blue $
+    A_FB37("fb37", "generated_emojis/fb37.png"), // ASCII Blue %
+    A_FB38("fb38", "generated_emojis/fb38.png"), // ASCII Blue &
+    A_FB39("fb39", "generated_emojis/fb39.png"), // ASCII Blue '
+    A_FB40("fb40", "generated_emojis/fb40.png"), // ASCII Blue (
+    A_FB41("fb41", "generated_emojis/fb41.png"), // ASCII Blue )
+    A_FB42("fb42", "generated_emojis/fb42.png"), // ASCII Blue *
+    A_FB43("fb43", "generated_emojis/fb43.png"), // ASCII Blue +
+    A_FB44("fb44", "generated_emojis/fb44.png"), // ASCII Blue ,
+    A_FB45("fb45", "generated_emojis/fb45.png"), // ASCII Blue -
+    A_FB46("fb46", "generated_emojis/fb46.png"), // ASCII Blue .
+    A_FB47("fb47", "generated_emojis/fb47.png"), // ASCII Blue /
+    A_FB48("fb48", "generated_emojis/fb48.png"), // ASCII Blue 0
+    A_FB49("fb49", "generated_emojis/fb49.png"), // ASCII Blue 1
+    A_FB50("fb50", "generated_emojis/fb50.png"), // ASCII Blue 2
+    A_FB51("fb51", "generated_emojis/fb51.png"), // ASCII Blue 3
+    A_FB52("fb52", "generated_emojis/fb52.png"), // ASCII Blue 4
+    A_FB53("fb53", "generated_emojis/fb53.png"), // ASCII Blue 5
+    A_FB54("fb54", "generated_emojis/fb54.png"), // ASCII Blue 6
+    A_FB55("fb55", "generated_emojis/fb55.png"), // ASCII Blue 7
+    A_FB56("fb56", "generated_emojis/fb56.png"), // ASCII Blue 8
+    A_FB57("fb57", "generated_emojis/fb57.png"), // ASCII Blue 9
+    A_FB58("fb58", "generated_emojis/fb58.png"), // ASCII Blue :
+    A_FB59("fb59", "generated_emojis/fb59.png"), // ASCII Blue ;
+    A_FB60("fb60", "generated_emojis/fb60.png"), // ASCII Blue <
+    A_FB61("fb61", "generated_emojis/fb61.png"), // ASCII Blue =
+    A_FB62("fb62", "generated_emojis/fb62.png"), // ASCII Blue >
+    A_FB63("fb63", "generated_emojis/fb63.png"), // ASCII Blue ?
+    A_FB64("fb64", "generated_emojis/fb64.png"), // ASCII Blue @
+    A_FB65("fb65", "generated_emojis/fb65.png"), // ASCII Blue A
+    A_FB66("fb66", "generated_emojis/fb66.png"), // ASCII Blue B
+    A_FB67("fb67", "generated_emojis/fb67.png"), // ASCII Blue C
+    A_FB68("fb68", "generated_emojis/fb68.png"), // ASCII Blue D
+    A_FB69("fb69", "generated_emojis/fb69.png"), // ASCII Blue E
+    A_FB70("fb70", "generated_emojis/fb70.png"), // ASCII Blue F
+    A_FB71("fb71", "generated_emojis/fb71.png"), // ASCII Blue G
+    A_FB72("fb72", "generated_emojis/fb72.png"), // ASCII Blue H
+    A_FB73("fb73", "generated_emojis/fb73.png"), // ASCII Blue I
+    A_FB74("fb74", "generated_emojis/fb74.png"), // ASCII Blue J
+    A_FB75("fb75", "generated_emojis/fb75.png"), // ASCII Blue K
+    A_FB76("fb76", "generated_emojis/fb76.png"), // ASCII Blue L
+    A_FB77("fb77", "generated_emojis/fb77.png"), // ASCII Blue M
+    A_FB78("fb78", "generated_emojis/fb78.png"), // ASCII Blue N
+    A_FB79("fb79", "generated_emojis/fb79.png"), // ASCII Blue O
+    A_FB80("fb80", "generated_emojis/fb80.png"), // ASCII Blue P
+    A_FB81("fb81", "generated_emojis/fb81.png"), // ASCII Blue Q
+    A_FB82("fb82", "generated_emojis/fb82.png"), // ASCII Blue R
+    A_FB83("fb83", "generated_emojis/fb83.png"), // ASCII Blue S
+    A_FB84("fb84", "generated_emojis/fb84.png"), // ASCII Blue T
+    A_FB85("fb85", "generated_emojis/fb85.png"), // ASCII Blue U
+    A_FB86("fb86", "generated_emojis/fb86.png"), // ASCII Blue V
+    A_FB87("fb87", "generated_emojis/fb87.png"), // ASCII Blue W
+    A_FB88("fb88", "generated_emojis/fb88.png"), // ASCII Blue X
+    A_FB89("fb89", "generated_emojis/fb89.png"), // ASCII Blue Y
+    A_FB90("fb90", "generated_emojis/fb90.png"), // ASCII Blue Z
+    A_FB91("fb91", "generated_emojis/fb91.png"), // ASCII Blue [
+    A_FB92("fb92", "generated_emojis/fb92.png"), // ASCII Blue \
+    A_FB93("fb93", "generated_emojis/fb93.png"), // ASCII Blue ]
+    A_FB94("fb94", "generated_emojis/fb94.png"), // ASCII Blue ^
+    A_FB95("fb95", "generated_emojis/fb95.png"), // ASCII Blue _
+    A_FB96("fb96", "generated_emojis/fb96.png"), // ASCII Blue `
+    A_FB97("fb97", "generated_emojis/fb97.png"), // ASCII Blue a
+    A_FB98("fb98", "generated_emojis/fb98.png"), // ASCII Blue b
+    A_FB99("fb99", "generated_emojis/fb99.png"), // ASCII Blue c
+    A_FB100("fb100", "generated_emojis/fb100.png"), // ASCII Blue d
+    A_FB101("fb101", "generated_emojis/fb101.png"), // ASCII Blue e
+    A_FB102("fb102", "generated_emojis/fb102.png"), // ASCII Blue f
+    A_FB103("fb103", "generated_emojis/fb103.png"), // ASCII Blue g
+    A_FB104("fb104", "generated_emojis/fb104.png"), // ASCII Blue h
+    A_FB105("fb105", "generated_emojis/fb105.png"), // ASCII Blue i
+    A_FB106("fb106", "generated_emojis/fb106.png"), // ASCII Blue j
+    A_FB107("fb107", "generated_emojis/fb107.png"), // ASCII Blue k
+    A_FB108("fb108", "generated_emojis/fb108.png"), // ASCII Blue l
+    A_FB109("fb109", "generated_emojis/fb109.png"), // ASCII Blue m
+    A_FB110("fb110", "generated_emojis/fb110.png"), // ASCII Blue n
+    A_FB111("fb111", "generated_emojis/fb111.png"), // ASCII Blue o
+    A_FB112("fb112", "generated_emojis/fb112.png"), // ASCII Blue p
+    A_FB113("fb113", "generated_emojis/fb113.png"), // ASCII Blue q
+    A_FB114("fb114", "generated_emojis/fb114.png"), // ASCII Blue r
+    A_FB115("fb115", "generated_emojis/fb115.png"), // ASCII Blue s
+    A_FB116("fb116", "generated_emojis/fb116.png"), // ASCII Blue t
+    A_FB117("fb117", "generated_emojis/fb117.png"), // ASCII Blue u
+    A_FB118("fb118", "generated_emojis/fb118.png"), // ASCII Blue v
+    A_FB119("fb119", "generated_emojis/fb119.png"), // ASCII Blue w
+    A_FB120("fb120", "generated_emojis/fb120.png"), // ASCII Blue x
+    A_FB121("fb121", "generated_emojis/fb121.png"), // ASCII Blue y
+    A_FB122("fb122", "generated_emojis/fb122.png"), // ASCII Blue z
+    A_FB123("fb123", "generated_emojis/fb123.png"), // ASCII Blue {
+    A_FB124("fb124", "generated_emojis/fb124.png"), // ASCII Blue |
+    A_FB125("fb125", "generated_emojis/fb125.png"), // ASCII Blue }
+    A_FB126("fb126", "generated_emojis/fb126.png"), // ASCII Blue ~
+//</editor-fold>
+
+    //<editor-fold desc="Fira Code Gray Text">
+    A_FA32("fa32", "generated_emojis/fa32.png"), // ASCII Gray
+    A_FA33("fa33", "generated_emojis/fa33.png"), // ASCII Gray !
+    A_FA34("fa34", "generated_emojis/fa34.png"), // ASCII Gray "
+    A_FA35("fa35", "generated_emojis/fa35.png"), // ASCII Gray #
+    A_FA36("fa36", "generated_emojis/fa36.png"), // ASCII Gray $
+    A_FA37("fa37", "generated_emojis/fa37.png"), // ASCII Gray %
+    A_FA38("fa38", "generated_emojis/fa38.png"), // ASCII Gray &
+    A_FA39("fa39", "generated_emojis/fa39.png"), // ASCII Gray '
+    A_FA40("fa40", "generated_emojis/fa40.png"), // ASCII Gray (
+    A_FA41("fa41", "generated_emojis/fa41.png"), // ASCII Gray )
+    A_FA42("fa42", "generated_emojis/fa42.png"), // ASCII Gray *
+    A_FA43("fa43", "generated_emojis/fa43.png"), // ASCII Gray +
+    A_FA44("fa44", "generated_emojis/fa44.png"), // ASCII Gray ,
+    A_FA45("fa45", "generated_emojis/fa45.png"), // ASCII Gray -
+    A_FA46("fa46", "generated_emojis/fa46.png"), // ASCII Gray .
+    A_FA47("fa47", "generated_emojis/fa47.png"), // ASCII Gray /
+    A_FA48("fa48", "generated_emojis/fa48.png"), // ASCII Gray 0
+    A_FA49("fa49", "generated_emojis/fa49.png"), // ASCII Gray 1
+    A_FA50("fa50", "generated_emojis/fa50.png"), // ASCII Gray 2
+    A_FA51("fa51", "generated_emojis/fa51.png"), // ASCII Gray 3
+    A_FA52("fa52", "generated_emojis/fa52.png"), // ASCII Gray 4
+    A_FA53("fa53", "generated_emojis/fa53.png"), // ASCII Gray 5
+    A_FA54("fa54", "generated_emojis/fa54.png"), // ASCII Gray 6
+    A_FA55("fa55", "generated_emojis/fa55.png"), // ASCII Gray 7
+    A_FA56("fa56", "generated_emojis/fa56.png"), // ASCII Gray 8
+    A_FA57("fa57", "generated_emojis/fa57.png"), // ASCII Gray 9
+    A_FA58("fa58", "generated_emojis/fa58.png"), // ASCII Gray :
+    A_FA59("fa59", "generated_emojis/fa59.png"), // ASCII Gray ;
+    A_FA60("fa60", "generated_emojis/fa60.png"), // ASCII Gray <
+    A_FA61("fa61", "generated_emojis/fa61.png"), // ASCII Gray =
+    A_FA62("fa62", "generated_emojis/fa62.png"), // ASCII Gray >
+    A_FA63("fa63", "generated_emojis/fa63.png"), // ASCII Gray ?
+    A_FA64("fa64", "generated_emojis/fa64.png"), // ASCII Gray @
+    A_FA65("fa65", "generated_emojis/fa65.png"), // ASCII Gray A
+    A_FA66("fa66", "generated_emojis/fa66.png"), // ASCII Gray B
+    A_FA67("fa67", "generated_emojis/fa67.png"), // ASCII Gray C
+    A_FA68("fa68", "generated_emojis/fa68.png"), // ASCII Gray D
+    A_FA69("fa69", "generated_emojis/fa69.png"), // ASCII Gray E
+    A_FA70("fa70", "generated_emojis/fa70.png"), // ASCII Gray F
+    A_FA71("fa71", "generated_emojis/fa71.png"), // ASCII Gray G
+    A_FA72("fa72", "generated_emojis/fa72.png"), // ASCII Gray H
+    A_FA73("fa73", "generated_emojis/fa73.png"), // ASCII Gray I
+    A_FA74("fa74", "generated_emojis/fa74.png"), // ASCII Gray J
+    A_FA75("fa75", "generated_emojis/fa75.png"), // ASCII Gray K
+    A_FA76("fa76", "generated_emojis/fa76.png"), // ASCII Gray L
+    A_FA77("fa77", "generated_emojis/fa77.png"), // ASCII Gray M
+    A_FA78("fa78", "generated_emojis/fa78.png"), // ASCII Gray N
+    A_FA79("fa79", "generated_emojis/fa79.png"), // ASCII Gray O
+    A_FA80("fa80", "generated_emojis/fa80.png"), // ASCII Gray P
+    A_FA81("fa81", "generated_emojis/fa81.png"), // ASCII Gray Q
+    A_FA82("fa82", "generated_emojis/fa82.png"), // ASCII Gray R
+    A_FA83("fa83", "generated_emojis/fa83.png"), // ASCII Gray S
+    A_FA84("fa84", "generated_emojis/fa84.png"), // ASCII Gray T
+    A_FA85("fa85", "generated_emojis/fa85.png"), // ASCII Gray U
+    A_FA86("fa86", "generated_emojis/fa86.png"), // ASCII Gray V
+    A_FA87("fa87", "generated_emojis/fa87.png"), // ASCII Gray W
+    A_FA88("fa88", "generated_emojis/fa88.png"), // ASCII Gray X
+    A_FA89("fa89", "generated_emojis/fa89.png"), // ASCII Gray Y
+    A_FA90("fa90", "generated_emojis/fa90.png"), // ASCII Gray Z
+    A_FA91("fa91", "generated_emojis/fa91.png"), // ASCII Gray [
+    A_FA92("fa92", "generated_emojis/fa92.png"), // ASCII Gray \
+    A_FA93("fa93", "generated_emojis/fa93.png"), // ASCII Gray ]
+    A_FA94("fa94", "generated_emojis/fa94.png"), // ASCII Gray ^
+    A_FA95("fa95", "generated_emojis/fa95.png"), // ASCII Gray _
+    A_FA96("fa96", "generated_emojis/fa96.png"), // ASCII Gray `
+    A_FA97("fa97", "generated_emojis/fa97.png"), // ASCII Gray a
+    A_FA98("fa98", "generated_emojis/fa98.png"), // ASCII Gray b
+    A_FA99("fa99", "generated_emojis/fa99.png"), // ASCII Gray c
+    A_FA100("fa100", "generated_emojis/fa100.png"), // ASCII Gray d
+    A_FA101("fa101", "generated_emojis/fa101.png"), // ASCII Gray e
+    A_FA102("fa102", "generated_emojis/fa102.png"), // ASCII Gray f
+    A_FA103("fa103", "generated_emojis/fa103.png"), // ASCII Gray g
+    A_FA104("fa104", "generated_emojis/fa104.png"), // ASCII Gray h
+    A_FA105("fa105", "generated_emojis/fa105.png"), // ASCII Gray i
+    A_FA106("fa106", "generated_emojis/fa106.png"), // ASCII Gray j
+    A_FA107("fa107", "generated_emojis/fa107.png"), // ASCII Gray k
+    A_FA108("fa108", "generated_emojis/fa108.png"), // ASCII Gray l
+    A_FA109("fa109", "generated_emojis/fa109.png"), // ASCII Gray m
+    A_FA110("fa110", "generated_emojis/fa110.png"), // ASCII Gray n
+    A_FA111("fa111", "generated_emojis/fa111.png"), // ASCII Gray o
+    A_FA112("fa112", "generated_emojis/fa112.png"), // ASCII Gray p
+    A_FA113("fa113", "generated_emojis/fa113.png"), // ASCII Gray q
+    A_FA114("fa114", "generated_emojis/fa114.png"), // ASCII Gray r
+    A_FA115("fa115", "generated_emojis/fa115.png"), // ASCII Gray s
+    A_FA116("fa116", "generated_emojis/fa116.png"), // ASCII Gray t
+    A_FA117("fa117", "generated_emojis/fa117.png"), // ASCII Gray u
+    A_FA118("fa118", "generated_emojis/fa118.png"), // ASCII Gray v
+    A_FA119("fa119", "generated_emojis/fa119.png"), // ASCII Gray w
+    A_FA120("fa120", "generated_emojis/fa120.png"), // ASCII Gray x
+    A_FA121("fa121", "generated_emojis/fa121.png"), // ASCII Gray y
+    A_FA122("fa122", "generated_emojis/fa122.png"), // ASCII Gray z
+    A_FA123("fa123", "generated_emojis/fa123.png"), // ASCII Gray {
+    A_FA124("fa124", "generated_emojis/fa124.png"), // ASCII Gray |
+    A_FA125("fa125", "generated_emojis/fa125.png"), // ASCII Gray }
+    A_FA126("fa126", "generated_emojis/fa126.png"), // ASCII Gray ~
+//</editor-fold>
+
+    //<editor-fold desc="Fira Code Light Gray Text">
+    A_FL32("fl32", "generated_emojis/fl32.png"), // ASCII Light Gray
+    A_FL33("fl33", "generated_emojis/fl33.png"), // ASCII Light Gray !
+    A_FL34("fl34", "generated_emojis/fl34.png"), // ASCII Light Gray "
+    A_FL35("fl35", "generated_emojis/fl35.png"), // ASCII Light Gray #
+    A_FL36("fl36", "generated_emojis/fl36.png"), // ASCII Light Gray $
+    A_FL37("fl37", "generated_emojis/fl37.png"), // ASCII Light Gray %
+    A_FL38("fl38", "generated_emojis/fl38.png"), // ASCII Light Gray &
+    A_FL39("fl39", "generated_emojis/fl39.png"), // ASCII Light Gray '
+    A_FL40("fl40", "generated_emojis/fl40.png"), // ASCII Light Gray (
+    A_FL41("fl41", "generated_emojis/fl41.png"), // ASCII Light Gray )
+    A_FL42("fl42", "generated_emojis/fl42.png"), // ASCII Light Gray *
+    A_FL43("fl43", "generated_emojis/fl43.png"), // ASCII Light Gray +
+    A_FL44("fl44", "generated_emojis/fl44.png"), // ASCII Light Gray ,
+    A_FL45("fl45", "generated_emojis/fl45.png"), // ASCII Light Gray -
+    A_FL46("fl46", "generated_emojis/fl46.png"), // ASCII Light Gray .
+    A_FL47("fl47", "generated_emojis/fl47.png"), // ASCII Light Gray /
+    A_FL48("fl48", "generated_emojis/fl48.png"), // ASCII Light Gray 0
+    A_FL49("fl49", "generated_emojis/fl49.png"), // ASCII Light Gray 1
+    A_FL50("fl50", "generated_emojis/fl50.png"), // ASCII Light Gray 2
+    A_FL51("fl51", "generated_emojis/fl51.png"), // ASCII Light Gray 3
+    A_FL52("fl52", "generated_emojis/fl52.png"), // ASCII Light Gray 4
+    A_FL53("fl53", "generated_emojis/fl53.png"), // ASCII Light Gray 5
+    A_FL54("fl54", "generated_emojis/fl54.png"), // ASCII Light Gray 6
+    A_FL55("fl55", "generated_emojis/fl55.png"), // ASCII Light Gray 7
+    A_FL56("fl56", "generated_emojis/fl56.png"), // ASCII Light Gray 8
+    A_FL57("fl57", "generated_emojis/fl57.png"), // ASCII Light Gray 9
+    A_FL58("fl58", "generated_emojis/fl58.png"), // ASCII Light Gray :
+    A_FL59("fl59", "generated_emojis/fl59.png"), // ASCII Light Gray ;
+    A_FL60("fl60", "generated_emojis/fl60.png"), // ASCII Light Gray <
+    A_FL61("fl61", "generated_emojis/fl61.png"), // ASCII Light Gray =
+    A_FL62("fl62", "generated_emojis/fl62.png"), // ASCII Light Gray >
+    A_FL63("fl63", "generated_emojis/fl63.png"), // ASCII Light Gray ?
+    A_FL64("fl64", "generated_emojis/fl64.png"), // ASCII Light Gray @
+    A_FL65("fl65", "generated_emojis/fl65.png"), // ASCII Light Gray A
+    A_FL66("fl66", "generated_emojis/fl66.png"), // ASCII Light Gray B
+    A_FL67("fl67", "generated_emojis/fl67.png"), // ASCII Light Gray C
+    A_FL68("fl68", "generated_emojis/fl68.png"), // ASCII Light Gray D
+    A_FL69("fl69", "generated_emojis/fl69.png"), // ASCII Light Gray E
+    A_FL70("fl70", "generated_emojis/fl70.png"), // ASCII Light Gray F
+    A_FL71("fl71", "generated_emojis/fl71.png"), // ASCII Light Gray G
+    A_FL72("fl72", "generated_emojis/fl72.png"), // ASCII Light Gray H
+    A_FL73("fl73", "generated_emojis/fl73.png"), // ASCII Light Gray I
+    A_FL74("fl74", "generated_emojis/fl74.png"), // ASCII Light Gray J
+    A_FL75("fl75", "generated_emojis/fl75.png"), // ASCII Light Gray K
+    A_FL76("fl76", "generated_emojis/fl76.png"), // ASCII Light Gray L
+    A_FL77("fl77", "generated_emojis/fl77.png"), // ASCII Light Gray M
+    A_FL78("fl78", "generated_emojis/fl78.png"), // ASCII Light Gray N
+    A_FL79("fl79", "generated_emojis/fl79.png"), // ASCII Light Gray O
+    A_FL80("fl80", "generated_emojis/fl80.png"), // ASCII Light Gray P
+    A_FL81("fl81", "generated_emojis/fl81.png"), // ASCII Light Gray Q
+    A_FL82("fl82", "generated_emojis/fl82.png"), // ASCII Light Gray R
+    A_FL83("fl83", "generated_emojis/fl83.png"), // ASCII Light Gray S
+    A_FL84("fl84", "generated_emojis/fl84.png"), // ASCII Light Gray T
+    A_FL85("fl85", "generated_emojis/fl85.png"), // ASCII Light Gray U
+    A_FL86("fl86", "generated_emojis/fl86.png"), // ASCII Light Gray V
+    A_FL87("fl87", "generated_emojis/fl87.png"), // ASCII Light Gray W
+    A_FL88("fl88", "generated_emojis/fl88.png"), // ASCII Light Gray X
+    A_FL89("fl89", "generated_emojis/fl89.png"), // ASCII Light Gray Y
+    A_FL90("fl90", "generated_emojis/fl90.png"), // ASCII Light Gray Z
+    A_FL91("fl91", "generated_emojis/fl91.png"), // ASCII Light Gray [
+    A_FL92("fl92", "generated_emojis/fl92.png"), // ASCII Light Gray \
+    A_FL93("fl93", "generated_emojis/fl93.png"), // ASCII Light Gray ]
+    A_FL94("fl94", "generated_emojis/fl94.png"), // ASCII Light Gray ^
+    A_FL95("fl95", "generated_emojis/fl95.png"), // ASCII Light Gray _
+    A_FL96("fl96", "generated_emojis/fl96.png"), // ASCII Light Gray `
+    A_FL97("fl97", "generated_emojis/fl97.png"), // ASCII Light Gray a
+    A_FL98("fl98", "generated_emojis/fl98.png"), // ASCII Light Gray b
+    A_FL99("fl99", "generated_emojis/fl99.png"), // ASCII Light Gray c
+    A_FL100("fl100", "generated_emojis/fl100.png"), // ASCII Light Gray d
+    A_FL101("fl101", "generated_emojis/fl101.png"), // ASCII Light Gray e
+    A_FL102("fl102", "generated_emojis/fl102.png"), // ASCII Light Gray f
+    A_FL103("fl103", "generated_emojis/fl103.png"), // ASCII Light Gray g
+    A_FL104("fl104", "generated_emojis/fl104.png"), // ASCII Light Gray h
+    A_FL105("fl105", "generated_emojis/fl105.png"), // ASCII Light Gray i
+    A_FL106("fl106", "generated_emojis/fl106.png"), // ASCII Light Gray j
+    A_FL107("fl107", "generated_emojis/fl107.png"), // ASCII Light Gray k
+    A_FL108("fl108", "generated_emojis/fl108.png"), // ASCII Light Gray l
+    A_FL109("fl109", "generated_emojis/fl109.png"), // ASCII Light Gray m
+    A_FL110("fl110", "generated_emojis/fl110.png"), // ASCII Light Gray n
+    A_FL111("fl111", "generated_emojis/fl111.png"), // ASCII Light Gray o
+    A_FL112("fl112", "generated_emojis/fl112.png"), // ASCII Light Gray p
+    A_FL113("fl113", "generated_emojis/fl113.png"), // ASCII Light Gray q
+    A_FL114("fl114", "generated_emojis/fl114.png"), // ASCII Light Gray r
+    A_FL115("fl115", "generated_emojis/fl115.png"), // ASCII Light Gray s
+    A_FL116("fl116", "generated_emojis/fl116.png"), // ASCII Light Gray t
+    A_FL117("fl117", "generated_emojis/fl117.png"), // ASCII Light Gray u
+    A_FL118("fl118", "generated_emojis/fl118.png"), // ASCII Light Gray v
+    A_FL119("fl119", "generated_emojis/fl119.png"), // ASCII Light Gray w
+    A_FL120("fl120", "generated_emojis/fl120.png"), // ASCII Light Gray x
+    A_FL121("fl121", "generated_emojis/fl121.png"), // ASCII Light Gray y
+    A_FL122("fl122", "generated_emojis/fl122.png"), // ASCII Light Gray z
+    A_FL123("fl123", "generated_emojis/fl123.png"), // ASCII Light Gray {
+    A_FL124("fl124", "generated_emojis/fl124.png"), // ASCII Light Gray |
+    A_FL125("fl125", "generated_emojis/fl125.png"), // ASCII Light Gray }
+    A_FL126("fl126", "generated_emojis/fl126.png"), // ASCII Light Gray ~
+//</editor-fold>
+
     ;
 
     private String name;

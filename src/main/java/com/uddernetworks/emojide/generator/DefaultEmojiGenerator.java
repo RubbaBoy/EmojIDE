@@ -1,17 +1,23 @@
 package com.uddernetworks.emojide.generator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.uddernetworks.emojide.generator.DefaultEmojiGenerator.CharAlign.*;
 import static com.uddernetworks.emojide.generator.LetterGenerator.*;
 
 public class DefaultEmojiGenerator implements EmojiGenerator {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(DefaultEmojiGenerator.class);
 
     private static final int WIDTH = 256;
     private static final int HEIGHT = 256;
@@ -29,6 +35,10 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
             '!', LEFT
     );
 
+    public static void main(String[] args) {
+        new DefaultEmojiGenerator().generate();
+    }
+
     @Override
     public void generate() {
         var parent = new File("generated_emojis");
@@ -36,13 +46,25 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
 
         // Generate text
 
+        try {
+            var font = Font.createFont(Font.TRUETYPE_FONT, new File("fonts\\FiraCode-Medium.ttf"));
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
+
         Arrays.asList(
-                new FontData("", Color.WHITE), // White
-                new FontData("o", new Color(0xCC7832), true), // Orange
-                new FontData("g", new Color(0x6A8759)), // Green
-                new FontData("b", new Color(0x6897BB)), // Blue
-                new FontData("a", new Color(0x808080)), // Gray
-                new FontData("l", new Color(0x666666)) // Light Gray
+                new FontData("", Color.WHITE, "Consolas"), // White
+                new FontData("o", new Color(0xCC7832), "Consolas", true), // Orange
+                new FontData("g", new Color(0x6A8759), "Consolas"), // Green
+                new FontData("b", new Color(0x6897BB), "Consolas"), // Blue
+                new FontData("a", new Color(0x808080), "Consolas"), // Gray
+                new FontData("l", new Color(0x666666), "Consolas"), // Light Gray
+                new FontData("f", Color.WHITE, "Fira Code Medium"), // White
+                new FontData("fo", new Color(0xCC7832), "Fira Code Medium", true), // Orange
+                new FontData("fg", new Color(0x6A8759), "Fira Code Medium"), // Green
+                new FontData("fb", new Color(0x6897BB), "Fira Code Medium"), // Blue
+                new FontData("fa", new Color(0x808080), "Fira Code Medium"), // Gray
+                new FontData("fl", new Color(0x666666), "Fira Code Medium") // Light Gray
         ).forEach(fontData -> Arrays.stream(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".split("")).forEach(character -> drawAndSave(parent, character, fontData)));
 
         // Generate color palette
@@ -99,7 +121,7 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
         graphics.setPaint(TRANSPARENT);
         graphics.fillRect(0, 0, WIDTH + 50, HEIGHT + 50);
         graphics.setPaint(fontData.color);
-        graphics.setFont(new Font("Consolas", fontData.bold ? Font.BOLD : Font.PLAIN, 256)); // 192pts
+        graphics.setFont(new Font(fontData.getFont(), fontData.bold ? Font.BOLD : Font.PLAIN, 256)); // 192pts
         FontMetrics metrics = graphics.getFontMetrics();
         int x = (WIDTH - metrics.stringWidth(character)) / 2;
         x += 25;
@@ -208,15 +230,17 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
     static class FontData {
         private String prefix;
         private Color color;
+        private String font;
         private boolean bold;
 
-        public FontData(String prefix, Color color) {
-            this(prefix, color, false);
+        public FontData(String prefix, Color color, String font) {
+            this(prefix, color, font, false);
         }
 
-        public FontData(String prefix, Color color, boolean bold) {
+        public FontData(String prefix, Color color, String font, boolean bold) {
             this.prefix = prefix;
             this.color = color;
+            this.font = font;
             this.bold = bold;
         }
 
@@ -226,6 +250,10 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
 
         public Color getColor() {
             return color;
+        }
+
+        public String getFont() {
+            return font;
         }
 
         public boolean isBold() {

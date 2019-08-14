@@ -183,7 +183,7 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
                 var id = "";
                 var removeSpace = false;
                 if (current instanceof Character) {
-                    display = emojiManager.getEmoji(String.valueOf((int) (Character) current)).getDisplay();
+                    display = emojiManager.getTextEmoji((Character) current).getDisplay();
                     id = "A" + (int) (Character) current;
                 } else if (current instanceof StaticEmoji) {
                     var emoji = (StaticEmoji) current;

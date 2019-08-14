@@ -33,7 +33,7 @@ public class StaticTextFrame extends StyledEmojiComponent {
             var line = wrapped[y].toCharArray();
             var emojiLine = initial[y];
             for (int x = 0; x < line.length; x++) {
-                emojiLine[x] = this.emojiManager.getEmoji(String.valueOf((int) line[x]));
+                emojiLine[x] = this.emojiManager.getTextEmoji(line[x]);
             }
             initial[y] = emojiLine;
         }

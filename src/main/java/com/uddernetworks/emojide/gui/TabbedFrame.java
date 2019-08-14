@@ -136,7 +136,7 @@ public class TabbedFrame extends DefaultEmojiContainer {
             upper.add(active ? StaticEmoji.LTAB_CORNER_SELECTED : StaticEmoji.BR_FRAME);
 
             for (char cha : tab.name.toCharArray()) {
-                row.add(this.emojiManager.getEmoji(String.valueOf((int) cha)));
+                row.add(this.emojiManager.getTextEmoji(cha));
                 upper.add(active ? StaticEmoji.TTABBED_FRAME_SELECTED : StaticEmoji.TTABBED_FRAME);
             }
 
