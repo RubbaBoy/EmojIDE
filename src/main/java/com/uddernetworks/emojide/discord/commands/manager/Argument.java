@@ -1,4 +1,4 @@
-package com.uddernetworks.emojide.discord.command;
+package com.uddernetworks.emojide.discord.commands.manager;
 
 import net.dv8tion.jda.api.Permission;
 
@@ -8,11 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Command {
-    String name();
-    String[] aliases() default "";
+@Target({ElementType.METHOD})
+public @interface Argument {
+    String format() default "";
     Permission[] permission() default {};
-    int minArgs() default -1;
-    int maxArgs() default -1;
 }

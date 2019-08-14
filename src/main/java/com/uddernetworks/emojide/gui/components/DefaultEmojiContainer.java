@@ -1,6 +1,6 @@
 package com.uddernetworks.emojide.gui.components;
 
-import com.uddernetworks.emojide.discord.Emoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
 
 import java.util.ArrayList;
 import java.util.List;

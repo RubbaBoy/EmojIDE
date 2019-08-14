@@ -1,6 +1,6 @@
 package com.uddernetworks.emojide.gui;
 
-import com.uddernetworks.emojide.discord.Emoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
 import com.uddernetworks.emojide.event.Handler;
 import com.uddernetworks.emojide.gui.components.DefaultEmojiContainer;
 import com.uddernetworks.emojide.gui.components.Displayer;
@@ -52,5 +52,14 @@ public class TextPromptFrame extends DefaultEmojiContainer {
 
     public void onEnter(Consumer<String> enterText) {
         this.enterText = enterText;
+    }
+
+    /**
+     * VERY important for cleanup! This unregisteres all listeners for the current object ALONG with with the actual
+     * text box component!
+     */
+    public void deactivate() {
+        KeyboardRaisable.get().removeListener(this);
+        KeyboardRaisable.get().removeListener(textFrame);
     }
 }

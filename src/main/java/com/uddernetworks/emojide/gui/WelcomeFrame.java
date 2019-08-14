@@ -1,6 +1,6 @@
 package com.uddernetworks.emojide.gui;
 
-import com.uddernetworks.emojide.discord.Emoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
 import com.uddernetworks.emojide.gui.components.DefaultEmojiContainer;
 import com.uddernetworks.emojide.gui.components.Displayer;
 
@@ -32,16 +32,14 @@ public class WelcomeFrame extends DefaultEmojiContainer {
         insertText("Keybinds:", 4, 6, initial);
         insertText("Alt + Arrows", 4, 7, initial);
         insertText("Switch Tabs", 18, 7, initial);
-        insertText("Alt + C", 4, 8, initial);
-        insertText("Close tab", 18, 8, initial);
-        insertText("Ctrl + S", 4, 9, initial);
-        insertText("Save file", 18, 9, initial);
-        insertText("Ctrl + R", 4, 10, initial);
-        insertText("Run file", 18, 10, initial);
-        insertText("Ctrl + N", 4, 11, initial);
-        insertText("New file", 18, 11, initial);
-        insertText("Ctrl + H", 4, 12, initial);
-        insertText("Help tab", 18, 12, initial);
+        insertText("Ctrl + R", 4, 8, initial);
+        insertText("Run file", 18, 8, initial);
+        insertText("Ctrl + N", 4, 9, initial);
+        insertText("New file", 18, 9, initial);
+        insertText("Ctrl + X", 4, 10, initial);
+        insertText("Delete document", 18, 10, initial);
+        insertText("Ctrl + H", 4, 11, initial);
+        insertText("Help tab", 18, 11, initial);
 
         return initial;
     }

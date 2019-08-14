@@ -1,5 +1,6 @@
-package com.uddernetworks.emojide.discord;
+package com.uddernetworks.emojide.discord.emoji;
 
+import com.uddernetworks.emojide.discord.font.Font;
 import com.uddernetworks.emojide.generator.DefaultEmojiGenerator;
 import com.uddernetworks.emojide.main.EmojIDE;
 import net.dv8tion.jda.api.JDA;
@@ -111,8 +112,6 @@ public class DefaultEmojiManager implements EmojiManager {
     public Emoji getEmoji(String name) {
         return this.emojis.getOrDefault(name.toLowerCase(), StaticEmoji.TRANSPARENT);
     }
-
-    // TODO: Make font dynamic
 
     @Override
     public Emoji getTextEmoji(char character) {

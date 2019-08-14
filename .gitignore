@@ -9,3 +9,4 @@ secret.conf
 *.log
 *.ttf
 executing/
+database/

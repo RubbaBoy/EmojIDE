@@ -1,0 +1,1 @@
+INSERT INTO `documents` (name, author, content) VALUES (?, ?, ?);

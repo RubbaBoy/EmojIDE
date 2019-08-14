@@ -1,4 +1,4 @@
-package com.uddernetworks.emojide.discord;
+package com.uddernetworks.emojide.discord.font;
 
 import java.util.Arrays;
 import java.util.Optional;

@@ -1,5 +1,6 @@
-package com.uddernetworks.emojide.discord;
+package com.uddernetworks.emojide.discord.emoji;
 
+import com.uddernetworks.emojide.discord.font.Font;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.List;

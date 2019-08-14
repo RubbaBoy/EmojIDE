@@ -1,7 +1,7 @@
 package com.uddernetworks.emojide.gui.components.styled;
 
-import com.uddernetworks.emojide.discord.Emoji;
-import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
+import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
 
 import java.util.Arrays;
 

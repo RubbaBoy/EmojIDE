@@ -1,6 +1,6 @@
-package com.uddernetworks.emojide.discord;
+package com.uddernetworks.emojide.discord.commands;
 
-import com.uddernetworks.emojide.discord.command.*;
+import com.uddernetworks.emojide.discord.commands.manager.*;
 import com.uddernetworks.emojide.main.EmojIDE;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;

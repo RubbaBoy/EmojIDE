@@ -1,7 +1,7 @@
 package com.uddernetworks.emojide.gui;
 
-import com.uddernetworks.emojide.discord.Emoji;
-import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
+import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
 import com.uddernetworks.emojide.event.Handler;
 import com.uddernetworks.emojide.event.Priority;
 import com.uddernetworks.emojide.gui.components.Displayer;
@@ -36,7 +36,6 @@ public class EditableDynamicTextFrame extends StyledEmojiComponent {
         super(displayer, width, height);
         this.textBlock = new DynamicTextBlock();
         this.keyboardInputManager = displayer.getEmojIDE().getKeyboardInputManager();
-        KeyboardRaisable.get().addListener(this);
     }
 
     @Override

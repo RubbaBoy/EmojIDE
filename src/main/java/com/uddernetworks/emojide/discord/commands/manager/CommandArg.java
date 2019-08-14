@@ -1,4 +1,4 @@
-package com.uddernetworks.emojide.discord.command;
+package com.uddernetworks.emojide.discord.commands.manager;
 
 public class CommandArg {
 

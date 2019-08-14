@@ -1,13 +1,14 @@
 package com.uddernetworks.emojide.gui.text;
 
-import com.uddernetworks.emojide.discord.Emoji;
-import com.uddernetworks.emojide.discord.EmojiManager;
-import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
+import com.uddernetworks.emojide.discord.emoji.EmojiManager;
+import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ public class DynamicTextBlock implements TextBlock {
     private int width;
     private int height;
     private AutoGrowArrayList<AutoGrowArrayList<Character>> chars;
+    private Consumer<String> onChange;
 
     /**
      * Creates a {@link DynamicTextBlock} with a dynamic width and height.
@@ -48,6 +50,7 @@ public class DynamicTextBlock implements TextBlock {
                 .forEach(line -> this.chars.add(Arrays.stream(line.split(""))
                         .map(str -> str.isEmpty() ? ' ' : str.charAt(0))
                         .collect(Collectors.toCollection(LIST_SUPPLIER))));
+        changed();
     }
 
     @Override
@@ -57,22 +60,19 @@ public class DynamicTextBlock implements TextBlock {
 
     @Override
     public void setChar(char character, int x, int y) {
-//        if (x < 0 || x >= this.width) return;
-//        if (y < 0 || y >= this.height) return;
         chars.get(y).set(x, character);
+        changed();
     }
 
     @Override
     public char getCharacter(int x, int y) {
-//        if (x < 0 || x >= this.width) return ' ';
-//        if (y < 0 || y >= this.height) return ' ';
         return chars.get(y).get(x);
     }
 
     @Override
     public void addChar(char character, int x, int y) {
-//        if (x >= this.width) return;
         this.chars.get(y).add(x, character);
+        changed();
     }
 
     @Override
@@ -103,7 +103,6 @@ public class DynamicTextBlock implements TextBlock {
 
     @Override
     public void newlineAt(int x, int y) {
-//        if (x >= this.width) return;
         var row = this.chars.get(y);
 
         var lowerRow = row.subList(x, Math.max(x, row.size() - 1));
@@ -111,11 +110,13 @@ public class DynamicTextBlock implements TextBlock {
 
         this.chars.set(y, upperRow);
         this.chars.set(y + 1, lowerRow);
+        changed();
     }
 
     @Override
     public void addEmpty(int y) {
         this.chars.add(y + 1, new AutoGrowArrayList<>(SPACE_SUPPLIER));
+        changed();
     }
 
     @Override
@@ -132,21 +133,26 @@ public class DynamicTextBlock implements TextBlock {
         joining.addAll(line.subList(0, copyX + 1));
         this.chars.set(y, joining);
         this.chars.set(y + 1, new AutoGrowArrayList<>(SPACE_SUPPLIER));
+        changed();
     }
 
     @Override
     public void removeChar(int x, int y) {
-//        if (x >= this.width) return;
         this.chars.get(y).remove(x);
+        changed();
+    }
+
+    private void changed() {
+        if (onChange != null) onChange.accept(getText());
+    }
+
+    @Override
+    public void onChange(Consumer<String> onChange) {
+        this.onChange = onChange;
     }
 
     @Override
     public String toString() {
-        var builder = new StringBuilder();
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) builder.append(chars.get(y).get(x));
-            builder.append('\n');
-        }
-        return builder.toString();
+        return getText();
     }
 }

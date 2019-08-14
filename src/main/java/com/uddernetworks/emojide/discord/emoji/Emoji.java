@@ -1,4 +1,4 @@
-package com.uddernetworks.emojide.discord;
+package com.uddernetworks.emojide.discord.emoji;
 
 /**
  * This interface allows for custom Emojis, i.e. dynamically created ones, originally intended for uploaded and

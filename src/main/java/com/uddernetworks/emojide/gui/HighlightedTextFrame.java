@@ -1,7 +1,7 @@
 package com.uddernetworks.emojide.gui;
 
-import com.uddernetworks.emojide.discord.Emoji;
-import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
+import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.ide.LanguageHighlighter;
 import org.slf4j.Logger;

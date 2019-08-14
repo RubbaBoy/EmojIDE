@@ -1,4 +1,4 @@
-package com.uddernetworks.emojide.discord.command;
+package com.uddernetworks.emojide.discord.commands.manager;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;

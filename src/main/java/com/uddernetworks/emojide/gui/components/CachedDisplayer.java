@@ -1,8 +1,8 @@
 package com.uddernetworks.emojide.gui.components;
 
-import com.uddernetworks.emojide.discord.Emoji;
-import com.uddernetworks.emojide.discord.EmojiManager;
-import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
+import com.uddernetworks.emojide.discord.emoji.EmojiManager;
+import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
 import com.uddernetworks.emojide.gui.render.RenderEngine;
 import com.uddernetworks.emojide.main.EmojIDE;
 import net.dv8tion.jda.api.entities.Message;

@@ -1,7 +1,7 @@
 package com.uddernetworks.emojide.keyboard;
 
-import com.uddernetworks.emojide.discord.Emoji;
-import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
+import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
 import com.uddernetworks.emojide.event.EventRaiser;
 import com.uddernetworks.emojide.event.Handler;
 import com.uddernetworks.emojide.gui.render.RenderEngine;
@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.uddernetworks.emojide.discord.StaticEmoji.*;
+import static com.uddernetworks.emojide.discord.emoji.StaticEmoji.*;
 import static com.uddernetworks.emojide.main.EmojIDE.ZWS;
 
 public class SimpleKeyboardInputManager extends ListenerAdapter implements KeyboardInputManager {

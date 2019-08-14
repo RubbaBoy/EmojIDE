@@ -1,11 +1,12 @@
 package com.uddernetworks.emojide.gui;
 
-import com.uddernetworks.emojide.discord.Emoji;
-import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
+import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
 import com.uddernetworks.emojide.event.Handler;
 import com.uddernetworks.emojide.gui.components.DefaultEmojiContainer;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.gui.components.EmojiComponent;
+import com.uddernetworks.emojide.gui.tabs.Tab;
 import com.uddernetworks.emojide.keyboard.KeyPressEvent;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import com.uddernetworks.emojide.keyboard.KeyboardRaisable;
@@ -55,28 +56,30 @@ public class TabbedFrame extends DefaultEmojiContainer {
     }
 
     public void selectTab(EmojiComponent component) {
-        if (getActive().component.equals(component)) return;
-        for (int i = 0; i < tabs.size(); i++) {
-            var tab = tabs.get(i);
-            if (tab.component.equals(component)) {
-                var preActive = getActive();
-                activeTab = i;
-                switchToTab(preActive, tab);
-                return;
-            }
-        }
+        if (getActive().getComponent().equals(component)) return;
+        tabs.stream().filter(tab -> tab.getComponent().equals(component)).findFirst().ifPresent(to -> switchToTab(getActive(), to));
+    }
+
+    public Tab getFirst() {
+        return tabs.get(0);
+    }
+
+    public void removeTab(Tab tab) {
+        var active = getActive();
+        tabs.remove(activeTab);
+        if (active.equals(tab)) switchToTab(active, getFirst());
+        refresh();
     }
 
     private void switchToTab(Tab from, Tab to) {
+        for (int i = 0; i < tabs.size(); i++) if (tabs.get(i).equals(to)) activeTab = i;
         from.deactivate();
-        removeChild(from.component);
+        removeChild(from.getComponent());
+        from.getComponent().clearCache();
         to.activate();
-        addChild(to.component, 0, 0);
-        if (displayer.isDisplaying()) {
-            clearCache();
-            update();
-            this.displayer.update();
-        }
+        addChild(to.getComponent(), 0, 0);
+        to.getComponent().clearCache();
+        refresh();
     }
 
     public Tab getActive() {
@@ -92,7 +95,7 @@ public class TabbedFrame extends DefaultEmojiContainer {
         if (this.tabs.isEmpty()) addChild(component, 0, 0);
         this.tabs.add(new Tab(name, component));
         if (active) {
-            LOGGER.info("{} is active, tabs size: {} name of active: {}", name, tabs.size(), getActive().name);
+            LOGGER.info("{} is active, tabs size: {} name of active: {}", name, tabs.size(), getActive().getName());
             selectTab(component);
         }
         return this;
@@ -130,12 +133,12 @@ public class TabbedFrame extends DefaultEmojiContainer {
         var activeTab = getActive();
         for (Tab tab : tabs) {
             var active = tab.equals(activeTab);
-            if (row.size() + 4 + tab.name.length() > thisWidth) break;
+            if (row.size() + 4 + tab.getName().length() > thisWidth) break;
 
             row.add(active ? StaticEmoji.LTAB_SEPARATOR_SELECTED : StaticEmoji.LTAB_SEPARATOR);
             upper.add(active ? StaticEmoji.LTAB_CORNER_SELECTED : StaticEmoji.BR_FRAME);
 
-            for (char cha : tab.name.toCharArray()) {
+            for (char cha : tab.getName().toCharArray()) {
                 row.add(this.emojiManager.getTextEmoji(cha));
                 upper.add(active ? StaticEmoji.TTABBED_FRAME_SELECTED : StaticEmoji.TTABBED_FRAME);
             }
@@ -152,31 +155,11 @@ public class TabbedFrame extends DefaultEmojiContainer {
         return Stream.of(upper, row).map(list -> list.toArray(Emoji[]::new)).collect(Collectors.toList()).toArray(Emoji[][]::new);
     }
 
-    public static class Tab {
-        private String name;
-        private EmojiComponent component;
-
-        public Tab(String name, EmojiComponent component) {
-            this.name = name;
-            this.component = component;
-        }
-
-        public void activate() {
-            LOGGER.info("The tab {} is now active!", name);
-            KeyboardRaisable.get().addListener(component);
-        }
-
-        public void deactivate() {
-            LOGGER.info("The tab {} is no longer active!", name);
-            KeyboardRaisable.get().removeListener(component);
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public EmojiComponent getComponent() {
-            return component;
+    public void refresh() {
+        if (displayer.isDisplaying()) {
+            clearCache();
+            update();
+            this.displayer.update();
         }
     }
 }

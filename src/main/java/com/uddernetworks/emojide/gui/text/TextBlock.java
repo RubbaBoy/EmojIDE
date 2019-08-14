@@ -1,10 +1,11 @@
 package com.uddernetworks.emojide.gui.text;
 
-import com.uddernetworks.emojide.discord.DefaultEmojiManager;
-import com.uddernetworks.emojide.discord.Emoji;
-import com.uddernetworks.emojide.discord.EmojiManager;
+import com.uddernetworks.emojide.discord.emoji.DefaultEmojiManager;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
+import com.uddernetworks.emojide.discord.emoji.EmojiManager;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * A statically-sized block of text that is meant for the dynamic content of a component containing text. This contains
@@ -133,4 +134,11 @@ public interface TextBlock {
      * @param y The Y position of the grid
      */
     void removeChar(int x, int y);
+
+    /**
+     * Adds a listener for when the current {@link TextBlock}'s text content changes.
+     *
+     * @param onChange A consumer accepting the new text of the {@link TextBlock}
+     */
+    void onChange(Consumer<String> onChange);
 }

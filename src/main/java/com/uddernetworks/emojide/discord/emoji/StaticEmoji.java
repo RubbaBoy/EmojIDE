@@ -1,4 +1,4 @@
-package com.uddernetworks.emojide.discord;
+package com.uddernetworks.emojide.discord.emoji;
 
 /**
  * A statically-created {@link Emoji} for text, colors, and other things from files or unicodes.

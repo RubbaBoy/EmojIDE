@@ -1,14 +1,15 @@
 package com.uddernetworks.emojide.gui.text;
 
-import com.uddernetworks.emojide.discord.Emoji;
-import com.uddernetworks.emojide.discord.EmojiManager;
-import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
+import com.uddernetworks.emojide.discord.emoji.EmojiManager;
+import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
 import org.apache.commons.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 import static com.uddernetworks.emojide.gui.components.ComponentUtils.getEmptyGrid;
 
@@ -22,6 +23,7 @@ public class DefaultTextBlock implements TextBlock {
     private int width;
     private int height;
     private char[][] chars;
+    private Consumer<String> onChange;
 
     /**
      * Creates a {@link DefaultTextBlock} with a fixed with and height, in emojis.
@@ -57,6 +59,7 @@ public class DefaultTextBlock implements TextBlock {
             System.arraycopy(line, 0, emojiLine, 0, line.length);
             chars[y] = emojiLine;
         }
+        changed();
     }
 
     @Override
@@ -77,6 +80,7 @@ public class DefaultTextBlock implements TextBlock {
         if (x < 0 || x >= this.width) return;
         if (y < 0 || y >= this.height) return;
         chars[y][x] = character;
+        changed();
     }
 
     @Override
@@ -93,6 +97,7 @@ public class DefaultTextBlock implements TextBlock {
         System.arraycopy(row, x, row, x + 1, row.length - x - 1);
         row[x] = character;
         this.chars[y] = row;
+        changed();
     }
 
     @Override
@@ -125,6 +130,7 @@ public class DefaultTextBlock implements TextBlock {
         chars[y] = upperRow;
         addEmpty(y + 1);
         chars[y + 1] = lowerRow;
+        changed();
     }
 
     @Override
@@ -136,6 +142,7 @@ public class DefaultTextBlock implements TextBlock {
         array.add(y + 1, inserting);
         array.remove(array.remove(array.size() - 1));
         this.chars = array.toArray(char[][]::new);
+        changed();
     }
 
     @Override
@@ -153,6 +160,7 @@ public class DefaultTextBlock implements TextBlock {
 
         chars[y + 1] = new char[width];
         chars[y] = joining;
+        changed();
     }
 
     @Override
@@ -161,15 +169,20 @@ public class DefaultTextBlock implements TextBlock {
         var row = this.chars[y];
         System.arraycopy(row, x, row, x - 1, row.length - x);
         this.chars[y] = row;
+        changed();
+    }
+
+    private void changed() {
+        if (onChange != null) onChange.accept(getText());
+    }
+
+    @Override
+    public void onChange(Consumer<String> onChange) {
+        this.onChange = onChange;
     }
 
     @Override
     public String toString() {
-        var builder = new StringBuilder();
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) builder.append(chars[y][x]);
-            builder.append('\n');
-        }
-        return builder.toString();
+        return getText();
     }
 }

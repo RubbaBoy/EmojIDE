@@ -1,16 +1,21 @@
-package com.uddernetworks.emojide.discord;
+package com.uddernetworks.emojide.discord.commands;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
-import com.uddernetworks.emojide.discord.command.*;
-import com.uddernetworks.emojide.gui.*;
+import com.uddernetworks.emojide.data.document.Document;
+import com.uddernetworks.emojide.discord.*;
+import com.uddernetworks.emojide.discord.commands.manager.*;
+import com.uddernetworks.emojide.discord.emoji.EmojiManager;
+import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
+import com.uddernetworks.emojide.discord.font.Font;
+import com.uddernetworks.emojide.discord.font.FontManager;
+import com.uddernetworks.emojide.gui.EmptyContainerFrame;
+import com.uddernetworks.emojide.gui.TabbedFrame;
+import com.uddernetworks.emojide.gui.WelcomeFrame;
 import com.uddernetworks.emojide.gui.components.CachedDisplayer;
 import com.uddernetworks.emojide.gui.components.Displayer;
-import com.uddernetworks.emojide.ide.ConsolePiper;
-import com.uddernetworks.emojide.ide.FunctionController;
-import com.uddernetworks.emojide.ide.TabController;
+import com.uddernetworks.emojide.gui.components.EmojiContainer;
 import com.uddernetworks.emojide.main.EmojIDE;
 import com.uddernetworks.emojide.main.Thread;
-import com.uddernetworks.emojide.web.WebCallbackHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -22,12 +27,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.uddernetworks.emojide.discord.CommandHelp.space;
+import static com.uddernetworks.emojide.discord.commands.CommandHelp.space;
 
 @Command(name = "ide", aliases = "i", minArgs = 0, maxArgs = 2, permission = Permission.ADMINISTRATOR)
 public class IDECommand {
@@ -39,6 +43,7 @@ public class IDECommand {
     private FontManager fontManager;
     private FileConfig config;
     private Displayer displayer;
+    private boolean displaying = false;
 
     public IDECommand(EmojIDE emojIDE) {
         this.emojIDE = emojIDE;
@@ -165,6 +170,12 @@ public class IDECommand {
     }
 
     private void commandStart(TextChannel channel) {
+        if (displaying) {
+            LOGGER.info("Already displaying!");
+            return;
+        }
+
+        displaying = true;
         LOGGER.info("Creating displayer...");
 
         var text = "function myMethod(arg) {\n" +
@@ -173,26 +184,30 @@ public class IDECommand {
                 "\n" +
                 "myMethod('Hello World');\n";
 
-        TabbedFrame tabbedFrame;
-        StaticTextFrame outputFrame;
-        (displayer = new CachedDisplayer(emojIDE, channel, true))
-                .setChild(
-                        new EmptyContainerFrame(displayer, 58, 23)
-                                .addChild(tabbedFrame = new TabbedFrame(displayer, 58, 23)
-                                        .addTab("Welcome", new WelcomeFrame(displayer))
-                                        .addTab("script.js",
-                                                new EmptyContainerFrame(displayer, 56, 20)
-                                                        .addChild(new HighlightedTextFrame(displayer, 54, 18, text), 1, 1)
-                                                        .addChild(new CustomRenderedContainerFrame(displayer, 56, 5)
-                                                                .addRenderer(initial -> Arrays.fill(initial[0], StaticEmoji.CTABBED_FRAME))
-                                                                .addChild(outputFrame = new StaticTextFrame(displayer, 54, 4).setText("<Console Output>"), 1, 1), 0, 15), true), 0, 0)
-                        , true);
+        var documentManager = emojIDE.getDocumentManager();
+        documentManager.getAllDocuments().thenAccept(documents -> {
+            TabbedFrame tabbedFrame;
+            EmojiContainer child;
+            (displayer = new CachedDisplayer(emojIDE, channel, true))
+                    .setChild(
+                            child = new EmptyContainerFrame(displayer, 58, 23)
+                                    .addChild(tabbedFrame = new TabbedFrame(displayer, 58, 23)
+                                            .addTab("Welcome", new WelcomeFrame(displayer)), 0, 0));
 
-        new TabController(emojIDE, displayer, tabbedFrame);
-        new FunctionController(emojIDE, displayer, tabbedFrame, new ConsolePiper(outputFrame));
+            var tabController = new DefaultDocumentTabController(emojIDE, displayer, tabbedFrame);
+            emojIDE.setDocumentTabController(tabController);
+
+            for (Document document : documents) {
+                LOGGER.info("Document = {}", document.getName());
+            }
+
+            documents.forEach(tabController::addTab);
+            displayer.update();
+        });
     }
 
     private void commandStop(TextChannel channel) {
+        displaying = false;
         this.emojIDE.getKeyboardInputManager().removeKeyboard();
         if (this.displayer != null) this.displayer.stop(channel);
         var selfId = emojIDE.getJda().getSelfUser().getIdLong();

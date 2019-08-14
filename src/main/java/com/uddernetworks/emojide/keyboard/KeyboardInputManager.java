@@ -1,6 +1,6 @@
 package com.uddernetworks.emojide.keyboard;
 
-import com.uddernetworks.emojide.discord.Emoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
 import com.uddernetworks.emojide.web.WebListener;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.hooks.EventListener;

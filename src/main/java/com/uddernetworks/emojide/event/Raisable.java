@@ -45,15 +45,19 @@ public abstract class Raisable<T extends Event> {
      * @return The current {@link Raisable}
      */
     public Raisable addListener(Object listener) {
+        LOGGER.info("Added listener {} ({})", listener, listener.getClass().getCanonicalName());
         Class<?> current = listener.getClass();
         registerListener(listener, current);
         while (current.getSuperclass() != null) {
-            registerListener(listener, current = current.getSuperclass());
+            if (Object.class.equals(current = current.getSuperclass())) break;
+            LOGGER.info("Adding superclass {} ({})", listener, current.getCanonicalName());
+            registerListener(listener, current);
         }
         return this;
     }
 
     private void registerListener(Object listener, Class clazz) {
+        LOGGER.info("Registering {} ({})", listener, clazz.getCanonicalName());
         Arrays.stream(clazz.getDeclaredMethods()).forEach(method -> {
             if (method.getParameterCount() != 1) return;
             var type = method.getParameters()[0].getType();
@@ -91,16 +95,26 @@ public abstract class Raisable<T extends Event> {
         allMethods.sort(Comparator.comparingInt(entry -> entry.getValue().getAnnotation(Handler.class).priority().getPriority()));
         Collections.reverse(allMethods);
 
+        LOGGER.info("====================================");
         for (Map.Entry<Object, Method> handler : allMethods) {
             var object = handler.getKey();
             var method = handler.getValue();
+            LOGGER.info("Handler {}#{}", object.getClass().getSimpleName(), method.getName());
             try {
                 method.invoke(object, event);
-            } catch (ReflectiveOperationException e) {
+            } catch (ReflectiveOperationException | IllegalArgumentException e) {
                 LOGGER.error("Error while invoking event on " + object.getClass().getCanonicalName() + "#" + method.getName(), e);
             }
-            if (cancellable != null && cancellable.isCancelled()) return;
+            if (cancellable != null && cancellable.isCancelled()) {
+                LOGGER.info("Event cancelled!!!!!!!");
+                break;
+            }
         }
+
+        new HashMap<>(this.eventClasses).keySet()
+                .stream()
+                .filter(object -> object instanceof Class)
+                .forEach(eventClasses::remove);
     }
 
     /**

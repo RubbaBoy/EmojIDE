@@ -1,9 +1,7 @@
 package com.uddernetworks.emojide.ide;
 
 import com.uddernetworks.emojide.event.Handler;
-import com.uddernetworks.emojide.gui.EmptyContainerFrame;
-import com.uddernetworks.emojide.gui.HighlightedTextFrame;
-import com.uddernetworks.emojide.gui.TabbedFrame;
+import com.uddernetworks.emojide.gui.*;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.keyboard.KeyPressEvent;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
@@ -53,19 +51,45 @@ public class FunctionController {
 
                             var container = (EmptyContainerFrame) tab.getComponent();
                             var editorComponent = (HighlightedTextFrame) container.getChildren().get(0).getComponent();
-                            var text = editorComponent.getTextBlock().getText();
-                            LOGGER.info("Code = \n{}", text);
+                            var code = editorComponent.getTextBlock().getText();
+                            LOGGER.info("Code = \n{}", code);
 
                             try {
                                 var file = new File("executing/" + tab.getName());
                                 file.getParentFile().mkdirs();
                                 file.createNewFile();
-                                Files.write(file.toPath(), text.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+                                Files.write(file.toPath(), code.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
                                 piper.pipeCommand(Arrays.asList("node", file.getAbsolutePath()), new File("/"), "Node");
                             } catch (IOException e) {
                                 LOGGER.error("An error occurred while executing the code for tab " + tab.getName(), e);
                             }
+                            break;
+                        case 'n':
+                            event.setCancelled(true);
+                            KeyboardRaisable.get().suspendListeners();
 
+                            var innerWidth = tabbedFrame.getWidth() - tabbedFrame.getXOffset();
+                            var innerHeight = tabbedFrame.getHeight() - tabbedFrame.getYOffset();
+
+                            var prompt = new TextPromptFrame(displayer, "Name:");
+                            tabbedFrame.addChild(prompt, (innerWidth / 2) - (prompt.getWidth() / 2), (innerHeight / 2) - (prompt.getHeight() / 2));
+                            prompt.onEnter(name -> {
+                                LOGGER.info("Name of file: {}", name);
+                                prompt.deactivate();
+                                tabbedFrame.removeChild(prompt);
+                                emojIDE.getDocumentManager().createDocument(name, 0).thenAccept(emojIDE.getDocumentTabController()::addTab);
+                            });
+
+                            tabbedFrame.clearCache();
+                            displayer.update();
+                            break;
+                        case 'x':
+                            event.setCancelled(true);
+                            var active = tabbedFrame.getActive();
+                            LOGGER.info("Active: {}", active.getName());
+                            if (active.getName().equals("Welcome")) break;
+                            LOGGER.info("Deleting tab {}", active.getName());
+                            emojIDE.getDocumentTabController().removeTab(active);
                             break;
                     }
                     break;

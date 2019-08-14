@@ -1,4 +1,4 @@
-package com.uddernetworks.emojide.discord;
+package com.uddernetworks.emojide.discord.font;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
 import com.uddernetworks.emojide.main.EmojIDE;

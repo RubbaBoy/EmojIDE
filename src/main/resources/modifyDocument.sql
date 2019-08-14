@@ -1,0 +1,1 @@
+UPDATE `documents` SET content = ? WHERE name = ?;

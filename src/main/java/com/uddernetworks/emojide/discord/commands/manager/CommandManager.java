@@ -1,4 +1,4 @@
-package com.uddernetworks.emojide.discord.command;
+package com.uddernetworks.emojide.discord.commands.manager;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -10,11 +10,10 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.uddernetworks.emojide.discord.command.CommandResult.*;
+import static com.uddernetworks.emojide.discord.commands.manager.CommandResult.*;
 
 public class CommandManager extends ListenerAdapter {
 

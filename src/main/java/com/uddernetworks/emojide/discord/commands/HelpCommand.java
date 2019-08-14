@@ -1,8 +1,8 @@
-package com.uddernetworks.emojide.discord;
+package com.uddernetworks.emojide.discord.commands;
 
-import com.uddernetworks.emojide.discord.command.Argument;
-import com.uddernetworks.emojide.discord.command.ArgumentError;
-import com.uddernetworks.emojide.discord.command.Command;
+import com.uddernetworks.emojide.discord.commands.manager.Argument;
+import com.uddernetworks.emojide.discord.commands.manager.ArgumentError;
+import com.uddernetworks.emojide.discord.commands.manager.Command;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 

@@ -1,7 +1,7 @@
 package com.uddernetworks.emojide.gui.components;
 
-import com.uddernetworks.emojide.discord.Emoji;
-import com.uddernetworks.emojide.discord.EmojiManager;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
+import com.uddernetworks.emojide.discord.emoji.EmojiManager;
 
 import static com.uddernetworks.emojide.gui.components.ComponentUtils.getNullGrid;
 

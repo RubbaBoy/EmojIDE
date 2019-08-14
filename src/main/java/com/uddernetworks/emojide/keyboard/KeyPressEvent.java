@@ -1,6 +1,6 @@
 package com.uddernetworks.emojide.keyboard;
 
-import com.uddernetworks.emojide.discord.StaticEmoji;
+import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
 import com.uddernetworks.emojide.event.Cancellable;
 
 /**

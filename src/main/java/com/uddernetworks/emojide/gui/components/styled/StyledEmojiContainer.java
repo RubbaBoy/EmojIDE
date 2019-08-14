@@ -1,6 +1,6 @@
 package com.uddernetworks.emojide.gui.components.styled;
 
-import com.uddernetworks.emojide.discord.Emoji;
+import com.uddernetworks.emojide.discord.emoji.Emoji;
 import com.uddernetworks.emojide.gui.components.DefaultEmojiContainer;
 import com.uddernetworks.emojide.gui.components.Displayer;
 

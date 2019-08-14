@@ -1,7 +1,9 @@
 package com.uddernetworks.emojide.generator;
 
+import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
+
 /**
- * A generator to create emoji images for {@link com.uddernetworks.emojide.discord.StaticEmoji}s.
+ * A generator to create emoji images for {@link StaticEmoji}s.
  */
 public interface EmojiGenerator {
 

@@ -2,9 +2,15 @@ package com.uddernetworks.emojide.main;
 
 import com.uddernetworks.emojide.data.BasicDatabaseManager;
 import com.uddernetworks.emojide.data.DatabaseManager;
-import com.uddernetworks.emojide.discord.*;
-import com.uddernetworks.emojide.discord.command.CommandManager;
-import com.uddernetworks.emojide.discord.command.EmbedUtils;
+import com.uddernetworks.emojide.data.document.DefaultDocumentManager;
+import com.uddernetworks.emojide.data.document.DocumentManager;
+import com.uddernetworks.emojide.discord.DocumentTabController;
+import com.uddernetworks.emojide.discord.commands.*;
+import com.uddernetworks.emojide.discord.commands.manager.CommandManager;
+import com.uddernetworks.emojide.discord.commands.manager.EmbedUtils;
+import com.uddernetworks.emojide.discord.emoji.DefaultEmojiManager;
+import com.uddernetworks.emojide.discord.emoji.EmojiManager;
+import com.uddernetworks.emojide.discord.font.FontManager;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import com.uddernetworks.emojide.keyboard.SimpleKeyboardInputManager;
 import com.uddernetworks.emojide.web.BasicWebCallbackHandler;
@@ -20,9 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
-import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class EmojIDE extends ListenerAdapter {
 
@@ -37,6 +40,8 @@ public class EmojIDE extends ListenerAdapter {
     private WebCallbackHandler webCallbackHandler;
     private KeyboardInputManager keyboardInputManager;
     private DatabaseManager databaseManager;
+    private DocumentManager documentManager;
+    private DocumentTabController documentTabController;
 
     public static void main(String[] args) throws LoginException {
         (configManager = new DefaultConfigManager("src/main/resources/secret.conf")).init();
@@ -54,7 +59,9 @@ public class EmojIDE extends ListenerAdapter {
     public void onReady(@Nonnull ReadyEvent event) {
         jda = event.getJDA();
 
-        (databaseManager = new BasicDatabaseManager()).init();
+        databaseManager = new BasicDatabaseManager(this);
+        documentManager = new DefaultDocumentManager(databaseManager);
+        databaseManager.init();
         fontManager = new FontManager(this);
         webCallbackHandler = new BasicWebCallbackHandler(this);
         CommandHelp.initHelp(this);
@@ -90,5 +97,17 @@ public class EmojIDE extends ListenerAdapter {
 
     public DatabaseManager getDatabaseManager() {
         return databaseManager;
+    }
+
+    public DocumentManager getDocumentManager() {
+        return documentManager;
+    }
+
+    public DocumentTabController getDocumentTabController() {
+        return documentTabController;
+    }
+
+    public void setDocumentTabController(DocumentTabController documentTabController) {
+        this.documentTabController = documentTabController;
     }
 }
