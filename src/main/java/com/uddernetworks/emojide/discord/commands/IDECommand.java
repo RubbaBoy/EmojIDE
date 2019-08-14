@@ -187,19 +187,13 @@ public class IDECommand {
         var documentManager = emojIDE.getDocumentManager();
         documentManager.getAllDocuments().thenAccept(documents -> {
             TabbedFrame tabbedFrame;
-            EmojiContainer child;
             (displayer = new CachedDisplayer(emojIDE, channel, true))
-                    .setChild(
-                            child = new EmptyContainerFrame(displayer, 58, 23)
+                    .setChild(new EmptyContainerFrame(displayer, 58, 23)
                                     .addChild(tabbedFrame = new TabbedFrame(displayer, 58, 23)
                                             .addTab("Welcome", new WelcomeFrame(displayer)), 0, 0));
 
             var tabController = new DefaultDocumentTabController(emojIDE, displayer, tabbedFrame);
             emojIDE.setDocumentTabController(tabController);
-
-            for (Document document : documents) {
-                LOGGER.info("Document = {}", document.getName());
-            }
 
             documents.forEach(tabController::addTab);
             displayer.update();

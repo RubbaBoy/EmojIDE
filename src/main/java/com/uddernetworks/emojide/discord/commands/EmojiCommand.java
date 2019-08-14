@@ -91,8 +91,9 @@ public class EmojiCommand {
         var fields = splitToFields(sortedDistribution.entrySet().stream().map(entry ->
                 entry.getKey().getName() + space(4) + "**" + entry.getValue() + "/50**\n").collect(Collectors.toList()));
 
-        var groups = new StringBuilder();
-        Arrays.stream(Group.values()).forEach(group -> groups.append(space(4)).append(group.name).append("\n"));
+        var groupFields = splitToFields(Arrays.stream(Group.values())
+                .map(group -> space(4) + group.name + "\n")
+                .collect(Collectors.toList()), 7);
 
         EmbedUtils.sendEmbed(channel, member, "Emoji Info", embed -> {
                     embed.setDescription("General information about emojis uploaded and used only by the EmojIDE.")
@@ -101,17 +102,22 @@ public class EmojiCommand {
 
                     fields.forEach(section -> embed.addField(String.valueOf(ZWS), section, true));
 
-                    embed.addField("Groups", "The following are groups you can remove via `!emoji grem [group]`\n" + groups, false);
+                    embed.addField("Groups", "The following are groups you can remove via `!emoji grem [group]`", false);
+                    groupFields.forEach(section -> embed.addField(String.valueOf(ZWS), section, true));
                 }
         );
     }
 
     private List<String> splitToFields(List<String> entries) {
+        return splitToFields(entries, 20);
+    }
+
+    private List<String> splitToFields(List<String> entries, int maxEntryLength) {
         var fields = new ArrayList<String>();
         var bufferCount = new AtomicInteger();
         var buffer = new StringBuilder();
         entries.forEach(entry -> {
-            if (bufferCount.get() >= 20 || buffer.length() + entry.length() > 1024) {
+            if (bufferCount.get() >= maxEntryLength || buffer.length() + entry.length() > 1024) {
                 fields.add(buffer.toString());
                 buffer.setLength(0);
                 bufferCount.set(0);
