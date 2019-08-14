@@ -1,5 +1,7 @@
 package com.uddernetworks.emojide.main;
 
+import com.uddernetworks.emojide.data.BasicDatabaseManager;
+import com.uddernetworks.emojide.data.DatabaseManager;
 import com.uddernetworks.emojide.discord.*;
 import com.uddernetworks.emojide.discord.command.CommandManager;
 import com.uddernetworks.emojide.discord.command.EmbedUtils;
@@ -13,13 +15,18 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 public class EmojIDE extends ListenerAdapter {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(EmojIDE.class);
 
     public static final char ZWS = '\u200b';
 
@@ -29,6 +36,7 @@ public class EmojIDE extends ListenerAdapter {
     private EmojiManager emojiManager;
     private WebCallbackHandler webCallbackHandler;
     private KeyboardInputManager keyboardInputManager;
+    private DatabaseManager databaseManager;
 
     public static void main(String[] args) throws LoginException {
         (configManager = new DefaultConfigManager("src/main/resources/secret.conf")).init();
@@ -46,6 +54,7 @@ public class EmojIDE extends ListenerAdapter {
     public void onReady(@Nonnull ReadyEvent event) {
         jda = event.getJDA();
 
+        (databaseManager = new BasicDatabaseManager()).init();
         fontManager = new FontManager(this);
         webCallbackHandler = new BasicWebCallbackHandler(this);
         CommandHelp.initHelp(this);
@@ -77,5 +86,9 @@ public class EmojIDE extends ListenerAdapter {
 
     public KeyboardInputManager getKeyboardInputManager() {
         return keyboardInputManager;
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 }

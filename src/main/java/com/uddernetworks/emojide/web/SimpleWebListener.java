@@ -126,6 +126,7 @@ public class SimpleWebListener implements WebListener {
                     var split = request.get().toString().split("\\s+", 3);
 
                     // This has to do with an ongoing issue with my network locally, contact me if interested in details
+                    if (split.length == 1) split = new String[] {"", split[0]};
                     if (!split[1].startsWith("/") && goodContains.parallelStream().noneMatch(split[1]::contains)) {
                         client.close();
                         return false;
