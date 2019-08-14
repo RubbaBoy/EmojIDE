@@ -121,7 +121,17 @@ public class DefaultEmojiManager implements EmojiManager {
 
     @Override
     public Emoji getTextEmoji(String name) {
-        return getEmoji("f" + name);
+        return getTextEmoji(name, emojIDE.getFontManager().getActive());
+    }
+
+    @Override
+    public Emoji getTextEmoji(char character, Font font) {
+        return getTextEmoji(String.valueOf((int) character), font);
+    }
+
+    @Override
+    public Emoji getTextEmoji(String name, Font font) {
+        return getEmoji(font.getPrefix() + name);
     }
 
     @Override

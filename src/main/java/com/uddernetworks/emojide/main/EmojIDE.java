@@ -25,6 +25,7 @@ public class EmojIDE extends ListenerAdapter {
 
     private static ConfigManager configManager;
     private JDA jda;
+    private FontManager fontManager;
     private EmojiManager emojiManager;
     private WebCallbackHandler webCallbackHandler;
     private KeyboardInputManager keyboardInputManager;
@@ -45,6 +46,7 @@ public class EmojIDE extends ListenerAdapter {
     public void onReady(@Nonnull ReadyEvent event) {
         jda = event.getJDA();
 
+        fontManager = new FontManager(this);
         webCallbackHandler = new BasicWebCallbackHandler(this);
         CommandHelp.initHelp(this);
         jda.addEventListener(this.keyboardInputManager = new SimpleKeyboardInputManager(this));
@@ -59,6 +61,10 @@ public class EmojIDE extends ListenerAdapter {
 
     public JDA getJda() {
         return jda;
+    }
+
+    public FontManager getFontManager() {
+        return fontManager;
     }
 
     public WebCallbackHandler getWebCallbackHandler() {

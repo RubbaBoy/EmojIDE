@@ -30,16 +30,16 @@ public class CommandManager extends ListenerAdapter {
         var channel = event.getTextChannel();
         var stripped = event.getMessage().getContentRaw();
         if (!stripped.startsWith("!")) return;
-        var args = stripped.split("\\s+");
-        var name = args[0].substring(1);
-        args = Arrays.stream(args).skip(1).toArray(String[]::new);
+        var args = getQuotes(stripped);
+        var name = args.get(0).substring(1);
+        args = args.stream().skip(1).collect(Collectors.toList());
         Optional<Command> annotationOptional = getCommandAnnotation(name);
         if (member == null || annotationOptional.isEmpty()) return;
         Command annotation = annotationOptional.get();
 
         Object executor = commands.get(annotation);
 
-        if ((annotation.maxArgs() != -1 && args.length > annotation.maxArgs()) || (annotation.minArgs() != -1 && args.length < annotation.minArgs())) {
+        if ((annotation.maxArgs() != -1 && args.size() > annotation.maxArgs()) || (annotation.minArgs() != -1 && args.size() < annotation.minArgs())) {
             sendError(annotation, executor, member, channel, "Invalid argument count");
             return;
         }
@@ -85,13 +85,22 @@ public class CommandManager extends ListenerAdapter {
     }
 
     public void populateArguments(Class<?> clazz) {
-        List<Method> methods = Arrays.asList(clazz.getDeclaredMethods());
-        Command command = clazz.getAnnotation(Command.class);
+        var methods = Arrays.asList(clazz.getDeclaredMethods());
+        var command = clazz.getAnnotation(Command.class);
 
-        methods.stream().filter(method -> method.isAnnotationPresent(ArgumentError.class)).findFirst().map(method -> defaultMethod.put(command, method));
+        methods.stream()
+                .filter(method -> method.isAnnotationPresent(ArgumentError.class))
+                .findFirst()
+                .map(method -> defaultMethod.put(command, method));
 
-        List<ArgumentMethodEntry> entries = new ArrayList<>();
-        methods.stream().filter(method -> method.isAnnotationPresent(Argument.class)).forEach(method -> entries.add(new ArgumentMethodEntry(method.getAnnotation(Argument.class), method)));
+        var entries = methods.stream()
+                .filter(method -> method.isAnnotationPresent(Argument.class))
+                .map(method -> new ArgumentMethodEntry(method.getAnnotation(Argument.class), method))
+                .sorted(Comparator.comparingInt(entry ->
+                        entry.arg.format().split("\\s+").length))
+                .collect(Collectors.toCollection(LinkedList::new));
+
+        Collections.reverse(entries);
 
         arguments.put(command, entries);
     }
@@ -100,8 +109,8 @@ public class CommandManager extends ListenerAdapter {
         return commands.keySet().stream().filter(cmd -> cmd.name().equalsIgnoreCase(name) || Arrays.stream(cmd.aliases()).anyMatch(alias -> alias.equalsIgnoreCase(name))).findFirst();
     }
 
-    private CommandResult invokeArgMethod(Member member, TextChannel channel, Argument argument, Method method, String[] args, Object instance, Command command) {
-        List<String> realArgs = getRealArguments(argument.format(), String.join(" ", args).trim());
+    private CommandResult invokeArgMethod(Member member, TextChannel channel, Argument argument, Method method, List<String> args, Object instance, Command command) {
+        List<String> realArgs = getRealArguments(argument.format(), args);
 
         if (realArgs == null) return INVALID_SYNTAX;
 
@@ -142,11 +151,10 @@ public class CommandManager extends ListenerAdapter {
         }
     }
 
-    private List<String> getRealArguments(String template, String input) {
+    private List<String> getRealArguments(String template, List<String> realArgs) {
         List<String> templateArgs = Arrays.asList(template.toLowerCase().split("\\s+"));
-        List<String> realArgs = getQuotes(input);
         List<String> ret = new ArrayList<>();
-        if ("".equals(template) && (input == null || "".equals(input))) return ret;
+        if ("".equals(template)) return ret;
 
         if (templateArgs.size() > realArgs.size()) return null;
 
@@ -180,8 +188,8 @@ public class CommandManager extends ListenerAdapter {
     }
 
     private static List<String> getQuotes(String input) {
-        List<String> matched = new ArrayList<>();
-        Matcher regexMatcher = Pattern.compile("\"((?:\\\\.|[^\"\\\\])*)\"|([^\\s]+)").matcher(input);
+        var matched = new ArrayList<String>();
+        var regexMatcher = Pattern.compile("\"((?:\\\\.|[^\"\\\\])*)\"|([^\\s]+)").matcher(input);
         while (regexMatcher.find()) {
             if (regexMatcher.group(1) != null) {
                 matched.add(regexMatcher.group(1));

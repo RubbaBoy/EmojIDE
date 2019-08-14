@@ -29,6 +29,8 @@ public class CommandHelp {
                         commandRow("user [user mention]", "Purges all messages by a user in the current channel"), false)
                 .addField("!ide",
                         commandRow(callbackHandler.generateMdLink("setchannel", "setchannel", emptyQuery), "Sets the current channel to the channel displaying the IDE") +
+                                commandRow(callbackHandler.generateMdLink("fonts", "fonts", emptyQuery), "Lists available fonts with the option to select one") +
+                                commandRow("setfont [font]", "Sets the font with the given name from `!ide fonts`") +
                                 commandRow(callbackHandler.generateMdLink("start", "start", emptyQuery), "Starts the IDE without clearing any past messages") +
                                 commandRow(callbackHandler.generateMdLink("stop", "stop", emptyQuery), "Stops the IDE and removes its messages") +
                                 commandRow(callbackHandler.generateMdLink("restart", "restart", emptyQuery), "Restart the IDE by stopping and starting it again"), false)

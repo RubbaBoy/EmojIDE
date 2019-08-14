@@ -77,6 +77,8 @@ public enum StaticEmoji implements Emoji {
     TL_FRAME("tlf", "ide_emojis/tlframe.png"), // Top Left Square
     BR_FRAME("brf", "ide_emojis/brframe.png"), // Bottom Right Square
     TR_FRAME("trf", "ide_emojis/trframe.png"), // Top Right Square
+    SELECT("sel", "ide_emojis/select.png"),
+    UNSELECTED("uns", "ide_emojis/unselected.png"),
 
     // Welcome Tab
     W_0w0("0w0", "welcome_emojis/name/0w0.png"),
