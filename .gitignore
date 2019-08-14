@@ -6,3 +6,6 @@ build/
 gradlew.bat
 generated_emojis/
 secret.conf
+*.log
+*.ttf
+executing/

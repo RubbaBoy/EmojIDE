@@ -81,12 +81,12 @@ public class SimpleWebListener implements WebListener {
                     }
                 } else if (url.startsWith("/s")) {
                     Packet.builder().putBytes(generateRequest("<script>var xmlHttp = new XMLHttpRequest();\n" +
-                            "xmlHttp.open(\"GET\",\"http://localhost:6969" + url.replace("/s", "/e") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
+                            "xmlHttp.open(\"GET\",\"http://xn--is8hfy.ws" + url.replace("/s", "/e") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
                             "xmlHttp.send(null);" +
                             "window.open('','_self').close();</script>")).writeAndFlush(client);
                 } else if (url.startsWith("/c")) {
                     Packet.builder().putBytes(generateRequest("<script>var xmlHttp = new XMLHttpRequest();\n" +
-                            "xmlHttp.open(\"GET\",\"http://localhost:6969" + url.replace("/c", "/z") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
+                            "xmlHttp.open(\"GET\",\"http://xn--is8hfy.ws" + url.replace("/c", "/z") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
                             "xmlHttp.send(null);" +
                             "window.open('','_self').close();</script>")).writeAndFlush(client);
                 }
@@ -97,7 +97,7 @@ public class SimpleWebListener implements WebListener {
             return true;
         }));
 
-        server.bind("localhost", 6969);
+        server.bind("0.0.0.0", 80);
         LOGGER.info("WebServer running...");
     }
 
@@ -110,6 +110,8 @@ public class SimpleWebListener implements WebListener {
         });
     }
 
+    private static final List<String> goodContains = Arrays.asList("localhost", "xn--is8hfy.ws", "127.0.0.1", "\uD83D\uDE29\uD83D\uDCA6");
+
     @Override
     public void parseHeaders(Client client, BiConsumer<String[], Map<String, String>> headersComplete) {
         var finishedRequest = new AtomicBoolean(false);
@@ -121,13 +123,21 @@ public class SimpleWebListener implements WebListener {
         client.readByteUntil(ascii -> {
             if (ascii == 13) {
                 if (!finishedRequest.getAndSet(true)) {
-                    finalRequest.set(request.get().toString().split("\\s+", 3));
+                    var split = request.get().toString().split("\\s+", 3);
+
+                    // This has to do with an ongoing issue with my network locally, contact me if interested in details
+                    if (!split[1].startsWith("/") && goodContains.parallelStream().noneMatch(split[1]::contains)) {
+                        client.close();
+                        return false;
+                    }
+
+                    finalRequest.set(split);
                     return true;
                 }
 
                 var curr = buffer.getAndSet(new StringBuilder()).toString();
                 var split = curr.split(":", 2);
-                headers.get().put(split[0], split[1]);
+                headers.get().put(split[0], split.length != 2 ? "" : split[1]);
 
                 if (curr.contains("Connection:")) {
                     headersComplete.accept(finalRequest.get(), headers.get());

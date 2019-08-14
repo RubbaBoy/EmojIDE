@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 public interface WebListener {
 
     /**
-     * Starts the web listener's server, by default on port 6969.
+     * Starts the web listener's server, by default on port 80.
      *
      * @param keyboardInputManager The {@link SimpleKeyboardInputManager} to send input data to.
      */
