@@ -3,36 +3,27 @@ package com.uddernetworks.emojide.discord.commands;
 import com.electronwill.nightconfig.core.file.FileConfig;
 import com.uddernetworks.emojide.discord.DefaultDocumentTabController;
 import com.uddernetworks.emojide.discord.commands.choosable.ChoosingList;
-import com.uddernetworks.emojide.discord.commands.choosable.DefaultChoosingList;
 import com.uddernetworks.emojide.discord.commands.manager.*;
 import com.uddernetworks.emojide.discord.emoji.EmojiManager;
 import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
 import com.uddernetworks.emojide.discord.font.Font;
 import com.uddernetworks.emojide.discord.font.FontManager;
 import com.uddernetworks.emojide.gui.EmptyContainerFrame;
-import com.uddernetworks.emojide.gui.TabbedFrame;
 import com.uddernetworks.emojide.gui.WelcomeFrame;
 import com.uddernetworks.emojide.gui.components.CachedDisplayer;
 import com.uddernetworks.emojide.gui.components.Displayer;
+import com.uddernetworks.emojide.gui.tabbed.TabbedFrame;
 import com.uddernetworks.emojide.gui.theme.Theme;
 import com.uddernetworks.emojide.gui.theme.ThemeManager;
 import com.uddernetworks.emojide.main.EmojIDE;
 import com.uddernetworks.emojide.main.Thread;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.uddernetworks.emojide.discord.commands.CommandHelp.space;
 
 @Command(name = "ide", aliases = "i", minArgs = 0, maxArgs = 2, permission = Permission.ADMINISTRATOR)
 public class IDECommand {

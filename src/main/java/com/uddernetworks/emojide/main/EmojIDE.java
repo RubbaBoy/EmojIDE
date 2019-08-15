@@ -14,7 +14,12 @@ import com.uddernetworks.emojide.discord.emoji.DefaultEmojiManager;
 import com.uddernetworks.emojide.discord.emoji.EmojiManager;
 import com.uddernetworks.emojide.discord.font.DefaultFontManager;
 import com.uddernetworks.emojide.discord.font.FontManager;
+import com.uddernetworks.emojide.gui.components.theme.ThemeDependantRendering;
+import com.uddernetworks.emojide.gui.tabbed.DefaultTabbedFrame;
+import com.uddernetworks.emojide.gui.tabbed.IntelliJTabbedFrame;
+import com.uddernetworks.emojide.gui.tabbed.TabbedFrame;
 import com.uddernetworks.emojide.gui.theme.DefaultThemeManager;
+import com.uddernetworks.emojide.gui.theme.Theme;
 import com.uddernetworks.emojide.gui.theme.ThemeManager;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import com.uddernetworks.emojide.keyboard.SimpleKeyboardInputManager;
@@ -69,6 +74,14 @@ public class EmojIDE extends ListenerAdapter {
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
         jda = (JDAImpl) event.getJDA();
+
+        java.lang.Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
+            LOGGER.error("Error on thread {}", thread.getName(), exception);
+        });
+
+        new ThemeDependantRendering(this);
+        ThemeDependantRendering.registerImplementation(TabbedFrame.class, Theme.DEFAULT, DefaultTabbedFrame::new);
+        ThemeDependantRendering.registerImplementation(TabbedFrame.class, Theme.INTELLIJ, IntelliJTabbedFrame::new);
 
         databaseManager = new BasicDatabaseManager(this);
         documentManager = new DefaultDocumentManager(databaseManager);

@@ -1,8 +1,8 @@
 package com.uddernetworks.emojide.discord;
 
 import com.uddernetworks.emojide.data.document.Document;
-import com.uddernetworks.emojide.gui.TabbedFrame;
 import com.uddernetworks.emojide.gui.components.EmojiComponent;
+import com.uddernetworks.emojide.gui.tabbed.TabbedFrame;
 import com.uddernetworks.emojide.gui.tabs.Tab;
 
 public interface DocumentTabController {

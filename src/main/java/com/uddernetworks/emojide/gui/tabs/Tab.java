@@ -19,17 +19,21 @@ public class Tab {
     }
 
     public void activate() {
-        LOGGER.info("The tab {} is now active!", name);
-        if (component instanceof EmojiContainer) {
-            var children = ((EmojiContainer) component).getChildren();
-            if (children.isEmpty()) {
-                KeyboardRaisable.get().addListener(component);
-                return;
-            }
+        try {
+            LOGGER.info("The tab {} is now active!", name);
+            if (component instanceof EmojiContainer) {
+                var children = ((EmojiContainer) component).getChildren();
+                if (children.isEmpty()) {
+                    KeyboardRaisable.get().addListener(component);
+                    return;
+                }
 
-            KeyboardRaisable.get().addListener(children.get(0).getComponent());
-        } else {
-            KeyboardRaisable.get().addListener(component);
+                KeyboardRaisable.get().addListener(children.get(0).getComponent());
+            } else {
+                KeyboardRaisable.get().addListener(component);
+            }
+        } catch (Exception e) {
+            LOGGER.error("fuck", e);
         }
     }
 

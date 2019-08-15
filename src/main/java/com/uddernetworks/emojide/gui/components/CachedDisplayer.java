@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -27,7 +26,6 @@ public class CachedDisplayer implements Displayer {
     private EmojIDE emojIDE;
     private EmojiComponent child;
     private boolean displaying;
-    private AtomicBoolean waiting = new AtomicBoolean();
     private List<Message> messages = new ArrayList<>();
     private Emoji filler;
     private TextChannel channel;
@@ -86,7 +84,6 @@ public class CachedDisplayer implements Displayer {
 
     @Override
     public void update() {
-        while (this.waiting.get()) {}
         displaying = true;
         boolean sendMessages = this.messages.isEmpty();
         if (sendMessages && this.child.getWidth() > MAX_EMOJIS_PER_LINE)
@@ -115,8 +112,6 @@ public class CachedDisplayer implements Displayer {
         if (sendMessages && insertKeyboard) {
             this.emojIDE.getKeyboardInputManager().createKeyboard(channel);
         }
-
-        RenderEngine.breakpoint(() -> this.waiting.set(false));
     }
 
     @Override

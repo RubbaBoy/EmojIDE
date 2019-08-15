@@ -1,7 +1,6 @@
 package com.uddernetworks.emojide.gui.theme;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
-import com.uddernetworks.emojide.discord.font.Font;
 import com.uddernetworks.emojide.main.EmojIDE;
 
 import java.util.function.Supplier;

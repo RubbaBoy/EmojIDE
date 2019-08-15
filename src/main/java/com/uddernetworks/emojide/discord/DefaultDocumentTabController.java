@@ -2,9 +2,13 @@ package com.uddernetworks.emojide.discord;
 
 import com.uddernetworks.emojide.data.document.Document;
 import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
-import com.uddernetworks.emojide.gui.*;
+import com.uddernetworks.emojide.gui.CustomRenderedContainerFrame;
+import com.uddernetworks.emojide.gui.EmptyContainerFrame;
+import com.uddernetworks.emojide.gui.HighlightedTextFrame;
+import com.uddernetworks.emojide.gui.StaticTextFrame;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.gui.components.EmojiComponent;
+import com.uddernetworks.emojide.gui.tabbed.TabbedFrame;
 import com.uddernetworks.emojide.gui.tabs.Tab;
 import com.uddernetworks.emojide.ide.ConsolePiper;
 import com.uddernetworks.emojide.ide.FunctionController;
