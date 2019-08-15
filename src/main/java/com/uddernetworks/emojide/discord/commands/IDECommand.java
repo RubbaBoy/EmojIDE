@@ -1,8 +1,9 @@
 package com.uddernetworks.emojide.discord.commands;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
-import com.uddernetworks.emojide.data.document.Document;
 import com.uddernetworks.emojide.discord.DefaultDocumentTabController;
+import com.uddernetworks.emojide.discord.commands.choosable.ChoosingList;
+import com.uddernetworks.emojide.discord.commands.choosable.DefaultChoosingList;
 import com.uddernetworks.emojide.discord.commands.manager.*;
 import com.uddernetworks.emojide.discord.emoji.EmojiManager;
 import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
@@ -13,7 +14,8 @@ import com.uddernetworks.emojide.gui.TabbedFrame;
 import com.uddernetworks.emojide.gui.WelcomeFrame;
 import com.uddernetworks.emojide.gui.components.CachedDisplayer;
 import com.uddernetworks.emojide.gui.components.Displayer;
-import com.uddernetworks.emojide.gui.components.EmojiContainer;
+import com.uddernetworks.emojide.gui.theme.Theme;
+import com.uddernetworks.emojide.gui.theme.ThemeManager;
 import com.uddernetworks.emojide.main.EmojIDE;
 import com.uddernetworks.emojide.main.Thread;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -22,7 +24,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,28 +42,28 @@ public class IDECommand {
     private EmojIDE emojIDE;
     private EmojiManager emojiManager;
     private FontManager fontManager;
+    private ThemeManager themeManager;
     private FileConfig config;
     private Displayer displayer;
     private boolean displaying = false;
+
+    private ChoosingList<Font> fontChooser;
+    private ChoosingList<Theme> themeChooser;
 
     public IDECommand(EmojIDE emojIDE) {
         this.emojIDE = emojIDE;
         emojiManager = emojIDE.getEmojiManager();
         fontManager = emojIDE.getFontManager();
+        themeManager = emojIDE.getThemeManager();
         config = EmojIDE.getConfigManager().getConfig();
+
+        fontChooser = emojIDE.getChoosingListManager().createChoosingList(emojIDE, fontManager::getActive, fontManager::setActive, Font.class);
+        themeChooser = emojIDE.getChoosingListManager().createChoosingList(emojIDE, themeManager::getActive, themeManager::setActive, Theme.class);
 
         var callbackHandler = emojIDE.getWebCallbackHandler();
         callbackHandler.registerCommandCallback("setchannel", (member, channel, query) -> setChannel(member, channel));
         callbackHandler.registerCommandCallback("fonts", (member, channel, query) -> fonts(member, channel));
-        callbackHandler.registerCommandCallback("apply", Arrays.asList("font", "originating"), (member, channel, query) -> {
-            var activatingString = query.get("font");
-            if (!StringUtils.isNumeric(activatingString)) return;
-            var activating = Integer.parseInt(activatingString);
-            if (activating < 0 || activating >= Font.values().length) return;
-            var originatingString = query.get("originating");
-            if (!StringUtils.isNumeric(originatingString)) return;
-            activateFont(member, channel, Long.parseLong(originatingString), activating);
-        });
+        callbackHandler.registerCommandCallback("themes", (member, channel, query) -> themes(member, channel));
         callbackHandler.registerCommandCallback("start", (member, channel, query) -> start(member, channel));
         callbackHandler.registerCommandCallback("stop", (member, channel, query) -> stop(member, channel));
         callbackHandler.registerCommandCallback("restart", (member, channel, query) -> restart(member, channel));
@@ -86,58 +87,22 @@ public class IDECommand {
 
     @Argument(format = "fonts")
     public void fonts(Member member, TextChannel channel) {
-        var emptyQuery = Map.of("member", member.getId(), "channel", channel.getId());
-
-        var editing = EmbedUtils.sendEmbed(channel, member, "Fonts", embed -> embed.setDescription("The following are the fonts used by the IDE. Either click the " + StaticEmoji.UNSELECTED.getDisplay() + " to apply the font, or type `!ide setfont \"name\"`"));
-        editing.editMessage(createFontsEmbed(editing, emptyQuery)).queue();
-    }
-
-    private void activateFont(Member member, TextChannel channel, long messageId, int font) {
-        var emptyQuery = Map.of("member", member.getId(), "channel", channel.getId());
-        fontManager.setActive(Font.values()[font]);
-        channel.retrieveMessageById(messageId).submit().thenAccept(message -> {
-            if (message == null || message.getEmbeds().size() != 1 || message.getAuthor().getIdLong() != emojIDE.getJda().getSelfUser().getIdLong()) return;
-            message.editMessage(createFontsEmbed(message, emptyQuery)).queue();
-        });
-    }
-
-    private MessageEmbed createFontsEmbed(Message message, Map<String, String> emptyQuery) {
-        var editingEmbed = new EmbedBuilder(message.getEmbeds().get(0));
-        var webCallbackHandler = emojIDE.getWebCallbackHandler();
-        editingEmbed.clearFields();
-
-        var paddedLength = Arrays.stream(Font.values()).mapToInt(font -> font.getName().length()).max().orElse(0) + 2;
-
-        Arrays.stream(Font.values()).forEach(font -> {
-            boolean active = fontManager.getActive() == font;
-            var emojiName = paddedEmoji(font.getName().chars().mapToObj(cha -> emojiManager.getTextEmoji((char) cha, font).getDisplay()).collect(Collectors.joining(" ")), paddedLength);
-
-            var query = new HashMap<>(emptyQuery);
-            query.put("font", String.valueOf(font.ordinal()));
-            query.put("originating", message.getId());
-            editingEmbed.addField(font.getName(), emojiName + space(4) +
-                    (active ? StaticEmoji.SELECT.getDisplay() : webCallbackHandler.generateMdLink(StaticEmoji.UNSELECTED.getDisplay(), "apply", query)), true);
-        });
-
-        return editingEmbed.build();
-    }
-
-    private String paddedEmoji(String input, int length) {
-        return input.replaceAll("\\s+", "") + StaticEmoji.TRANSPARENT.getDisplay().repeat(Math.max(0, length - input.split("\\s+").length));
+        fontChooser.sendEmbed(member, channel, "Fonts", "The following are the fonts used by the IDE. Either click the " + StaticEmoji.UNSELECTED.getDisplay() + " to apply the font, or type `!ide setfont \"name\"`");
     }
 
     @Argument(format = "setfont *")
     public void setFont(Member member, TextChannel channel, ArgumentList args) {
-        var fontName = args.nextArg().getString();
-        var fontOptional = Font.fromName(fontName);
-        if (fontOptional.isEmpty()) {
-            EmbedUtils.error(channel, member, "Unknown font `" + fontName + "`");
-            return;
-        }
+        fontChooser.manualChoose(channel, member, args.nextArg().getString(), "font", fontManager::setActive, "Changed Font", font -> "Changed active font to " + font.getName());
+    }
 
-        var font = fontOptional.get();
-        fontManager.setActive(font);
-        EmbedUtils.sendEmbed(channel, member, "Changed Font", "Changed active font to " + font.getName());
+    @Argument(format = "themes")
+    public void themes(Member member, TextChannel channel) {
+        themeChooser.sendEmbed(member, channel, "Themes", "The following are the themes available in the IDE. Either click the " + StaticEmoji.UNSELECTED.getDisplay() + " to apply the theme, or type `!ide settheme \"name\"`");
+    }
+
+    @Argument(format = "settheme *")
+    public void setTheme(Member member, TextChannel channel, ArgumentList args) {
+        themeChooser.manualChoose(channel, member, args.nextArg().getString(), "theme", themeManager::setActive, "Changed Theme", font -> "Changed active theme to " + font.getName());
     }
 
     @Argument(format = "start")

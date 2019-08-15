@@ -314,8 +314,12 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
     }
 
     private boolean hasTransparent(BufferedImage image) {
-        var rgb = new Color(image.getRGB(0, 0), true);
-        return rgb.getAlpha() != 255;
+        for (int x = 0; x < 33; x++) {
+            for (int y = 0; y < 33; y++) {
+                if (new Color(image.getRGB(x, y), true).getAlpha() == 255) return false;
+            }
+        }
+        return true;
     }
 
 }

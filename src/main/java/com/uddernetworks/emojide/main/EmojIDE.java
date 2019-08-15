@@ -6,21 +6,24 @@ import com.uddernetworks.emojide.data.document.DefaultDocumentManager;
 import com.uddernetworks.emojide.data.document.DocumentManager;
 import com.uddernetworks.emojide.discord.DocumentTabController;
 import com.uddernetworks.emojide.discord.commands.*;
+import com.uddernetworks.emojide.discord.commands.choosable.ChoosingListManager;
+import com.uddernetworks.emojide.discord.commands.choosable.DefaultChoosingListManager;
 import com.uddernetworks.emojide.discord.commands.manager.CommandManager;
 import com.uddernetworks.emojide.discord.commands.manager.EmbedUtils;
 import com.uddernetworks.emojide.discord.emoji.DefaultEmojiManager;
 import com.uddernetworks.emojide.discord.emoji.EmojiManager;
+import com.uddernetworks.emojide.discord.font.DefaultFontManager;
 import com.uddernetworks.emojide.discord.font.FontManager;
+import com.uddernetworks.emojide.gui.theme.DefaultThemeManager;
+import com.uddernetworks.emojide.gui.theme.ThemeManager;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import com.uddernetworks.emojide.keyboard.SimpleKeyboardInputManager;
 import com.uddernetworks.emojide.web.BasicWebCallbackHandler;
 import com.uddernetworks.emojide.web.WebCallbackHandler;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.events.http.HttpRequestEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.internal.JDAImpl;
 import org.slf4j.Logger;
@@ -38,6 +41,8 @@ public class EmojIDE extends ListenerAdapter {
     private static ConfigManager configManager;
     private JDAImpl jda;
     private FontManager fontManager;
+    private ThemeManager themeManager;
+    private ChoosingListManager choosingListManager;
     private EmojiManager emojiManager;
     private WebCallbackHandler webCallbackHandler;
     private KeyboardInputManager keyboardInputManager;
@@ -68,8 +73,10 @@ public class EmojIDE extends ListenerAdapter {
         databaseManager = new BasicDatabaseManager(this);
         documentManager = new DefaultDocumentManager(databaseManager);
         databaseManager.init();
-        fontManager = new FontManager(this);
+        fontManager = new DefaultFontManager(this);
+        themeManager = new DefaultThemeManager(this);
         webCallbackHandler = new BasicWebCallbackHandler(this);
+        choosingListManager = new DefaultChoosingListManager(this);
         CommandHelp.initHelp(this);
         jda.addEventListener(this.keyboardInputManager = new SimpleKeyboardInputManager(this));
         emojiManager = new DefaultEmojiManager(this, configManager.getServers());
@@ -87,6 +94,14 @@ public class EmojIDE extends ListenerAdapter {
 
     public FontManager getFontManager() {
         return fontManager;
+    }
+
+    public ThemeManager getThemeManager() {
+        return themeManager;
+    }
+
+    public ChoosingListManager getChoosingListManager() {
+        return choosingListManager;
     }
 
     public WebCallbackHandler getWebCallbackHandler() {

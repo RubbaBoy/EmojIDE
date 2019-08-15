@@ -10,3 +10,4 @@ secret.conf
 *.ttf
 executing/
 database/
+ide_emojis/intellij/gen

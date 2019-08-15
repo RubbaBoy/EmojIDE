@@ -1,9 +1,11 @@
 package com.uddernetworks.emojide.discord.font;
 
+import com.uddernetworks.emojide.main.ChoosableEnum;
+
 import java.util.Arrays;
 import java.util.Optional;
 
-public enum Font {
+public enum Font implements ChoosableEnum {
     CONSOLAS("", "Consolas"),
     FIRA_CODE("f", "Fira Code");
 
@@ -23,6 +25,7 @@ public enum Font {
         return prefix;
     }
 
+    @Override
     public String getName() {
         return name;
     }
