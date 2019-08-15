@@ -178,12 +178,6 @@ public class IDECommand {
         displaying = true;
         LOGGER.info("Creating displayer...");
 
-        var text = "function myMethod(arg) {\n" +
-                "   console.log('Arg is ' + arg + '!');\n" +
-                "}\n" +
-                "\n" +
-                "myMethod('Hello World');\n";
-
         var documentManager = emojIDE.getDocumentManager();
         documentManager.getAllDocuments().thenAccept(documents -> {
             TabbedFrame tabbedFrame;

@@ -2,6 +2,7 @@ package com.uddernetworks.emojide.discord.emoji;
 
 import com.uddernetworks.emojide.discord.font.Font;
 import com.uddernetworks.emojide.generator.DefaultEmojiGenerator;
+import com.uddernetworks.emojide.main.CustomPool;
 import com.uddernetworks.emojide.main.EmojIDE;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
@@ -26,11 +27,30 @@ public class DefaultEmojiManager implements EmojiManager {
     private EmojIDE emojIDE;
     private Set<Long> maxServers = Collections.synchronizedSet(new HashSet<>());
     private Map<Guild, Integer> emojiDistribution = new HashMap<>();
+    private Map<Long, Integer> cachedEmojiAmounts = new HashMap<>();
 
     public DefaultEmojiManager(EmojIDE emojIDE, List<Long> emojiServers) {
         this.emojIDE = emojIDE;
         this.jda = emojIDE.getJda();
-        this.emojiServers = emojiServers.stream().map(jda::getGuildById).collect(Collectors.toUnmodifiableList());
+
+        var unsortedServers = emojiServers.stream().map(jda::getGuildById).collect(Collectors.toUnmodifiableList());
+
+        // From EmojiCommand.java
+        Comparator<Guild> comparator;
+        if (unsortedServers.stream().map(Guild::getName).allMatch(name -> name.matches(".*\\s+\\d+"))) {
+            // Sorting by the ending number of a server
+            comparator = Comparator.comparingInt(guild -> {
+                var name = guild.getName();
+                return Integer.parseInt(name.substring(name.lastIndexOf(' ') + 1));
+            });
+        } else {
+            // Default sorting
+            comparator = Comparator.comparing(Guild::getName);
+        }
+
+        this.emojiServers = unsortedServers.stream()
+                .sorted(comparator)
+                .collect(Collectors.toCollection(LinkedList::new));
 
         LOGGER.info("Generating emojis...");
 
@@ -81,16 +101,23 @@ public class DefaultEmojiManager implements EmojiManager {
         for (Guild server : emojiServers) {
             var serverId = server.getIdLong();
             if (maxServers.contains(serverId)) continue;
-            if (server.retrieveEmotes().complete().size() >= 50) {
+
+            if (!cachedEmojiAmounts.containsKey(serverId)) cachedEmojiAmounts.put(serverId, server.retrieveEmotes().complete().size());
+            if (cachedEmojiAmounts.get(serverId) >= 50) {
                 maxServers.add(serverId);
                 LOGGER.info("{} Reached max!", server.getName());
                 continue;
             }
 
+            CustomPool.start = true;
+
             try {
                 LOGGER.info("Uploading {} to {}", name, server.getName());
                 var uploaded = server.createEmote(name, Icon.from(file)).complete();
-                if (uploaded != null) return Optional.of(uploaded);
+                if (uploaded != null) {
+                    cachedEmojiAmounts.merge(serverId, 1, Integer::sum);
+                    return Optional.of(uploaded);
+                }
             } catch (IOException e) {
                 LOGGER.error("Error uploading emoji " + name + ", retrying on another server...", e);
             } catch (ErrorResponseException e) {

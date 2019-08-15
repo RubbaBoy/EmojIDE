@@ -20,7 +20,9 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.http.HttpRequestEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.internal.JDAImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +36,7 @@ public class EmojIDE extends ListenerAdapter {
     public static final char ZWS = '\u200b';
 
     private static ConfigManager configManager;
-    private JDA jda;
+    private JDAImpl jda;
     private FontManager fontManager;
     private EmojiManager emojiManager;
     private WebCallbackHandler webCallbackHandler;
@@ -44,20 +46,24 @@ public class EmojIDE extends ListenerAdapter {
     private DocumentTabController documentTabController;
 
     public static void main(String[] args) throws LoginException {
+        new EmojIDE().main();
+    }
+
+    private void main() throws LoginException {
         (configManager = new DefaultConfigManager("src/main/resources/secret.conf")).init();
 
         new JDABuilder()
                 .setToken(configManager.getPrimaryToken())
                 .setStatus(OnlineStatus.ONLINE)
                 .setActivity(Activity.playing("Programming"))
-                .addEventListeners(new EmojIDE())
-                .setRateLimitPool(new CustomPool())
+                .addEventListeners(this)
+                .setRateLimitPool(new CustomPool(this))
                 .build();
     }
 
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
-        jda = event.getJDA();
+        jda = (JDAImpl) event.getJDA();
 
         databaseManager = new BasicDatabaseManager(this);
         documentManager = new DefaultDocumentManager(databaseManager);
@@ -75,7 +81,7 @@ public class EmojIDE extends ListenerAdapter {
         return configManager;
     }
 
-    public JDA getJda() {
+    public JDAImpl getJda() {
         return jda;
     }
 

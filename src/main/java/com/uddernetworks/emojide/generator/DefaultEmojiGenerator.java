@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.uddernetworks.emojide.generator.DefaultEmojiGenerator.CharAlign.*;
 import static com.uddernetworks.emojide.generator.LetterGenerator.*;
@@ -48,17 +49,21 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
         try {
             var font = Font.createFont(Font.TRUETYPE_FONT, new File("fonts\\FiraCode-Medium.ttf"));
         } catch (FontFormatException | IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error loading Fira Code Medium", e);
         }
 
         Arrays.asList(
                 new FontData("", Color.WHITE, "Consolas"), // White
+                new FontData("t", Color.WHITE, new Color(0x3C3F41), "Consolas"), // White for IntelliJ's unselected tab text
+                new FontData("e", Color.WHITE, new Color(0x4E5254), "Consolas"), // White for IntelliJ's selected tab text
                 new FontData("o", new Color(0xCC7832), "Consolas", true), // Orange
                 new FontData("g", new Color(0x6A8759), "Consolas"), // Green
                 new FontData("b", new Color(0x6897BB), "Consolas"), // Blue
                 new FontData("a", new Color(0x808080), "Consolas"), // Gray
                 new FontData("l", new Color(0x666666), "Consolas"), // Light Gray
                 new FontData("f", Color.WHITE, "Fira Code Medium"), // White
+                new FontData("ft", Color.WHITE, new Color(0x3C3F41), "Fira Code Medium"), // White for IntelliJ's unselected tab text
+                new FontData("fe", Color.WHITE, new Color(0x4E5254), "Fira Code Medium") ,// White for IntelliJ's selected tab text
                 new FontData("fo", new Color(0xCC7832), "Fira Code Medium", true), // Orange
                 new FontData("fg", new Color(0x6A8759), "Fira Code Medium"), // Green
                 new FontData("fb", new Color(0x6897BB), "Fira Code Medium"), // Blue
@@ -87,6 +92,12 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
                 "red", new Color(235, 87, 87),
                 "transparent", new Color(0, 0, 0, 0),
                 "yellow", new Color(242, 201, 76));
+
+        try {
+            generateIntelliJ();
+        } catch (IOException e) {
+            LOGGER.error("An error occurred while generating the IntelliJ base template", e);
+        }
     }
 
     private void generateColorPalette(File parent, Object... objects) {
@@ -115,17 +126,17 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
     private void drawAndSave(File parent, String character, FontData fontData) {
         var saveFile = new File(parent, fontData.prefix + ((int) character.charAt(0)) + ".png");
         if (saveFile.exists()) return;
-        BufferedImage image = new BufferedImage(WIDTH + 50, HEIGHT + 50, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics = image.createGraphics();
+        var image = new BufferedImage(WIDTH + 200, HEIGHT + 200, BufferedImage.TYPE_INT_ARGB);
+        var graphics = image.createGraphics();
         graphics.setPaint(TRANSPARENT);
-        graphics.fillRect(0, 0, WIDTH + 50, HEIGHT + 50);
+        graphics.fillRect(0, 0, WIDTH + 200, HEIGHT + 200);
         graphics.setPaint(fontData.color);
-        graphics.setFont(new Font(fontData.getFont(), fontData.bold ? Font.BOLD : Font.PLAIN, 256)); // 192pts
+        graphics.setFont(new Font(fontData.font, fontData.bold ? Font.BOLD : Font.PLAIN, 256)); // 192pts
         FontMetrics metrics = graphics.getFontMetrics();
         int x = (WIDTH - metrics.stringWidth(character)) / 2;
-        x += 25;
+        x += 100;
         int y = ((HEIGHT - metrics.getHeight()) / 2) + metrics.getAscent();
-        y += 25;
+        y += 100;
         graphics.drawString(character, x, y);
         graphics.dispose();
 
@@ -155,10 +166,20 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
         }
 
         try {
-            ImageIO.write(image, "png", saveFile);
+            ImageIO.write(setBackground(image, fontData.backgroundColor), "png", saveFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private BufferedImage setBackground(BufferedImage input, Color background) {
+        var image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        var graphics = image.createGraphics();
+        graphics.setPaint(background);
+        graphics.fillRect(0, 0, WIDTH, HEIGHT);
+        graphics.drawImage(input, null, 0, 0);
+        graphics.dispose();
+        return image;
     }
 
     private BufferedImage alignTop(BufferedImage image) {
@@ -229,16 +250,26 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
     static class FontData {
         private String prefix;
         private Color color;
+        private Color backgroundColor;
         private String font;
         private boolean bold;
 
         public FontData(String prefix, Color color, String font) {
-            this(prefix, color, font, false);
+            this(prefix, color, TRANSPARENT, font, false);
+        }
+
+        public FontData(String prefix, Color color, Color backgroundColor, String font) {
+            this(prefix, color, backgroundColor, font, false);
         }
 
         public FontData(String prefix, Color color, String font, boolean bold) {
+            this(prefix, color, TRANSPARENT, font, bold);
+        }
+
+        public FontData(String prefix, Color color, Color backgroundColor, String font, boolean bold) {
             this.prefix = prefix;
             this.color = color;
+            this.backgroundColor = backgroundColor;
             this.font = font;
             this.bold = bold;
         }
@@ -251,6 +282,10 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
             return color;
         }
 
+        public Color getBackgroundColor() {
+            return backgroundColor;
+        }
+
         public String getFont() {
             return font;
         }
@@ -258,6 +293,29 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
         public boolean isBold() {
             return bold;
         }
+    }
+
+    private void generateIntelliJ() throws IOException {
+        var image = ImageIO.read(new File("image_inputs/intellij_base.png"));
+
+        var iconSize = 33;
+
+        var col = image.getWidth() / iconSize;
+        var row = image.getHeight() / iconSize;
+
+        for (int yBlock = 0; yBlock < row; yBlock++) {
+            for (int xBlock = 0; xBlock < col; xBlock++) {
+                BufferedImage subImage = image.getSubimage(xBlock * iconSize, yBlock * iconSize, iconSize, iconSize);
+                if (hasTransparent(subImage)) continue;
+                ImageIO.write(subImage, "png", new File("ide_emojis/intellij/gen/" + xBlock + "j" + yBlock + ".png"));
+//                LOGGER.info("IJ_{}j{}(\"{}j{}\", \"ide_emojis/intellij/{}j{}.png\"),", xBlock, yBlock, xBlock, yBlock, xBlock, yBlock);
+            }
+        }
+    }
+
+    private boolean hasTransparent(BufferedImage image) {
+        var rgb = new Color(image.getRGB(0, 0), true);
+        return rgb.getAlpha() != 255;
     }
 
 }
