@@ -1,16 +1,22 @@
 package com.uddernetworks.emojide.gui.tabbed;
 
 import com.uddernetworks.emojide.discord.emoji.Emoji;
+import com.uddernetworks.emojide.discord.emoji.Group;
 import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
 import com.uddernetworks.emojide.gui.components.EmojiComponent;
+import com.uddernetworks.emojide.gui.components.theme.ThemeDependantRendering;
 import com.uddernetworks.emojide.gui.tabs.Tab;
+import com.uddernetworks.emojide.gui.theme.Theme;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static com.uddernetworks.emojide.gui.tabbed.TabbedFrameConstants.AVAILABLE_TEXT_HEIGHT;
 
 public class IntelliJTabbedFrame implements TabbedFrameTheme {
+
+    static {
+        ThemeDependantRendering.setThemeConstant(TabbedFrame.class, Theme.INTELLIJ, AVAILABLE_TEXT_HEIGHT, 15);
+    }
 
     private TabbedFrame frame;
 
@@ -20,7 +26,7 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
 
     @Override
     public void settingOffset() {
-        frame.setOffset(1, 2);
+        frame.setOffset(1, 3);
     }
 
     @Override
@@ -30,56 +36,87 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
 
     @Override
     public Emoji[][] drawBorder(Emoji[][] rows) {
-        for (int y = 2; y < rows.length - 1; y++) {
-            rows[y][0] = StaticEmoji.RED;
-            rows[y][rows[0].length - 1] = StaticEmoji.RED;
-        }
-
-        Arrays.fill(rows[0], 1, rows[0].length - 1, StaticEmoji.RED);
-        Arrays.fill(rows[1], 1, rows[1].length - 1, StaticEmoji.RED);
+        Group.INTELLIJ_BASE.getEmojis().forEach(emoji -> {
+            var split = emoji.getName().split("j");
+            rows[Integer.parseInt(split[1])][Integer.parseInt(split[0])] = emoji;
+        });
 
         var headers = drawHeaders();
-        for (int i = 0; i < headers.length; i++) {
-            System.arraycopy(headers[i], 0, rows[i], 2, headers[i].length);
+        for (int y = 0; y < headers.length; y++) {
+//            System.arraycopy(headers[y], 0, rows[y], 0, headers[y].length);
+
+            var thisRow = headers[y];
+            var copyingTo = rows[y];
+            System.out.println("Headers: ");
+            System.out.println(Arrays.toString(thisRow));
+            for (int x = 0; x < thisRow.length; x++) {
+                var thisEmoji = thisRow[x];
+                if (thisEmoji != null && thisEmoji != StaticEmoji.TRANSPARENT) copyingTo[x] = thisEmoji;
+            }
+
+            rows[y] = copyingTo;
+            System.out.println("Done:");
+            System.out.println(Arrays.toString(rows[y]));
         }
 
-        Arrays.fill(rows[rows.length - 1], 1, rows[rows.length - 1].length - 1, StaticEmoji.RED);
-
-        // Corners
-        rows[1][0] = StaticEmoji.RED;
-        rows[1][rows[0].length - 1] = StaticEmoji.RED;
-        rows[rows.length - 1][0] = StaticEmoji.RED;
-        rows[rows.length - 1][rows[0].length - 1] = StaticEmoji.RED;
+//        // Corners
+//        rows[1][0] = StaticEmoji.RED;
+//        rows[1][rows[0].length - 1] = StaticEmoji.RED;
+//        rows[rows.length - 1][0] = StaticEmoji.RED;
+//        rows[rows.length - 1][rows[0].length - 1] = StaticEmoji.RED;
         return rows;
     }
 
     private Emoji[][] drawHeaders() {
-        var thisWidth = frame.getWidth() - 4;
-        var upper = new ArrayList<Emoji>();
-        var row = new ArrayList<Emoji>();
+        var top = new Emoji[frame.getWidth()];
+        var row = new Emoji[frame.getWidth()];
+        var bottom = new Emoji[frame.getWidth()];
+//        Arrays.fill(top, StaticEmoji.RED);
+//        Arrays.fill(row, null);
+//        Arrays.fill(bottom, null);
 
+        var activeFont = frame.getEmojIDE().getFontManager().getActive().ordinal();
+        var unselectedFontUsing = new String[]{"t", "ft"}[activeFont];
+        var selectedFontUsing = new String[]{"e", "fe"}[activeFont];
+
+        int emojiIndex = 0;
         var activeTab = frame.getActive();
         for (Tab tab : frame.tabs) {
             var active = tab.equals(activeTab);
-            if (row.size() + 4 + tab.getName().length() > thisWidth) break;
+//            if (row.length + tab.getName().length() > frame.getWidth()) break;
 
-            row.add(active ? StaticEmoji.LTAB_SEPARATOR_SELECTED : StaticEmoji.LTAB_SEPARATOR);
-            upper.add(active ? StaticEmoji.LTAB_CORNER_SELECTED : StaticEmoji.BR_FRAME);
+            if (active) {
+                top[emojiIndex] = StaticEmoji.IJ_SELECTED_TOP_LEFT;
+                row[emojiIndex] = StaticEmoji.IJ_SELECTED_MIDDLE_LEFT;
+                bottom[emojiIndex] = StaticEmoji.IJ_SELECTED_BOTTOM_LEFT;
+            }
+            emojiIndex++;
 
             for (char cha : tab.getName().toCharArray()) {
-                row.add(frame.getEmojiManager().getTextEmoji(cha));
-                upper.add(active ? StaticEmoji.TTABBED_FRAME_SELECTED : StaticEmoji.TTABBED_FRAME);
+                var prefix = active ? selectedFontUsing : unselectedFontUsing;
+                row[emojiIndex] = frame.getEmojiManager().getEmoji(prefix + (int) cha);
+
+                if (active) {
+//                    top.add(StaticEmoji.TTABBED_FRAME_SELECTED);
+                    bottom[emojiIndex] = StaticEmoji.IJ_SELECTED_BOTTOM;
+                }
+                emojiIndex++;
             }
 
-            row.add(active ? StaticEmoji.RTAB_SEPARATOR_SELECTED : StaticEmoji.RTAB_SEPARATOR);
-            upper.add(active ? StaticEmoji.RTAB_CORNER_SELECTED : StaticEmoji.BL_FRAME);
+            if (active) {
+                top[emojiIndex] = StaticEmoji.IJ_SELECTED_TOP_RIGHT;
+                row[emojiIndex] = StaticEmoji.IJ_SELECTED_MIDDLE_RIGHT;
+                bottom[emojiIndex] = StaticEmoji.IJ_SELECTED_BOTTOM_RIGHT;
+            }
+            emojiIndex++;
         }
 
-        for (int i = 0; i < thisWidth - row.size(); i++) {
-            row.add(StaticEmoji.TTABBED_FRAME);
-            upper.add(StaticEmoji.TRANSPARENT);
-        }
+//        for (int i = 0; i < frame.getWidth() - row.size(); i++) {
+//            top.add(StaticEmoji.TRANSPARENT);
+//            row.add(StaticEmoji.TTABBED_FRAME);
+//            bottom.add(StaticEmoji.TRANSPARENT);
+//        }
 
-        return Stream.of(upper, row).map(list -> list.toArray(Emoji[]::new)).collect(Collectors.toList()).toArray(Emoji[][]::new);
+        return new Emoji[][] {top, row, bottom};
     }
 }

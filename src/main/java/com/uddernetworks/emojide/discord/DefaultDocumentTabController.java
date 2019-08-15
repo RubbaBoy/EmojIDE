@@ -8,6 +8,7 @@ import com.uddernetworks.emojide.gui.HighlightedTextFrame;
 import com.uddernetworks.emojide.gui.StaticTextFrame;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.gui.components.EmojiComponent;
+import com.uddernetworks.emojide.gui.components.theme.ThemeDependantRendering;
 import com.uddernetworks.emojide.gui.tabbed.TabbedFrame;
 import com.uddernetworks.emojide.gui.tabs.Tab;
 import com.uddernetworks.emojide.ide.ConsolePiper;
@@ -20,6 +21,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.uddernetworks.emojide.gui.tabbed.TabbedFrameConstants.AVAILABLE_TEXT_HEIGHT;
 
 public class DefaultDocumentTabController implements DocumentTabController {
 
@@ -52,7 +55,7 @@ public class DefaultDocumentTabController implements DocumentTabController {
                 .addChild(highlightFrame, 1, 1)
                 .addChild(new CustomRenderedContainerFrame(displayer, 56, 5)
                         .addRenderer(initial -> Arrays.fill(initial[0], StaticEmoji.CTABBED_FRAME))
-                        .addChild(outputFrame, 1, 1), 0, 15);
+                        .addChild(outputFrame, 1, 1), 0, ThemeDependantRendering.getThemeConstant(TabbedFrame.class, AVAILABLE_TEXT_HEIGHT));
 
         documents.put(component, document);
         tabbedFrame.addTab(document.getName(), component, true);

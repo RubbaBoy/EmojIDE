@@ -470,6 +470,14 @@ public enum StaticEmoji implements Emoji {
     IJ_57j22("57j22", "ide_emojis/intellij/gen/57j22.png"),
     //</editor-fold>
 
+    IJ_SELECTED_TOP_LEFT("istl", "ide_emojis/intellij/selected_tl.png"),
+    IJ_SELECTED_MIDDLE_LEFT("isml", "ide_emojis/intellij/selected_ml.png"),
+    IJ_SELECTED_BOTTOM_LEFT("isbl", "ide_emojis/intellij/selected_bl.png"),
+    IJ_SELECTED_TOP_RIGHT("istr", "ide_emojis/intellij/selected_tr.png"),
+    IJ_SELECTED_MIDDLE_RIGHT("ismr", "ide_emojis/intellij/selected_mr.png"),
+    IJ_SELECTED_BOTTOM_RIGHT("isbr", "ide_emojis/intellij/selected_br.png"),
+    IJ_SELECTED_BOTTOM("isb", "ide_emojis/intellij/selected_bottom.png"),
+
     SELECT("sel", "ide_emojis/select.png"),
     UNSELECTED("uns", "ide_emojis/unselected.png"),
 

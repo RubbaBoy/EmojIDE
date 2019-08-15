@@ -12,6 +12,7 @@ import com.uddernetworks.emojide.gui.tabs.Tab;
 import com.uddernetworks.emojide.keyboard.KeyPressEvent;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import com.uddernetworks.emojide.keyboard.KeyboardRaisable;
+import com.uddernetworks.emojide.main.EmojIDE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,7 @@ public class TabbedFrame extends DefaultEmojiContainer {
 
     @Override
     public Emoji[][] render(Emoji[][] initial) {
+//        return theme.drawBorder(initial);
         return super.render(theme.drawBorder(initial));
     }
 
@@ -112,5 +114,9 @@ public class TabbedFrame extends DefaultEmojiContainer {
 
     public EmojiManager getEmojiManager() {
         return emojiManager;
+    }
+
+    public EmojIDE getEmojIDE() {
+        return displayer.getEmojIDE();
     }
 }

@@ -3,14 +3,22 @@ package com.uddernetworks.emojide.gui.tabbed;
 import com.uddernetworks.emojide.discord.emoji.Emoji;
 import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
 import com.uddernetworks.emojide.gui.components.EmojiComponent;
+import com.uddernetworks.emojide.gui.components.theme.ThemeDependantRendering;
 import com.uddernetworks.emojide.gui.tabs.Tab;
+import com.uddernetworks.emojide.gui.theme.Theme;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.uddernetworks.emojide.gui.tabbed.TabbedFrameConstants.AVAILABLE_TEXT_HEIGHT;
+
 public class DefaultTabbedFrame implements TabbedFrameTheme {
+
+    static {
+        ThemeDependantRendering.setThemeConstant(TabbedFrame.class, Theme.DEFAULT, AVAILABLE_TEXT_HEIGHT, 16);
+    }
 
     private TabbedFrame frame;
 
