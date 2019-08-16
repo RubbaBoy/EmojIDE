@@ -82,12 +82,12 @@ public class SimpleWebListener implements WebListener {
                     }
                 } else if (url.startsWith("/s")) {
                     Packet.builder().putBytes(generateRequest("<script>var xmlHttp = new XMLHttpRequest();\n" +
-                            "xmlHttp.open(\"GET\",\"http://xn--is8hfy.ws" + url.replace("/s", "/e") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
+                            "xmlHttp.open(\"GET\",\"" + EmojIDE.getConfigManager().getConfig().get("web.host") + "" + url.replace("/s", "/e") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
                             "xmlHttp.send(null);" +
                             "window.open('','_self').close();</script>")).writeAndFlush(client);
                 } else if (url.startsWith("/c")) {
                     Packet.builder().putBytes(generateRequest("<script>var xmlHttp = new XMLHttpRequest();\n" +
-                            "xmlHttp.open(\"GET\",\"http://xn--is8hfy.ws" + url.replace("/c", "/z") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
+                            "xmlHttp.open(\"GET\",\"" + EmojIDE.getConfigManager().getConfig().get("web.host") + "" + url.replace("/c", "/z") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
                             "xmlHttp.send(null);" +
                             "window.open('','_self').close();</script>")).writeAndFlush(client);
                 } else if (url.startsWith("/w")) {
@@ -100,7 +100,7 @@ public class SimpleWebListener implements WebListener {
             return true;
         }));
 
-        server.bind("0.0.0.0", 80);
+        server.bind("0.0.0.0", EmojIDE.getConfigManager().getConfig().get("web.port"));
         LOGGER.info("WebServer running...");
     }
 
@@ -113,7 +113,7 @@ public class SimpleWebListener implements WebListener {
         });
     }
 
-    private static final List<String> goodContains = Arrays.asList("localhost", "xn--is8hfy.ws", "127.0.0.1", "\uD83D\uDE29\uD83D\uDCA6");
+    private static final List<String> goodContains = Arrays.asList("localhost", "127.0.0.1", EmojIDE.getConfigManager().getConfig().get("web.host"));
 
     @Override
     public void parseHeaders(Client client, BiConsumer<String[], Map<String, String>> headersComplete) {

@@ -63,7 +63,7 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
         var unselectedFontUsing = new String[]{"t", "ft"}[activeFont];
         var selectedFontUsing = new String[]{"e", "fe"}[activeFont];
 
-        int emojiIndex = 0;
+        int emojiIndex = 1;
         var activeTab = frame.getActive();
         for (Tab tab : frame.tabs) {
             var active = tab.equals(activeTab);

@@ -54,7 +54,7 @@ public class BasicWebCallbackHandler implements WebCallbackHandler {
 
     @Override
     public String generateLink(String name, Map<String, String> query) {
-        var base = new StringBuilder("http://\uD83D\uDE29\uD83D\uDCA6.ws/c/" + name);
+        var base = new StringBuilder(EmojIDE.getConfigManager().getConfig().get("web.host") + "/c/" + name);
         if (query.isEmpty()) return base.toString();
         base.append("?");
         query.forEach((key, value) -> base.append(key).append("=").append(value).append("&"));

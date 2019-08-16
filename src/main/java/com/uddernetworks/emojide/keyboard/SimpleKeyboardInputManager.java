@@ -195,7 +195,7 @@ public class SimpleKeyboardInputManager extends ListenerAdapter implements Keybo
                         removeSpace = this.pairs.values().stream().anyMatch(pair -> pair.contains(current) && pair.contains(next));
                 }
 
-                row.append("[").append(display).append("](http://\uD83D\uDE29\uD83D\uDCA6.ws/s?k=").append(id).append(")").append(removeSpace ? "" : " ");
+                row.append("[").append(display).append("](" + EmojIDE.getConfigManager().getConfig().get("web.host") + "/s?k=").append(id).append(")").append(removeSpace ? "" : " ");
             }
         }
 

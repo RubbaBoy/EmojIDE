@@ -537,6 +537,7 @@ public enum StaticEmoji implements Emoji {
 
     SELECT("sel", "ide_emojis/select.png"),
     UNSELECTED("uns", "ide_emojis/unselected.png"),
+    DELETE("del2", "ide_emojis/delete.png"),
 
     // Welcome Tab
     //<editor-fold desc="Welcome Big Text">

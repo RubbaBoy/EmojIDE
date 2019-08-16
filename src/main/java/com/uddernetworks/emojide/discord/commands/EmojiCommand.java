@@ -44,6 +44,8 @@ public class EmojiCommand {
         callbackHandler.registerCommandCallback("info", (member, channel, query) -> info(member, channel));
         callbackHandler.registerCommandCallback("inspect", Collections.singletonList("emoji"), (member, channel, query) ->
                 inspect(member, channel, new ArgumentList(new CommandArg(query.get("emoji")))));
+        callbackHandler.registerCommandCallback("grem", Collections.singletonList("ordinal"), (member, channel, query) ->
+                gremove(member, channel, new ArgumentList(new CommandArg(query.get("ordinal")))));
     }
 
     @Argument()
@@ -91,8 +93,9 @@ public class EmojiCommand {
         var fields = splitToFields(sortedDistribution.entrySet().stream().map(entry ->
                 entry.getKey().getName() + space(4) + "**" + entry.getValue() + "/50**\n").collect(Collectors.toList()));
 
+        var emptyQuery = Map.of("member", member.getId(), "channel", channel.getId());
         var groupFields = splitToFields(Arrays.stream(Group.values())
-                .map(group -> space(4) + group.getName() + "\n")
+                .map(group -> callbackHandler.generateMdLink(StaticEmoji.DELETE.getDisplay(), "grem", combine(emptyQuery, Map.of("ordinal", String.valueOf(group.ordinal())))) + space(2) + group.getName() + "\n")
                 .collect(Collectors.toList()), 7);
 
         EmbedUtils.sendEmbed(channel, member, "Emoji Info", embed -> {
@@ -104,10 +107,16 @@ public class EmojiCommand {
 
                     fields.forEach(section -> embed.addField(String.valueOf(ZWS), section, true));
 
-                    embed.addField("Groups", "The following are groups you can remove via `!emoji grem [group]`", false);
+                    embed.addField("Groups", "The following are groups you can remove by clicking the " + StaticEmoji.DELETE.getDisplay() + " or via `!emoji grem [group]`", false);
                     groupFields.forEach(section -> embed.addField(String.valueOf(ZWS), section, true));
                 }
         );
+    }
+
+    private Map<String, String> combine(Map<String, String> one, Map<String, String> two) {
+        var ret = new HashMap<>(one);
+        ret.putAll(two);
+        return ret;
     }
 
     private List<String> splitToFields(List<String> entries) {

@@ -45,10 +45,7 @@ public class DefaultDocumentTabController implements DocumentTabController {
     public void addTab(Document document) {
         int textHeight = ThemeDependantRendering.getThemeConstant(TabbedFrame.class, AVAILABLE_TEXT_HEIGHT);
         var highlightFrame = new HighlightedTextFrame(displayer, 54, textHeight - 1, document.getContent());
-        highlightFrame.getTextBlock().onChange(text -> {
-            LOGGER.info("Changed to: \n{}", text);
-            document.setContent(text);
-        });
+        highlightFrame.getTextBlock().onChange(document::setContent);
 
         var component = new EmptyContainerFrame(displayer, 56, textHeight + 6)
                 .addChild(highlightFrame, 1, 1)

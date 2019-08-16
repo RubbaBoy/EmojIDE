@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +17,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -102,7 +100,7 @@ public class MockupWebpageDisplayer implements Displayer {
             if (emotes[0].length != this.child.getWidth() || emotes.length != this.child.getHeight())
                 throw new InvalidComponentException("Incorrect render dimensions received. Got " + emotes[0].length + "x" + emotes.length + ", expected " + this.child.getWidth() + "x" + this.child.getHeight());
 
-            var input = new AtomicReference<>(Files.readString(Paths.get("mockup-display.html")));
+            var input = new AtomicReference<>(Files.readString(Paths.get("mockup-display.html")).replace("CONFIG_WEB_HOST", EmojIDE.getConfigManager().getConfig().get("web.host")));
 
             var x = new AtomicInteger();
             var y = new AtomicInteger();
@@ -111,7 +109,7 @@ public class MockupWebpageDisplayer implements Displayer {
                         .map(emote -> emote == null ? this.filler : emote)
                         .map(StaticEmoji.class::cast)
                         .map(StaticEmoji::getRelativePath)
-                        .forEach(url -> input.set(replaceIn(input.get(), x.getAndIncrement(), y.get(), "file:///" + new File(url).getAbsolutePath().replace("\\", "//"))));
+                        .forEach(url -> input.set(replaceIn(input.get(), x.getAndIncrement(), y.get(), "file:///" + new File(url).getAbsolutePath().replace(File.separator, "//"))));
                 y.incrementAndGet();
                 x.set(0);
             }
@@ -128,15 +126,6 @@ public class MockupWebpageDisplayer implements Displayer {
         return input.replaceAll("aria-label=\"" + x + "x" + y + "\" src=\".*?\"", "aria-label=\"" + x + "x" + y + "\" src=\"" + url + "\"");
     }
 
-    private BufferedImage readImage(String name, File file) {
-        try {
-            return ImageIO.read(file);
-        } catch (IOException ex) {
-            LOGGER.error("Error reading image for " + name + " at file location " + file.getAbsolutePath(), ex);
-            return null;
-        }
-    }
-
     private BufferedImage readImage(String name, String url) {
         try {
             return ImageIO.read(new URL(url));
@@ -144,16 +133,6 @@ public class MockupWebpageDisplayer implements Displayer {
             LOGGER.error("Error reading image for " + name + " at URL " + url, ex);
             return null;
         }
-    }
-
-    private BufferedImage scaleImage(BufferedImage input) {
-        if (input == null) return null;
-        var res = new BufferedImage(MOCKUP_EMOJI_SIZE, MOCKUP_EMOJI_SIZE, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = res.createGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        g2.drawImage(input, 0, 0, MOCKUP_EMOJI_SIZE, MOCKUP_EMOJI_SIZE, null);
-        g2.dispose();
-        return res;
     }
 
     @Override
