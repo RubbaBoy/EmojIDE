@@ -8,8 +8,6 @@ import com.uddernetworks.emojide.gui.components.theme.ThemeDependantRendering;
 import com.uddernetworks.emojide.gui.tabs.Tab;
 import com.uddernetworks.emojide.gui.theme.Theme;
 
-import java.util.Arrays;
-
 import static com.uddernetworks.emojide.gui.tabbed.TabbedFrameConstants.AVAILABLE_TEXT_HEIGHT;
 
 public class IntelliJTabbedFrame implements TabbedFrameTheme {
@@ -41,29 +39,23 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
             rows[Integer.parseInt(split[1])][Integer.parseInt(split[0])] = emoji;
         });
 
-        var headers = drawHeaders();
-        for (int y = 0; y < headers.length; y++) {
-//            System.arraycopy(headers[y], 0, rows[y], 0, headers[y].length);
-
-            var thisRow = headers[y];
-            var copyingTo = rows[y + 1];
-            System.out.println("Headers: ");
-            System.out.println(Arrays.toString(thisRow));
-            for (int x = 0; x < thisRow.length; x++) {
-                var thisEmoji = thisRow[x];
-                if (thisEmoji != null && thisEmoji != StaticEmoji.TRANSPARENT) copyingTo[x] = thisEmoji;
-            }
-
-            rows[y + 1] = copyingTo;
-            System.out.println("Done:");
-            System.out.println(Arrays.toString(rows[y]));
-        }
-
-//        // Corners
-//        rows[1][0] = StaticEmoji.RED;
-//        rows[1][rows[0].length - 1] = StaticEmoji.RED;
-//        rows[rows.length - 1][0] = StaticEmoji.RED;
-//        rows[rows.length - 1][rows[0].length - 1] = StaticEmoji.RED;
+//        var headers = drawHeaders();
+//        for (int y = 0; y < headers.length; y++) {
+////            System.arraycopy(headers[y], 0, rows[y], 0, headers[y].length);
+//
+//            var thisRow = headers[y];
+//            var copyingTo = rows[y + 1];
+//            System.out.println("Headers: ");
+//            System.out.println(Arrays.toString(thisRow));
+//            for (int x = 0; x < thisRow.length; x++) {
+//                var thisEmoji = thisRow[x];
+//                if (thisEmoji != null && thisEmoji != StaticEmoji.TRANSPARENT) copyingTo[x] = thisEmoji;
+//            }
+//
+//            rows[y + 1] = copyingTo;
+//            System.out.println("Done:");
+//            System.out.println(Arrays.toString(rows[y]));
+//        }
         return rows;
     }
 

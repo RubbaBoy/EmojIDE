@@ -11,7 +11,7 @@ import com.uddernetworks.emojide.discord.font.FontManager;
 import com.uddernetworks.emojide.gui.EmptyContainerFrame;
 import com.uddernetworks.emojide.gui.WelcomeFrame;
 import com.uddernetworks.emojide.gui.components.Displayer;
-import com.uddernetworks.emojide.gui.components.MockupDisplayer;
+import com.uddernetworks.emojide.gui.components.MockupWebpageDisplayer;
 import com.uddernetworks.emojide.gui.tabbed.TabbedFrame;
 import com.uddernetworks.emojide.gui.theme.Theme;
 import com.uddernetworks.emojide.gui.theme.ThemeManager;
@@ -138,7 +138,9 @@ public class IDECommand {
         documentManager.getAllDocuments().thenAccept(documents -> {
             TabbedFrame tabbedFrame;
             // TODO: Change Displayer Implementations
-            (displayer = new MockupDisplayer(emojIDE, channel)) // , channel, true
+            (displayer = new MockupWebpageDisplayer(emojIDE, channel))
+//            (displayer = new MockupImageDisplayer(emojIDE, channel))
+//            (displayer = new CachedDisplayer(emojIDE, channel, true))
                     .setChild(new EmptyContainerFrame(displayer, 58, 23)
                                     .addChild(tabbedFrame = new TabbedFrame(displayer, 58, 23)
                                             .addTab("Welcome", new WelcomeFrame(displayer)), 0, 0));

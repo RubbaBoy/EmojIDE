@@ -16,17 +16,21 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Displays emojis in an image outputted to <code>mockup.png</code>
  * Not meant for real world usage.
  */
-public class MockupDisplayer implements Displayer {
+public class MockupWebpageDisplayer implements Displayer {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(MockupDisplayer.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(MockupWebpageDisplayer.class);
 
     private static final int EMOJI_LENGTH = 18;
     private static final int MAX_MESSAGE_LENGTH = 2000;
@@ -43,11 +47,11 @@ public class MockupDisplayer implements Displayer {
     private FileConfig config = EmojIDE.getConfigManager().getConfig();
 
     /**
-     * Creates a {@link MockupDisplayer}.
+     * Creates a {@link MockupWebpageDisplayer}.
      *
      * @param emojIDE The {@link EmojIDE} instance
      */
-    public MockupDisplayer(EmojIDE emojIDE, TextChannel channel) {
+    public MockupWebpageDisplayer(EmojIDE emojIDE, TextChannel channel) {
         this.emojIDE = emojIDE;
         this.channel = channel;
         this.filler = StaticEmoji.TRANSPARENT;
@@ -83,47 +87,43 @@ public class MockupDisplayer implements Displayer {
 
     @Override
     public void update() {
-        if (fallback == null)
-            fallback = readImage("fallback", "https://cdn.discordapp.com/emojis/608702900105117714.png");
-
-        displaying = true;
-        boolean sendMessages = this.messages.isEmpty();
-        if (sendMessages && this.child.getWidth() > MAX_EMOJIS_PER_LINE)
-            throw new InvalidComponentException("Invalid width of " + this.child.getWidth() + " (Max is " + MAX_EMOJIS_PER_LINE + ")");
-        var emotes = this.child.getCachedRender();
-        if (emotes[0].length != this.child.getWidth() || emotes.length != this.child.getHeight())
-            throw new InvalidComponentException("Incorrect render dimensions received. Got " + emotes[0].length + "x" + emotes.length + ", expected " + this.child.getWidth() + "x" + this.child.getHeight());
-
-
-        var mockup = new BufferedImage(emotes[0].length * MOCKUP_EMOJI_SIZE, emotes.length * MOCKUP_EMOJI_SIZE, BufferedImage.TYPE_INT_ARGB);
-        var mockupGraphics = mockup.createGraphics();
-        var x = new AtomicInteger();
-        var y = new AtomicInteger();
-        for (Emoji[] line : emotes) {
-            Arrays.stream(line)
-                    .map(emote -> emote == null ? this.filler : emote)
-                    .map(StaticEmoji.class::cast)
-                    .map(emoji -> imageCache.computeIfAbsent(emoji.getId(), e -> scaleImage(readImage(emoji.getName(), new File(emoji.getRelativePath())))))
-                    .map(emote -> emote == null ? fallback : emote)
-                    .forEach(image -> {
-                        mockupGraphics.drawImage(image, null, x.get(), y.get());
-                        x.addAndGet(MOCKUP_EMOJI_SIZE);
-                    });
-
-            LOGGER.info("Line");
-            y.addAndGet(MOCKUP_EMOJI_SIZE);
-            x.set(0);
-        }
-
-        mockupGraphics.dispose();
-        var mockupFile = new File("mockup.png");
         try {
-            LOGGER.info("Writing@");
-            ImageIO.write(mockup, "png", mockupFile);
-            channel.sendFile(mockupFile).queue();
-        } catch (IOException e) {
-            LOGGER.error("Error while writing or sending mockup image", e);
+            var start = System.currentTimeMillis();
+
+            if (fallback == null)
+                fallback = readImage("fallback", "https://cdn.discordapp.com/emojis/608702900105117714.png");
+
+            displaying = true;
+            boolean sendMessages = this.messages.isEmpty();
+            if (sendMessages && this.child.getWidth() > MAX_EMOJIS_PER_LINE)
+                throw new InvalidComponentException("Invalid width of " + this.child.getWidth() + " (Max is " + MAX_EMOJIS_PER_LINE + ")");
+            var emotes = this.child.getCachedRender();
+            if (emotes[0].length != this.child.getWidth() || emotes.length != this.child.getHeight())
+                throw new InvalidComponentException("Incorrect render dimensions received. Got " + emotes[0].length + "x" + emotes.length + ", expected " + this.child.getWidth() + "x" + this.child.getHeight());
+
+            var input = new AtomicReference<>(Files.readString(Paths.get("mockup-display.html")));
+
+            var x = new AtomicInteger();
+            var y = new AtomicInteger();
+            for (Emoji[] line : emotes) {
+                Arrays.stream(line)
+                        .map(emote -> emote == null ? this.filler : emote)
+                        .map(StaticEmoji.class::cast)
+                        .map(StaticEmoji::getRelativePath)
+                        .forEach(url -> input.set(replaceIn(input.get(), x.getAndIncrement(), y.get(), "file:///" + new File(url).getAbsolutePath().replace("\\", "//"))));
+                y.incrementAndGet();
+                x.set(0);
+            }
+
+            Files.write(Paths.get("mockup-display.html"), input.get().getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+            LOGGER.info("Wrote to in {}ms", System.currentTimeMillis() - start);
+        } catch (Exception e) {
+            LOGGER.error("Error making webpage", e);
         }
+    }
+
+    private String replaceIn(String input, int x, int y, String url) {
+        return input.replaceAll("aria-label=\"" + x + "x" + y + "\" src=\".*?\"", "aria-label=\"" + x + "x" + y + "\" src=\"" + url + "\"");
     }
 
     private BufferedImage readImage(String name, File file) {

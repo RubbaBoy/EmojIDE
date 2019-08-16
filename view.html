@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Viewer</title>
+    <style>
+        body {
+            margin: 0;
+            background: #36393f;
+        }
+        #mockup {
+            width: 100vw;
+            height: calc(100vw * 0.396551724); // Width / height of mockup
+        }
+    </style>
+</head>
+<body>
+<img src="mockup.png" alt="mockup" id="mockup" onload="autoReload()">
+<script>
+    function autoReload() {
+        let img = document.getElementById('mockup');
+        setInterval(() => {
+            img.src = 'mockup.png?t=' + Date.now();
+        }, 100);
+    }
+</script>
+</body>
+</html>

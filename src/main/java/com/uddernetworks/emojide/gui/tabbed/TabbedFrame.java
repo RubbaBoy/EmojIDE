@@ -39,7 +39,8 @@ public class TabbedFrame extends DefaultEmojiContainer {
     @Override
     public Emoji[][] render(Emoji[][] initial) {
 //        return theme.drawBorder(initial);
-        return super.render(theme.drawBorder(initial));
+//        return super.render(theme.drawBorder(initial));
+        return theme.drawBorder(initial);
     }
 
     @Handler(event = "keyboard")
