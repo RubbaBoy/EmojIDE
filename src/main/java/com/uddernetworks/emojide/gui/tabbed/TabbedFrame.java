@@ -38,9 +38,8 @@ public class TabbedFrame extends DefaultEmojiContainer {
 
     @Override
     public Emoji[][] render(Emoji[][] initial) {
-//        return theme.drawBorder(initial);
-//        return super.render(theme.drawBorder(initial));
-        return theme.drawBorder(initial);
+        // Usually it would be theme.drawBorder(super.render(...)) but in this case we need the tabbed frame to be on top
+        return theme.drawBorder(super.render(initial));
     }
 
     @Handler(event = "keyboard")

@@ -1,5 +1,6 @@
 package com.uddernetworks.emojide.web;
 
+import com.uddernetworks.emojide.gui.components.MockupWebpageDisplayer;
 import com.uddernetworks.emojide.keyboard.KeyboardInputManager;
 import com.uddernetworks.emojide.main.EmojIDE;
 import org.apache.commons.lang3.StringUtils;
@@ -89,6 +90,8 @@ public class SimpleWebListener implements WebListener {
                             "xmlHttp.open(\"GET\",\"http://xn--is8hfy.ws" + url.replace("/c", "/z") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
                             "xmlHttp.send(null);" +
                             "window.open('','_self').close();</script>")).writeAndFlush(client);
+                } else if (url.startsWith("/w")) {
+                    Packet.builder().putBytes(generateRequest(String.valueOf(MockupWebpageDisplayer.UPDATED.getAndSet(false)))).writeAndFlush(client);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -163,6 +166,7 @@ public class SimpleWebListener implements WebListener {
                 "Server: EmojIDE\n" +
                 "Content-Length: %CTL%\n" +
                 "Content-Type: text/html\n" +
+                "Access-Control-Allow-Origin: *\n" +
                 "Connection: Closed\n\n";
     }
 

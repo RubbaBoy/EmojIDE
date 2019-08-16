@@ -11,3 +11,4 @@ secret.conf
 executing/
 database/
 ide_emojis/intellij/gen
+*.pdn

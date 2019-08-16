@@ -13,7 +13,7 @@ import static com.uddernetworks.emojide.gui.tabbed.TabbedFrameConstants.AVAILABL
 public class IntelliJTabbedFrame implements TabbedFrameTheme {
 
     static {
-        ThemeDependantRendering.setThemeConstant(TabbedFrame.class, Theme.INTELLIJ, AVAILABLE_TEXT_HEIGHT, 13);
+        ThemeDependantRendering.setThemeConstant(TabbedFrame.class, Theme.INTELLIJ, AVAILABLE_TEXT_HEIGHT, 11);
     }
 
     private TabbedFrame frame;
@@ -39,23 +39,18 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
             rows[Integer.parseInt(split[1])][Integer.parseInt(split[0])] = emoji;
         });
 
-//        var headers = drawHeaders();
-//        for (int y = 0; y < headers.length; y++) {
-////            System.arraycopy(headers[y], 0, rows[y], 0, headers[y].length);
-//
-//            var thisRow = headers[y];
-//            var copyingTo = rows[y + 1];
-//            System.out.println("Headers: ");
-//            System.out.println(Arrays.toString(thisRow));
-//            for (int x = 0; x < thisRow.length; x++) {
-//                var thisEmoji = thisRow[x];
-//                if (thisEmoji != null && thisEmoji != StaticEmoji.TRANSPARENT) copyingTo[x] = thisEmoji;
-//            }
-//
-//            rows[y + 1] = copyingTo;
-//            System.out.println("Done:");
-//            System.out.println(Arrays.toString(rows[y]));
-//        }
+        var headers = drawHeaders();
+        for (int y = 0; y < headers.length; y++) {
+
+            var thisRow = headers[y];
+            var copyingTo = rows[y + 1];
+            for (int x = 0; x < thisRow.length; x++) {
+                var thisEmoji = thisRow[x];
+                if (thisEmoji != null && thisEmoji != StaticEmoji.TRANSPARENT) copyingTo[x] = thisEmoji;
+            }
+
+            rows[y + 1] = copyingTo;
+        }
         return rows;
     }
 
@@ -63,9 +58,6 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
         var top = new Emoji[frame.getWidth()];
         var row = new Emoji[frame.getWidth()];
         var bottom = new Emoji[frame.getWidth()];
-//        Arrays.fill(top, StaticEmoji.RED);
-//        Arrays.fill(row, null);
-//        Arrays.fill(bottom, StaticEmoji.RED);
 
         var activeFont = frame.getEmojIDE().getFontManager().getActive().ordinal();
         var unselectedFontUsing = new String[]{"t", "ft"}[activeFont];
@@ -75,7 +67,6 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
         var activeTab = frame.getActive();
         for (Tab tab : frame.tabs) {
             var active = tab.equals(activeTab);
-//            if (row.length + tab.getName().length() > frame.getWidth()) break;
 
             if (active) {
                 top[emojiIndex] = StaticEmoji.IJ_SELECTED_TOP_LEFT;
@@ -102,12 +93,6 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
             }
             emojiIndex++;
         }
-
-//        for (int i = 0; i < frame.getWidth() - row.size(); i++) {
-//            top.add(StaticEmoji.TRANSPARENT);
-//            row.add(StaticEmoji.TTABBED_FRAME);
-//            bottom.add(StaticEmoji.TRANSPARENT);
-//        }
 
         return new Emoji[][] {top, row, bottom};
     }

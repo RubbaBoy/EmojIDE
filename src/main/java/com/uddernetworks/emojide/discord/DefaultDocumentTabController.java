@@ -6,6 +6,7 @@ import com.uddernetworks.emojide.gui.HighlightedTextFrame;
 import com.uddernetworks.emojide.gui.StaticTextFrame;
 import com.uddernetworks.emojide.gui.components.Displayer;
 import com.uddernetworks.emojide.gui.components.EmojiComponent;
+import com.uddernetworks.emojide.gui.components.output.OutputFrame;
 import com.uddernetworks.emojide.gui.components.theme.ThemeDependantRendering;
 import com.uddernetworks.emojide.gui.tabbed.TabbedFrame;
 import com.uddernetworks.emojide.gui.tabs.Tab;
@@ -49,9 +50,9 @@ public class DefaultDocumentTabController implements DocumentTabController {
             document.setContent(text);
         });
 
-        var component = new EmptyContainerFrame(displayer, 56, textHeight + 5)
-                .addChild(highlightFrame, 1, 1);
-//                .addChild(new OutputFrame(displayer, 56, 5).setOutput(outputFrame), 0, textHeight);
+        var component = new EmptyContainerFrame(displayer, 56, textHeight + 6)
+                .addChild(highlightFrame, 1, 1)
+                .addChild(new OutputFrame(displayer, 56, 5).setOutput(outputFrame), 0, textHeight + 1);
 
         documents.put(component, document);
         tabbedFrame.addTab(document.getName(), component, true);

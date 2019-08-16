@@ -1,6 +1,5 @@
 package com.uddernetworks.emojide.gui.components;
 
-import com.electronwill.nightconfig.core.file.FileConfig;
 import com.uddernetworks.emojide.discord.emoji.Emoji;
 import com.uddernetworks.emojide.discord.emoji.EmojiManager;
 import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
@@ -21,6 +20,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -38,13 +38,14 @@ public class MockupWebpageDisplayer implements Displayer {
 
     private static final int MOCKUP_EMOJI_SIZE = 33;
 
+    public static AtomicBoolean UPDATED = new AtomicBoolean();
+
     private EmojIDE emojIDE;
     private TextChannel channel;
     private EmojiComponent child;
     private boolean displaying;
     private List<Message> messages = new ArrayList<>();
     private Emoji filler;
-    private FileConfig config = EmojIDE.getConfigManager().getConfig();
 
     /**
      * Creates a {@link MockupWebpageDisplayer}.
@@ -116,6 +117,7 @@ public class MockupWebpageDisplayer implements Displayer {
             }
 
             Files.write(Paths.get("mockup-display.html"), input.get().getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+            UPDATED.set(true);
             LOGGER.info("Wrote to in {}ms", System.currentTimeMillis() - start);
         } catch (Exception e) {
             LOGGER.error("Error making webpage", e);

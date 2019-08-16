@@ -45,19 +45,16 @@ public abstract class Raisable<T extends Event> {
      * @return The current {@link Raisable}
      */
     public Raisable addListener(Object listener) {
-        LOGGER.info("Added listener {} ({})", listener, listener.getClass().getCanonicalName());
         Class<?> current = listener.getClass();
         registerListener(listener, current);
         while (current.getSuperclass() != null) {
             if (Object.class.equals(current = current.getSuperclass())) break;
-            LOGGER.info("Adding superclass {} ({})", listener, current.getCanonicalName());
             registerListener(listener, current);
         }
         return this;
     }
 
     private void registerListener(Object listener, Class clazz) {
-        LOGGER.info("Registering {} ({})", listener, clazz.getCanonicalName());
         Arrays.stream(clazz.getDeclaredMethods()).forEach(method -> {
             if (method.getParameterCount() != 1) return;
             var type = method.getParameters()[0].getType();

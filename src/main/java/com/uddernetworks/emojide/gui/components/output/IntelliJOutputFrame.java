@@ -18,6 +18,6 @@ public class IntelliJOutputFrame implements OutputFrameTheme {
 
     @Override
     public void setOutput(StaticTextFrame output) {
-        frame.addChild(output, 1, 1);
+        frame.addChild(output, 1, 0);
     }
 }
