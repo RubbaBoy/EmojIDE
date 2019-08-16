@@ -102,9 +102,8 @@ public class CachedDisplayer implements Displayer {
             if (i == 0) message = "\u200b\n\u200b\n\u200b\n" + message;
             if (sendMessages) {
                 RenderEngine.queueSend(this.channel, message, completed -> this.messages.add(completed));
-            } else {
-                if (!this.cachedLines.get(i).equals(message))
-                    RenderEngine.queueEdit(this.messages.get(i), message, ignored -> {});
+            } else if (!this.cachedLines.get(i).equals(message)) {
+                RenderEngine.queueEdit(this.messages.get(i), message, ignored -> {});
             }
             this.cachedLines.set(i, message);
         }

@@ -13,11 +13,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.uddernetworks.emojide.gui.tabbed.TabbedFrameConstants.AVAILABLE_TEXT_HEIGHT;
+import static com.uddernetworks.emojide.gui.tabbed.TabbedFrameConstants.CONSOLE_OFFSET;
 
 public class DefaultTabbedFrame implements TabbedFrameTheme {
 
     static {
         ThemeDependantRendering.setThemeConstant(TabbedFrame.class, Theme.DEFAULT, AVAILABLE_TEXT_HEIGHT, 16);
+        ThemeDependantRendering.setThemeConstant(TabbedFrame.class, Theme.DEFAULT, CONSOLE_OFFSET, 16);
     }
 
     private TabbedFrame frame;

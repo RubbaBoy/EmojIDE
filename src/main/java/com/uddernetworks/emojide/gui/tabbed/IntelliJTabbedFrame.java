@@ -15,7 +15,7 @@ import static com.uddernetworks.emojide.gui.tabbed.TabbedFrameConstants.AVAILABL
 public class IntelliJTabbedFrame implements TabbedFrameTheme {
 
     static {
-        ThemeDependantRendering.setThemeConstant(TabbedFrame.class, Theme.INTELLIJ, AVAILABLE_TEXT_HEIGHT, 15);
+        ThemeDependantRendering.setThemeConstant(TabbedFrame.class, Theme.INTELLIJ, AVAILABLE_TEXT_HEIGHT, 13);
     }
 
     private TabbedFrame frame;
@@ -26,7 +26,7 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
 
     @Override
     public void settingOffset() {
-        frame.setOffset(1, 3);
+        frame.setOffset(1, 4);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
 //            System.arraycopy(headers[y], 0, rows[y], 0, headers[y].length);
 
             var thisRow = headers[y];
-            var copyingTo = rows[y];
+            var copyingTo = rows[y + 1];
             System.out.println("Headers: ");
             System.out.println(Arrays.toString(thisRow));
             for (int x = 0; x < thisRow.length; x++) {
@@ -54,7 +54,7 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
                 if (thisEmoji != null && thisEmoji != StaticEmoji.TRANSPARENT) copyingTo[x] = thisEmoji;
             }
 
-            rows[y] = copyingTo;
+            rows[y + 1] = copyingTo;
             System.out.println("Done:");
             System.out.println(Arrays.toString(rows[y]));
         }
@@ -73,7 +73,7 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
         var bottom = new Emoji[frame.getWidth()];
 //        Arrays.fill(top, StaticEmoji.RED);
 //        Arrays.fill(row, null);
-//        Arrays.fill(bottom, null);
+//        Arrays.fill(bottom, StaticEmoji.RED);
 
         var activeFont = frame.getEmojIDE().getFontManager().getActive().ordinal();
         var unselectedFontUsing = new String[]{"t", "ft"}[activeFont];
@@ -97,7 +97,7 @@ public class IntelliJTabbedFrame implements TabbedFrameTheme {
                 row[emojiIndex] = frame.getEmojiManager().getEmoji(prefix + (int) cha);
 
                 if (active) {
-//                    top.add(StaticEmoji.TTABBED_FRAME_SELECTED);
+                    top[emojiIndex] = StaticEmoji.IJ_SELECTED_TOP;
                     bottom[emojiIndex] = StaticEmoji.IJ_SELECTED_BOTTOM;
                 }
                 emojiIndex++;

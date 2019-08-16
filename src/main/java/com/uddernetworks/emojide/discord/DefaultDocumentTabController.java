@@ -1,8 +1,6 @@
 package com.uddernetworks.emojide.discord;
 
 import com.uddernetworks.emojide.data.document.Document;
-import com.uddernetworks.emojide.discord.emoji.StaticEmoji;
-import com.uddernetworks.emojide.gui.CustomRenderedContainerFrame;
 import com.uddernetworks.emojide.gui.EmptyContainerFrame;
 import com.uddernetworks.emojide.gui.HighlightedTextFrame;
 import com.uddernetworks.emojide.gui.StaticTextFrame;
@@ -17,7 +15,6 @@ import com.uddernetworks.emojide.main.EmojIDE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -45,17 +42,16 @@ public class DefaultDocumentTabController implements DocumentTabController {
 
     @Override
     public void addTab(Document document) {
-        var highlightFrame = new HighlightedTextFrame(displayer, 54, 18, document.getContent());
+        int textHeight = ThemeDependantRendering.getThemeConstant(TabbedFrame.class, AVAILABLE_TEXT_HEIGHT);
+        var highlightFrame = new HighlightedTextFrame(displayer, 54, textHeight - 1, document.getContent());
         highlightFrame.getTextBlock().onChange(text -> {
             LOGGER.info("Changed to: \n{}", text);
             document.setContent(text);
         });
 
-        var component = new EmptyContainerFrame(displayer, 56, 20)
-                .addChild(highlightFrame, 1, 1)
-                .addChild(new CustomRenderedContainerFrame(displayer, 56, 5)
-                        .addRenderer(initial -> Arrays.fill(initial[0], StaticEmoji.CTABBED_FRAME))
-                        .addChild(outputFrame, 1, 1), 0, ThemeDependantRendering.getThemeConstant(TabbedFrame.class, AVAILABLE_TEXT_HEIGHT));
+        var component = new EmptyContainerFrame(displayer, 56, textHeight + 5)
+                .addChild(highlightFrame, 1, 1);
+//                .addChild(new OutputFrame(displayer, 56, 5).setOutput(outputFrame), 0, textHeight);
 
         documents.put(component, document);
         tabbedFrame.addTab(document.getName(), component, true);

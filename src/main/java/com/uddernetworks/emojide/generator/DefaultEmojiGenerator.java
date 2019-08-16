@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.uddernetworks.emojide.generator.DefaultEmojiGenerator.CharAlign.*;
 import static com.uddernetworks.emojide.generator.LetterGenerator.*;
@@ -308,7 +307,7 @@ public class DefaultEmojiGenerator implements EmojiGenerator {
                 BufferedImage subImage = image.getSubimage(xBlock * iconSize, yBlock * iconSize, iconSize, iconSize);
                 if (hasTransparent(subImage)) continue;
                 ImageIO.write(subImage, "png", new File("ide_emojis/intellij/gen/" + xBlock + "j" + yBlock + ".png"));
-//                LOGGER.info("IJ_{}j{}(\"{}j{}\", \"ide_emojis/intellij/{}j{}.png\"),", xBlock, yBlock, xBlock, yBlock, xBlock, yBlock);
+//                LOGGER.info("IJ_{}j{}(\"{}j{}\", \"ide_emojis/intellij/gen/{}j{}.png\"),", xBlock, yBlock, xBlock, yBlock, xBlock, yBlock);
             }
         }
     }

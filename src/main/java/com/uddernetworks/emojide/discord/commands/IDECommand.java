@@ -10,8 +10,8 @@ import com.uddernetworks.emojide.discord.font.Font;
 import com.uddernetworks.emojide.discord.font.FontManager;
 import com.uddernetworks.emojide.gui.EmptyContainerFrame;
 import com.uddernetworks.emojide.gui.WelcomeFrame;
-import com.uddernetworks.emojide.gui.components.CachedDisplayer;
 import com.uddernetworks.emojide.gui.components.Displayer;
+import com.uddernetworks.emojide.gui.components.MockupDisplayer;
 import com.uddernetworks.emojide.gui.tabbed.TabbedFrame;
 import com.uddernetworks.emojide.gui.theme.Theme;
 import com.uddernetworks.emojide.gui.theme.ThemeManager;
@@ -137,7 +137,8 @@ public class IDECommand {
         var documentManager = emojIDE.getDocumentManager();
         documentManager.getAllDocuments().thenAccept(documents -> {
             TabbedFrame tabbedFrame;
-            (displayer = new CachedDisplayer(emojIDE, channel, true))
+            // TODO: Change Displayer Implementations
+            (displayer = new MockupDisplayer(emojIDE, channel)) // , channel, true
                     .setChild(new EmptyContainerFrame(displayer, 58, 23)
                                     .addChild(tabbedFrame = new TabbedFrame(displayer, 58, 23)
                                             .addTab("Welcome", new WelcomeFrame(displayer)), 0, 0));

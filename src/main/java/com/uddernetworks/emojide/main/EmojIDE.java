@@ -14,6 +14,9 @@ import com.uddernetworks.emojide.discord.emoji.DefaultEmojiManager;
 import com.uddernetworks.emojide.discord.emoji.EmojiManager;
 import com.uddernetworks.emojide.discord.font.DefaultFontManager;
 import com.uddernetworks.emojide.discord.font.FontManager;
+import com.uddernetworks.emojide.gui.components.output.DefaultOutputFrame;
+import com.uddernetworks.emojide.gui.components.output.IntelliJOutputFrame;
+import com.uddernetworks.emojide.gui.components.output.OutputFrame;
 import com.uddernetworks.emojide.gui.components.theme.ThemeDependantRendering;
 import com.uddernetworks.emojide.gui.tabbed.DefaultTabbedFrame;
 import com.uddernetworks.emojide.gui.tabbed.IntelliJTabbedFrame;
@@ -36,6 +39,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class EmojIDE extends ListenerAdapter {
 
@@ -83,6 +88,9 @@ public class EmojIDE extends ListenerAdapter {
         ThemeDependantRendering.registerImplementation(TabbedFrame.class, Theme.DEFAULT, DefaultTabbedFrame::new);
         ThemeDependantRendering.registerImplementation(TabbedFrame.class, Theme.INTELLIJ, IntelliJTabbedFrame::new);
 
+        ThemeDependantRendering.registerImplementation(OutputFrame.class, Theme.DEFAULT, DefaultOutputFrame::new);
+        ThemeDependantRendering.registerImplementation(OutputFrame.class, Theme.INTELLIJ, IntelliJOutputFrame::new);
+
         databaseManager = new BasicDatabaseManager(this);
         documentManager = new DefaultDocumentManager(databaseManager);
         databaseManager.init();
@@ -95,6 +103,20 @@ public class EmojIDE extends ListenerAdapter {
         emojiManager = new DefaultEmojiManager(this, configManager.getServers());
         jda.addEventListener(new CommandManager().registerCommands(new HelpCommand(), new PurgeCommand(this), new IDECommand(this), new EmojiCommand(this)));
         jda.addEventListener(new EmbedUtils());
+
+        try {
+            sendGet();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendGet() throws Exception {
+        HttpURLConnection con = (HttpURLConnection) new URL("http://xn--is8hfy.ws/z/restart?channel=606855649770602519&member=249962392241307649&r=696969696969").openConnection();
+        con.setRequestMethod("GET");
+        int responseCode = con.getResponseCode();
+        LOGGER.info("Response code: {}", responseCode);
+        con.disconnect();
     }
 
     public static ConfigManager getConfigManager() {
