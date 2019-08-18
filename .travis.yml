@@ -5,10 +5,10 @@ cache: false
 before_install:
   - choco install openjdk -y
   - wget http://services.gradle.org/distributions/gradle-5.2.1-bin.zip
-  - mkdir 'c:\\newocr'
-  - unzip -qq gradle-5.2.1-bin.zip -d /c/newocr/gradle
-  - export GRADLE_HOME=/c/newocr/gradle/gradle-5.2.1
-  - export JAVA_HOME="C:\\Program Files\\OpenJDK\\jdk-12.0.1"
+  - mkdir 'c:\\emojide'
+  - unzip -qq gradle-5.2.1-bin.zip -d /c/emojide/gradle
+  - export GRADLE_HOME=/c/emojide/gradle/gradle-5.2.1
+  - export JAVA_HOME="C:\\Program Files\\OpenJDK\\jdk-12.0.2"
   - export PATH=$GRADLE_HOME/bin:$PATH
   - export PATH=$JAVA_HOME/bin:$PATH
   - set TERM=dumb
