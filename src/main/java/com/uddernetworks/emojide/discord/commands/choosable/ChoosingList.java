@@ -19,7 +19,7 @@ public interface ChoosingList<T extends ChoosableEnum> {
 
     /**
      * The unique name of the emoji, as short as possible is usually ideal (Due to embed limits). This is currently
-     * just the {@link ChoosingList#hashCode()} of the class, but may need to just be ain incremental value for
+     * just the {@link Object#hashCode()} of the class, but may need to just be ain incremental value for
      * conciseness.
      *
      * @return The unique name

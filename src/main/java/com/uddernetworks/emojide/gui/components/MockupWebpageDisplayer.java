@@ -39,7 +39,6 @@ public class MockupWebpageDisplayer implements Displayer {
     public static AtomicBoolean UPDATED = new AtomicBoolean();
 
     private EmojIDE emojIDE;
-    private TextChannel channel;
     private EmojiComponent child;
     private boolean displaying;
     private List<Message> messages = new ArrayList<>();
@@ -50,9 +49,8 @@ public class MockupWebpageDisplayer implements Displayer {
      *
      * @param emojIDE The {@link EmojIDE} instance
      */
-    public MockupWebpageDisplayer(EmojIDE emojIDE, TextChannel channel) {
+    public MockupWebpageDisplayer(EmojIDE emojIDE) {
         this.emojIDE = emojIDE;
-        this.channel = channel;
         this.filler = StaticEmoji.TRANSPARENT;
 
         // No need to have the render engine running

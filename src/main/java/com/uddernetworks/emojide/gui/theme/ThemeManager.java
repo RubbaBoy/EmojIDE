@@ -33,6 +33,7 @@ public interface ThemeManager {
      * @param def The supplier to invoke if {@link Theme#DEFAULT} is active
      * @param intellij The supplier to invoke if {@link Theme#INTELLIJ} is active
      * @return The value from one of the suppliers
+     * @param <T> The type
      */
     <T> T getForTheme(Supplier<T> def, Supplier<T> intellij);
 

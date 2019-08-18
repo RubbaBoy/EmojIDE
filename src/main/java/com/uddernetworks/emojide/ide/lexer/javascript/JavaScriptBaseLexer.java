@@ -94,7 +94,7 @@ public abstract class JavaScriptBaseLexer extends Lexer
         }
     }
 
-    /**
+    /*
      * Returns {@code true} if the lexer can match a regex literal.
      */
     protected boolean IsRegexPossible() {

@@ -36,6 +36,7 @@ public class ComponentUtils {
     /**
      * Creates a 2D array of the given {@link Emoji} with the given dimensions.
      *
+     * @param emoji The emoji to fill the grid with
      * @param width  The width of the array
      * @param height The height of the array
      * @return The 2D array

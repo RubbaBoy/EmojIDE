@@ -46,6 +46,7 @@ public class MockupImageDisplayer implements Displayer {
      * Creates a {@link MockupImageDisplayer}.
      *
      * @param emojIDE The {@link EmojIDE} instance
+     * @param channel The channel to send the image to
      */
     public MockupImageDisplayer(EmojIDE emojIDE, TextChannel channel) {
         this.emojIDE = emojIDE;

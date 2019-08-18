@@ -27,6 +27,7 @@ public interface DocumentManager {
      *
      * @param name The name of the {@link Document}
      * @param authorId The author's Discord ID of the {@link Document}
+     * @return The {@link Document}'s {@link CompletableFuture}
      */
     CompletableFuture<Document> createDocument(String name, long authorId);
 
@@ -34,6 +35,7 @@ public interface DocumentManager {
      * Inserts a given {@link Document}'s contents to the database.
      *
      * @param document The {@link Document} to get the content of
+     * @return The {@link CompletableFuture} of the task
      */
     CompletableFuture<Void> updateDocument(Document document);
 
@@ -41,6 +43,7 @@ public interface DocumentManager {
      * Removes a given {@link Document} from the database.
      *
      * @param document The {@link Document} to remove
+     * @return The {@link CompletableFuture} of the task
      */
     CompletableFuture<Void> removeDocument(Document document);
 

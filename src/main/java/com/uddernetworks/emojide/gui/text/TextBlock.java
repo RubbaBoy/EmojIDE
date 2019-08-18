@@ -88,6 +88,7 @@ public interface TextBlock {
      * parameter. The parameter is used so it won't need to make the array on its own.
      *
      * @param emojiManager The {@link DefaultEmojiManager}
+     * @param initial The initially generated {@link Emoji}[][]
      * @return The 2D array of emojis
      */
     Emoji[][] toEmoji(EmojiManager emojiManager, Emoji[][] initial);

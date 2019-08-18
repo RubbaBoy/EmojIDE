@@ -14,6 +14,10 @@ public class StyleUtils {
     /**
      * Gets the styled base by this class, to be added onto by other instances.
      *
+     * @param background The {@link Emoji} background
+     * @param border The single-width {@link Emoji} border
+     * @param width The width
+     * @param height The height
      * @return The initial Emoji grid
      */
     public static Emoji[][] renderInitialStyle(Emoji background, Emoji border, int width, int height) {

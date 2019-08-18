@@ -14,28 +14,28 @@ public abstract class JavaScriptBaseParser extends Parser {
         super(input);
     }
 
-    /**
+    /*
      * Short form for prev(String str)
      */
     protected boolean p(String str) {
         return prev(str);
     }
 
-    /**
+    /*
      * Whether the previous token value equals to @param str
      */
     protected boolean prev(String str) {
         return _input.LT(-1).getText().equals(str);
     }
 
-    /**
+    /*
      * Short form for next(String str)
      */
     protected boolean n(String str) {
         return next(str);
     }
 
-    /**
+    /*
      * Whether the next token value equals to @param str
      */
     protected boolean next(String str) {
@@ -55,7 +55,7 @@ public abstract class JavaScriptBaseParser extends Parser {
         return _input.LT(1).getType() == com.uddernetworks.emojide.ide.lexer.javascript.JavaScriptParser.CloseBrace;
     }
 
-    /**
+    /*
      * Returns {@code true} iff on the current index of the parser's
      * token stream a token of the given {@code type} exists on the
      * {@code HIDDEN} channel.
@@ -77,7 +77,7 @@ public abstract class JavaScriptBaseParser extends Parser {
         return (ahead.getChannel() == Lexer.HIDDEN) && (ahead.getType() == type);
     }
 
-    /**
+    /*
      * Returns {@code true} iff on the current index of the parser's
      * token stream a token exists on the {@code HIDDEN} channel which
      * either is a line terminator, or is a multi line comment that

@@ -148,7 +148,7 @@ public class IDECommand {
                     displayer = new CachedDisplayer(emojIDE, channel, true);
                     break;
                 case WEBPAGE:
-                    displayer = new MockupWebpageDisplayer(emojIDE, channel);
+                    displayer = new MockupWebpageDisplayer(emojIDE);
                     break;
                 case IMAGE:
                     displayer = new MockupImageDisplayer(emojIDE, channel);
