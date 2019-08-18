@@ -104,11 +104,11 @@ public class EmojIDE extends ListenerAdapter {
         jda.addEventListener(new CommandManager().registerCommands(new HelpCommand(), new PurgeCommand(this), new IDECommand(this), new EmojiCommand(this)));
         jda.addEventListener(new EmbedUtils());
 
-        try {
-            sendGet();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            sendGet();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void sendGet() throws Exception {

@@ -25,11 +25,14 @@ public class SimpleWebListener implements WebListener {
 
     private static Logger LOGGER = LoggerFactory.getLogger(SimpleWebListener.class);
 
+    private final List<String> goodContains;
+
     private EmojIDE emojIDE;
     private Map<String, List<String>> usedRandoms = new ConcurrentHashMap<>();
 
     public SimpleWebListener(EmojIDE emojIDE) {
         this.emojIDE = emojIDE;
+        goodContains = Arrays.asList("localhost", "127.0.0.1", EmojIDE.getConfigManager().getConfig().get("web.host"));
     }
 
     @Override
@@ -82,12 +85,12 @@ public class SimpleWebListener implements WebListener {
                     }
                 } else if (url.startsWith("/s")) {
                     Packet.builder().putBytes(generateRequest("<script>var xmlHttp = new XMLHttpRequest();\n" +
-                            "xmlHttp.open(\"GET\",\"" + EmojIDE.getConfigManager().getConfig().get("web.host") + "" + url.replace("/s", "/e") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
+                            "xmlHttp.open(\"GET\",\"" + EmojIDE.getConfigManager().getConfig().get("web.js-host") + "" + url.replace("/s", "/e") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
                             "xmlHttp.send(null);" +
                             "window.open('','_self').close();</script>")).writeAndFlush(client);
                 } else if (url.startsWith("/c")) {
                     Packet.builder().putBytes(generateRequest("<script>var xmlHttp = new XMLHttpRequest();\n" +
-                            "xmlHttp.open(\"GET\",\"" + EmojIDE.getConfigManager().getConfig().get("web.host") + "" + url.replace("/c", "/z") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
+                            "xmlHttp.open(\"GET\",\"" + EmojIDE.getConfigManager().getConfig().get("web.js-host") + "" + url.replace("/c", "/z") + "&r=\"+Math.floor(Math.random()*999999999)+\"\",false);\n" +
                             "xmlHttp.send(null);" +
                             "window.open('','_self').close();</script>")).writeAndFlush(client);
                 } else if (url.startsWith("/w")) {
@@ -113,8 +116,6 @@ public class SimpleWebListener implements WebListener {
         });
     }
 
-    private static final List<String> goodContains = Arrays.asList("localhost", "127.0.0.1", EmojIDE.getConfigManager().getConfig().get("web.host"));
-
     @Override
     public void parseHeaders(Client client, BiConsumer<String[], Map<String, String>> headersComplete) {
         var finishedRequest = new AtomicBoolean(false);
@@ -130,10 +131,11 @@ public class SimpleWebListener implements WebListener {
 
                     // This has to do with an ongoing issue with my network locally, contact me if interested in details
                     if (split.length == 1) split = new String[] {"", split[0]};
-                    if (!split[1].startsWith("/") && goodContains.parallelStream().noneMatch(split[1]::contains)) {
+                    if (!split[0].equals("GET") || (!split[1].startsWith("/") && goodContains.parallelStream().noneMatch(split[1]::contains))) {
                         client.close();
                         return false;
                     }
+//                    LOGGER.info("Allowing {}", Arrays.toString(split));
 
                     finalRequest.set(split);
                     return true;

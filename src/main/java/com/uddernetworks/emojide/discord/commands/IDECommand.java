@@ -10,7 +10,9 @@ import com.uddernetworks.emojide.discord.font.Font;
 import com.uddernetworks.emojide.discord.font.FontManager;
 import com.uddernetworks.emojide.gui.EmptyContainerFrame;
 import com.uddernetworks.emojide.gui.WelcomeFrame;
+import com.uddernetworks.emojide.gui.components.CachedDisplayer;
 import com.uddernetworks.emojide.gui.components.Displayer;
+import com.uddernetworks.emojide.gui.components.MockupImageDisplayer;
 import com.uddernetworks.emojide.gui.components.MockupWebpageDisplayer;
 import com.uddernetworks.emojide.gui.tabbed.TabbedFrame;
 import com.uddernetworks.emojide.gui.theme.Theme;
@@ -29,6 +31,8 @@ import java.util.stream.Collectors;
 public class IDECommand {
 
     private static Logger LOGGER = LoggerFactory.getLogger(IDECommand.class);
+
+    public static final DisplayerImpl DISPLAYER = DisplayerImpl.DEFAULT;
 
     private EmojIDE emojIDE;
     private EmojiManager emojiManager;
@@ -137,10 +141,21 @@ public class IDECommand {
         var documentManager = emojIDE.getDocumentManager();
         documentManager.getAllDocuments().thenAccept(documents -> {
             TabbedFrame tabbedFrame;
-            // TODO: Change Displayer Implementations
-            (displayer = new MockupWebpageDisplayer(emojIDE, channel))
-//            (displayer = new MockupImageDisplayer(emojIDE, channel))
-//            (displayer = new CachedDisplayer(emojIDE, channel, true))
+
+            Displayer displayer = null;
+            switch (DISPLAYER) {
+                case DEFAULT:
+                    displayer = new CachedDisplayer(emojIDE, channel, true);
+                    break;
+                case WEBPAGE:
+                    displayer = new MockupWebpageDisplayer(emojIDE, channel);
+                    break;
+                case IMAGE:
+                    displayer = new MockupImageDisplayer(emojIDE, channel);
+                    break;
+            }
+
+            displayer
                     .setChild(new EmptyContainerFrame(displayer, 58, 23)
                                     .addChild(tabbedFrame = new TabbedFrame(displayer, 58, 23)
                                             .addTab("Welcome", new WelcomeFrame(displayer)), 0, 0));
@@ -150,6 +165,9 @@ public class IDECommand {
 
             documents.forEach(tabController::addTab);
             displayer.update();
+        }).exceptionally(throwable -> {
+            LOGGER.error("Error rendering page", throwable);
+            return null;
         });
     }
 
@@ -162,5 +180,9 @@ public class IDECommand {
                 .stream()
                 .filter(messageHistory -> messageHistory.getAuthor().getIdLong() == selfId)
                 .collect(Collectors.toList()));
+    }
+
+    enum DisplayerImpl {
+        DEFAULT, WEBPAGE, IMAGE
     }
 }

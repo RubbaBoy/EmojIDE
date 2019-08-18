@@ -12,7 +12,7 @@ public class WelcomeFrame extends DefaultEmojiContainer {
      * @param displayer The {@link Displayer}
      */
     public WelcomeFrame(Displayer displayer) {
-        super(displayer, 56, 20);
+        super(displayer, 56, 19);
     }
 
     @Override

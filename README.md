@@ -23,7 +23,7 @@ After completing [MS Paint IDE](https://ms-paint-i.de/), I realized that moving 
 
 ## Features
 
-EmojIDE is a Discord bot created for the [r/ProgrammerHumor](https://www.reddit.com/r/ProgrammerHumor/) [hackathon](https://www.programmerhumor.org/Hackathon), lasting a month. This means that the bot does currently lack some features revolving around multi-user usage, and I am trying to use the time limit as justification for my lazyness. The current features actually implemented in the bot, however, are:
+EmojIDE is a Discord bot created for the [r/ProgrammerHumor](https://www.reddit.com/r/ProgrammerHumor/) [hackathon](https://www.programmerhumor.org/Hackathon), lasting a month. This means that the bot does currently lack some features revolving around multi-user usage, and I am trying to use the time limit as justification for my laziness. The current features actually implemented in the bot, however, are:
 
 - 2050+ emojis across 42 Discord servers
   - Including 2 fonts (With expandability) in 8 color variations each
@@ -31,18 +31,18 @@ EmojIDE is a Discord bot created for the [r/ProgrammerHumor](https://www.reddit.
 - Never-before-seen I/O, allowing for:
   - No reactions for any primary Emoji I/O
   - A full ANSI keyboard in emojis, with < 1s response time (Not including render engine throttles)
-  - Help menus/embeds navigatable via clicking on options
+  - Help menus/embeds navigable via clicking on options
   - Selectable elements of an enum/list via emojis for settings
   - High expandability
 - A highly advanced Emoji based rendering framework
   - Highly expandable with little effort
   - Advanced theming capabilities
     - Current themes are EmojIDE and IntelliJ
-  - A render engine to handle DIscord API interactions
+  - A render engine to handle Discord API interactions
   - 3 Displayer implementations, allowing for:
     - Normal emoji rendering in a channel
-    - Rendering immediatly to an image (As rapid development can be bottlenecked by Discord's rate limiting)
-    - Rendering to a local Discord clone for an exact preview immediatly
+    - Rendering immediately to an image (As rapid development can be bottlenecked by Discord's rate limiting)
+    - Rendering to a local Discord clone for an exact preview immediately
 - Advanced, custom command framework
 - Custom event framework
 - HSQLDB Integration to store code files
