@@ -9,10 +9,10 @@
 </h1>
 <p align="center">
   <b>
-    <a href="https://github.com/RubbaBoy/EmojIDE/wiki">Features</a> |
     <a href="https://github.com/RubbaBoy/EmojIDE/wiki">Wiki</a> |
+    <a href="https://docs.xn--is8hfy.ws">Docs</a> |
     <a href="https://www.reddit.com/user/OnlyTwo_jpg">Reddit</a> |
-    <a href="https://www.youtube.com/">Demo</a> |
+    <a href="https://youtu.be/06pMgnB6e6o">Demo</a> |
     <a href="https://www.programmerhumor.org/Hackathon">Hackathon</a>
   </b>
 </p>
