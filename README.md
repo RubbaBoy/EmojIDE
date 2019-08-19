@@ -11,7 +11,7 @@
   <b>
     <a href="https://github.com/RubbaBoy/EmojIDE/wiki">Wiki</a> |
     <a href="https://docs.xn--is8hfy.ws">Docs</a> |
-    <a href="https://www.reddit.com/user/OnlyTwo_jpg">Reddit</a> |
+    <a href="https://www.reddit.com/r/ProgrammerHumor/comments/csmqhm/emojide_an_ide_in_entirely_discord_emojis/">Reddit</a> |
     <a href="https://youtu.be/06pMgnB6e6o">Demo</a> |
     <a href="https://www.programmerhumor.org/Hackathon">Hackathon</a>
   </b>
