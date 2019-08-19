@@ -92,18 +92,15 @@ public abstract class Raisable<T extends Event> {
         allMethods.sort(Comparator.comparingInt(entry -> entry.getValue().getAnnotation(Handler.class).priority().getPriority()));
         Collections.reverse(allMethods);
 
-        LOGGER.info("====================================");
         for (Map.Entry<Object, Method> handler : allMethods) {
             var object = handler.getKey();
             var method = handler.getValue();
-            LOGGER.info("Handler {}#{}", object.getClass().getSimpleName(), method.getName());
             try {
                 method.invoke(object, event);
             } catch (ReflectiveOperationException | IllegalArgumentException e) {
                 LOGGER.error("Error while invoking event on " + object.getClass().getCanonicalName() + "#" + method.getName(), e);
             }
             if (cancellable != null && cancellable.isCancelled()) {
-                LOGGER.info("Event cancelled!!!!!!!");
                 break;
             }
         }

@@ -21,7 +21,7 @@ gradle javadoc --no-daemon
 cd build/docs/
 mv javadoc/* ../../pages
 cd ../../pages
-echo "docs.xn--is8hfy.ws/" > CNAME
+echo "docs.xn--is8hfy.ws" > CNAME
 
 # deploy
 git add . &> /dev/null

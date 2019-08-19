@@ -47,10 +47,11 @@ public interface WebListener {
     /**
      * Creates default headers for {@link #generateRequest(String)}. By default, this is:
      * <pre>
-     *     HTTP/1.1 418 I'm a teapot
+     *     HTTP/1.1 200 OK
      *     Server: EmojIDE
      *     Content-Length: [dynamic]
      *     Content-Type: text/html
+     *     Access-Control-Allow-Origin: *
      *     Connection: Closed
      *
      * </pre>
