@@ -7,7 +7,6 @@ gradlew.bat
 generated_emojis/
 secret.conf
 *.log
-*.ttf
 executing/
 database/
 ide_emojis/intellij/gen

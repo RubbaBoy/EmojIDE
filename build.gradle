@@ -36,7 +36,3 @@ dependencies {
     implementation 'org.antlr:antlr4-runtime:4.7.2'
     antlr 'org.antlr:antlr4:4.7.2'
 }
-
-run {
-    for (prop in ['discord.token', 'db.host', 'db.port', 'db.database', 'db.username', 'db.pass']) systemProperty prop, findProperty(prop)
-}
