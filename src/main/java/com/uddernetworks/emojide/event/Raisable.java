@@ -13,7 +13,7 @@ public abstract class Raisable<T extends Event> {
     final String name;
     final Class<T> type;
     Map<Object, List<Method>> eventClasses = new HashMap<>();
-    List<Method> suspended = new ArrayList<>();
+    Map<Object, List<Method>> suspended = new HashMap<>();
 
     public Raisable(String name, Class<T> type) {
         this.name = name;
@@ -116,9 +116,9 @@ public abstract class Raisable<T extends Event> {
      */
     public void suspendListeners() {
         if (!suspended.isEmpty()) return;
-        eventClasses.forEach((object, methods) -> methods.stream().filter(method -> !method.getAnnotation(Handler.class).overrideSuspend()).forEach(suspended::add));
+        eventClasses.forEach((object, methods) -> methods.stream().filter(method -> !method.getAnnotation(Handler.class).overrideSuspend()).forEach(method -> suspended.put(object, methods)));
 
-        eventClasses.values().forEach(methods -> methods.removeAll(suspended));
+        eventClasses.forEach((object, methods) -> methods.removeAll(suspended.getOrDefault(object, Collections.emptyList())));
         LOGGER.info("All keyboard listeners have been suspended");
     }
 
@@ -126,7 +126,7 @@ public abstract class Raisable<T extends Event> {
      * Enabled all listeners disabled with {@link #suspendListeners()}.
      */
     public void resumeListeners() {
-        suspended.forEach(method -> eventClasses.computeIfAbsent(method.getDeclaringClass(), i -> new ArrayList<>()).add(method));
+        suspended.forEach((object, methods) -> methods.forEach(method -> eventClasses.computeIfAbsent(object, i -> new ArrayList<>()).add(method)));
         suspended.clear();
         LOGGER.info("All keyboard listeners have been reset back to the last suspend");
     }
