@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.stream.Collectors;
 
-@Command(name = "ide", aliases = "i", minArgs = 0, maxArgs = 2, permission = Permission.ADMINISTRATOR)
+@Command(name = "ide", aliases = "i", minArgs = 0, maxArgs = 2, permission = Permission.MESSAGE_WRITE)
 public class IDECommand {
 
     private static Logger LOGGER = LoggerFactory.getLogger(IDECommand.class);

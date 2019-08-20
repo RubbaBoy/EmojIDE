@@ -26,7 +26,7 @@ import static com.uddernetworks.emojide.discord.commands.CommandHelp.space;
 import static com.uddernetworks.emojide.main.EmojIDE.ZWS;
 import static java.util.function.Predicate.not;
 
-@Command(name = "emoji", aliases = "e", minArgs = 0, maxArgs = 3, permission = Permission.ADMINISTRATOR)
+@Command(name = "emoji", aliases = "e", minArgs = 0, maxArgs = 3, permission = Permission.MESSAGE_WRITE)
 public class EmojiCommand {
 
     private static Logger LOGGER = LoggerFactory.getLogger(EmojiCommand.class);
@@ -35,10 +35,12 @@ public class EmojiCommand {
     private EmojiManager emojiManager;
     private WebCallbackHandler callbackHandler;
     private Map<String, Emoji> emojis;
+    private long importantChannel;
 
     public EmojiCommand(EmojIDE emojIDE) {
         this.emojIDE = emojIDE;
         emojiManager = emojIDE.getEmojiManager();
+        importantChannel = EmojIDE.getConfigManager().getConfig().getLong("show-important");
 
         callbackHandler = emojIDE.getWebCallbackHandler();
         callbackHandler.registerCommandCallback("info", (member, channel, query) -> info(member, channel));
@@ -194,6 +196,11 @@ public class EmojiCommand {
 
     @Argument(format = "rem *")
     public void remove(Member member, TextChannel channel, ArgumentList args) {
+        if (importantChannel != -1 && channel.getIdLong() != importantChannel) {
+            EmbedUtils.error(channel, member, "Fuck you, Rubba disabled this for this channel");
+            return;
+        }
+
         var emojiName = args.nextArg().getString();
         var emojiOptional = getEmoji(emojiName);
         var emotes = emojIDE.getJda().getEmotesByName(emojiName, true);
@@ -212,6 +219,11 @@ public class EmojiCommand {
 
     @Argument(format = "grem *")
     public void gremove(Member member, TextChannel channel, ArgumentList args) {
+        if (importantChannel != -1 && channel.getIdLong() != importantChannel) {
+            EmbedUtils.error(channel, member, "Fuck you, Rubba disabled this for this channel");
+            return;
+        }
+
         var groupName = args.nextArg().getString();
         var groupOptional = getGroup(groupName);
         if (groupOptional.isEmpty()) {
@@ -224,6 +236,11 @@ public class EmojiCommand {
 
     @Argument(format = "crem *")
     public void cremove(Member member, TextChannel channel, ArgumentList args) {
+        if (importantChannel != -1 && channel.getIdLong() != importantChannel) {
+            EmbedUtils.error(channel, member, "Fuck you, Rubba disabled this for this channel");
+            return;
+        }
+
         var charString = args.nextArg().getString();
         char removing;
         if (charString.length() != 1 || (removing = charString.charAt(0)) < 32 || removing > 126) {

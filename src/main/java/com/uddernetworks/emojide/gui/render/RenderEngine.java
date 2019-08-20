@@ -4,6 +4,7 @@ import com.uddernetworks.emojide.main.Thread;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,22 +53,25 @@ public class RenderEngine {
                     renderQueue.removeAll(similar);
                     render = (RenderAction) similar.get(similar.size() - 1);
 
-                    Message message;
-                    if (render.isEditing()) {
-                        if (render.getEmbedContent() == null) {
-                            message = render.getEditing().editMessage(render.getContent()).complete();
+                    try {
+                        Message message;
+                        if (render.isEditing()) {
+                            if (render.getEmbedContent() == null) {
+                                message = render.getEditing().editMessage(render.getContent()).complete();
+                            } else {
+                                message = render.getEditing().editMessage(render.getEmbedContent()).complete();
+                            }
                         } else {
-                            message = render.getEditing().editMessage(render.getEmbedContent()).complete();
+                            if (render.getEmbedContent() == null) {
+                                message = render.getChannel().sendMessage(render.getContent()).complete();
+                            } else {
+                                message = render.getChannel().sendMessage(render.getEmbedContent()).complete();
+                            }
                         }
-                    } else {
-                        if (render.getEmbedContent() == null) {
-                            message = render.getChannel().sendMessage(render.getContent()).complete();
-                        } else {
-                            message = render.getChannel().sendMessage(render.getEmbedContent()).complete();
-                        }
+                        render.complete(message);
+                    } catch (ErrorResponseException e) {
+                        LOGGER.error("Unbknown message!");
                     }
-
-                    render.complete(message);
 
                     RenderEntry render2 = get(renderQueue, 0);
 
