@@ -23,6 +23,9 @@ jobs:
       run: ./gradlew test
     - name: Clone Javadoc
       run: |
+        git config --global user.email "nobody@ms-paint-i.de"
+        git config --global user.name "GitHub Actions"
+        git config core.autocrlf true
         mkdir pages
         cd pages
         git clone https://github.com/RubbaBoy/EmojIDE-javadocs .
