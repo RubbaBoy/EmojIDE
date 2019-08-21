@@ -23,6 +23,8 @@ jobs:
       run: ./gradlew test
     - name: Clone Javadoc
       run: |
+        mkdir pages
+        cd pages
         git clone https://github.com/RubbaBoy/EmojIDE-javadocs .
         rm -rf *
         cd ../
