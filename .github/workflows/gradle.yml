@@ -16,7 +16,9 @@ jobs:
       with:
         java-version: 11
     - name: Print gradle
-      run: ./gradlew --version
+      run: |
+        chmod +x gradlew
+        ./gradlew --version
     - name: Test
       run: ./gradlew test
     - name: Clone Javadoc
