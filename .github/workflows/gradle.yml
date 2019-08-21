@@ -41,13 +41,7 @@ jobs:
         echo "docs.xn--is8hfy.ws" > CNAME
     - name: Push Javadoc
       run: |
-        echo Currently in:
-        pwd
-        ls
         cd pages
-        echo Now in:
-        pwd
-        ls
         git add .
         git commit -m "Update docs from RubbaBoy/EmojIDE"
-        git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/RubbaBoy/EmojIDE-javadocs.git" master:master
+        git push "https://${{ secrets.TOKEN }}@github.com/RubbaBoy/EmojIDE-javadocs.git" master:master
