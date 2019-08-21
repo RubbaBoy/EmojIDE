@@ -12,11 +12,5 @@ before_install:
   - export PATH=$GRADLE_HOME/bin:$PATH
   - export PATH=$JAVA_HOME/bin:$PATH
   - set TERM=dumb
-  - gradle -version
 script:
   - gradle clean install cleanTest test --no-daemon
-deploy:
-  provider: script
-  script: bash scripts/deploy.sh
-  on:
-    branch: master
