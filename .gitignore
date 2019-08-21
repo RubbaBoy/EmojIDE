@@ -1,9 +1,7 @@
 .gradle/
 .idea/
 emojis/
-gradlew
 build/
-gradlew.bat
 generated_emojis/
 secret.conf
 *.log
