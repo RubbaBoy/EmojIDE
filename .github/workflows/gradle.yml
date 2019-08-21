@@ -1,0 +1,38 @@
+name: Java CI
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  Ubuntu:
+    name: Run Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Print gradle
+      run: ./gradlew --version
+    - name: Test
+      run: ./gradlew test
+    - name: Clone Javadoc
+      run: |
+        git clone https://github.com/RubbaBoy/EmojIDE-javadocs .
+        rm -rf *
+        cd ../
+    - name: Javadoc
+      run: |
+        ./gradlew javadoc
+        cd build/docs
+        mv javadoc/* ../../pages
+        cd ../../pages
+        echo "docs.xn--is8hfy.ws" > CNAME
+    - name: Push Javadoc
+      run: |
+        git add . &> /dev/null
+        git commit -m "Update docs from RubbaBoy/EmojIDE" &> /dev/null
+        git push --quiet "https://${{ secrets.GITHUB_TOKEN }}@github.com/RubbaBoy/EmojIDE-javadocs.git" master:master &> /dev/null
