@@ -39,8 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.File;
 
 public class EmojIDE extends ListenerAdapter {
 
@@ -65,7 +64,7 @@ public class EmojIDE extends ListenerAdapter {
     }
 
     private void main() throws LoginException {
-        (configManager = new DefaultConfigManager("src/main/resources/secret.conf")).init();
+        (configManager = new DefaultConfigManager("src/main/resources/" + (new File("src/main/resources/secret.conf").exists() ? "secret.conf" : "config.conf"))).init();
 
         new JDABuilder()
                 .setToken(configManager.getPrimaryToken())
@@ -80,9 +79,7 @@ public class EmojIDE extends ListenerAdapter {
     public void onReady(@Nonnull ReadyEvent event) {
         jda = (JDAImpl) event.getJDA();
 
-        java.lang.Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
-            LOGGER.error("Error on thread {}", thread.getName(), exception);
-        });
+        java.lang.Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> LOGGER.error("Error on thread {}", thread.getName(), exception));
 
         new ThemeDependantRendering(this);
         ThemeDependantRendering.registerImplementation(TabbedFrame.class, Theme.DEFAULT, DefaultTabbedFrame::new);
@@ -103,20 +100,6 @@ public class EmojIDE extends ListenerAdapter {
         emojiManager = new DefaultEmojiManager(this, configManager.getServers());
         jda.addEventListener(new CommandManager().registerCommands(new HelpCommand(), new PurgeCommand(this), new IDECommand(this), new EmojiCommand(this)));
         jda.addEventListener(new EmbedUtils());
-
-//        try {
-//            sendGet();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-    }
-
-    private void sendGet() throws Exception {
-        HttpURLConnection con = (HttpURLConnection) new URL("http://xn--is8hfy.ws/z/restart?channel=606855649770602519&member=249962392241307649&r=696969696969").openConnection();
-        con.setRequestMethod("GET");
-        int responseCode = con.getResponseCode();
-        LOGGER.info("Response code: {}", responseCode);
-        con.disconnect();
     }
 
     public static ConfigManager getConfigManager() {
