@@ -10,4 +10,4 @@ There's only one released version, so it's the only supported one.
 
 ## Reporting a Vulnerability
 
-If you find something that looks like it could cause some issues, either contact me via email at [adam@yarr.is](mailto:adam@yarr.is) or on Discord, `RubbaBoy#2832`. I'm being really vauge with that, because this thing really isn't secure at all and if you want it more secure just let me know. I know anyone with an IQ above 3 would realize this is a bad way of doing this, but nobody is going to see this file anyway so boo hoo, whatever.
+If you find something that looks like it could cause some issues, either contact me via email at [adam@yarr.is](mailto:adam@yarr.is) or on Discord, `RubbaBoy#2832`. This doesn't store any data aside from the data you type in it and your Discord user ID, and cna be deleted in the app via the Control + X keybind in the IDE. Any and all security issues will be addressed though.
